@@ -8,6 +8,7 @@ import useAuth from "../../hooks/useAuth";
 import usePatient from '../../hooks/usePatient'
 import { getMessagesByPerson } from "../../services/messagesServices";
 import Loader from '../../components/Loader'
+import * as FaIcon from "react-icons/fa"
 
 export default function Notificaciones() {
 
@@ -53,7 +54,10 @@ export default function Notificaciones() {
         {loading
             ? <Loader isActive={loading} />
             : <Container className='notificaciones p-3'>
-                <h5 className='section-title'>Notificaciones</h5>
+                <div className="d-flex">
+                    <FaIcon.FaRegBell className="menu-icon text-danger me-1" style={{ fontSize: 'x-large' }} />
+                    <h5 className='section-title mb-3'>Notificaciones</h5>
+                </div>
                 {messages.length > 0 ? messages.map((m, i) => {
                     return <Mensaje 
                     key={`${m.message.id}-${i}`} 
