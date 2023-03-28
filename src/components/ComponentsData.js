@@ -4,6 +4,29 @@ export const variantsGender = [
   { id: 3, name: "No-binario" },
 ];
 
+export const variantsDependencies = [
+  { id: 'Municipal', name: "Municipal" },
+  { id: 'Provincial', name: "Provincial" }
+];
+
+export const variantsTypologies = [
+  { id: 'Centro de Salud "A"', name: 'Centro de Salud "A"' },
+  { id: 'Hospital', name: "Hospital" },
+  { id: 'Laboratorio', name: "Laboratorio" },
+  { id: 'Transporte', name: "Transporte" }
+];
+
+export const variantsTypologyCategories = [
+  { id: 'Establecimiento para la salud', name: "Establecimiento para la salud" },
+  { id: 'Establecimiento para la salud con internación', name: "Establecimiento para la salud con internación" },
+  { id: 'Establecimiento para la salud con internación general', name: "Establecimiento para la salud con internación general" },
+  { id: 'Establecimiento para la salud con internación especializada', name: "Establecimiento para la salud con internación especializada" },
+  { id: 'Establecimiento para la salud sin internación', name: "Establecimiento para la salud sin internación" },
+  { id: 'Establecimiento para la salud sin internación de diagnóstico', name: "Establecimiento para la salud sin internación de diagnóstico" },
+  { id: 'Establecimiento para la salud sin internación de diagnóstico y tratamiento', name: "Establecimiento para la salud sin internación de diagnóstico y tratamiento" },
+  { id: 'Sin especificar', name: "Sin especificar" }
+];
+
 export const endDate = () => {
   var endYear = new Date().getFullYear() - 14;
   var todayDay = new Date().getDate();
