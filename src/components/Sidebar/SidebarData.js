@@ -52,7 +52,7 @@ export const SidebarData = {
         {
           title: "Mis turnos",
           path: "/usuario/turnos/mis-turnos"
-        }, 
+        },
         {
           title: "Solicitar turnos",
           path: "/usuario/turnos/solicitar-turnos"
@@ -127,7 +127,7 @@ export const SidebarData = {
         {
           title: "Signos vitales",
           path: "/usuario/historia-clinica/signos-vitales"
-        }, 
+        },
       ],
     },
     // {
@@ -237,9 +237,9 @@ export const SidebarData = {
           path: "/admin/alta-de-pacientes/pacientes-pendientes"
         },
         {
-          title:  "Pacientes rechazados",
+          title: "Pacientes rechazados",
           path: "/admin/alta-de-pacientes/pacientes-rechazados"
-        } 
+        }
       ],
     },
     {
@@ -259,8 +259,19 @@ export const SidebarData = {
         {
           title: "Borradores",
           path: "/admin/mensajeria/borradores"
-        } 
+        }
       ],
+    },
+    {
+      id: 15,
+      title: "Establecimientos",
+      path: "/admin/establecimientos",
+      icon: <FaIcon.FaHospital className="menu-icon" />,
+      acordeon: false,
+      a: false,
+      cName: "sidebar-text",
+      aIcon: <MdIcon.MdKeyboardArrowDown className="menu-icon" />,
+      options: [],
     }
   ],
 };

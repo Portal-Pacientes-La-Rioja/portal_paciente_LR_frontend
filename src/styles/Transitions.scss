@@ -3,6 +3,10 @@
   animation: in;
   animation-duration: 0.5s;
 }
+.in-fast {
+  animation: in;
+  animation-duration: 0.2s;
+}
 .out {
   opacity: 0;
   transition: 0.5s;

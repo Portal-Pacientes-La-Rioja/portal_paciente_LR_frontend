@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Form } from 'react-bootstrap'
 import institutionsServices from '../../../services/institutionsServices';
 import identificationsTypeServices from '../../../services/parametricServices';
-import { variantsGender } from '../../ComponentsData';
+import { variantsDependencies, variantsGender, variantsTypologies, variantsTypologyCategories } from '../../ComponentsData';
 import DatePickerComponent from '../../DatePickerComponent';
 import SelectType from '../../SelectType';
 
@@ -22,7 +22,10 @@ const FormGroup = React.forwardRef((props, ref) => {
     handleChange,
     maxDate } = props
 
-  const vaGender = variantsGender
+  const vaGender = variantsGender;
+  const vaDependencies = variantsDependencies;
+  const vaTypologies = variantsTypologies;
+  const vaTypologyCategories = variantsTypologyCategories;
   const [options, setOptions] = useState([]);
 
   const getInstitutionsVariants = useCallback(
@@ -61,6 +64,21 @@ const FormGroup = React.forwardRef((props, ref) => {
     [],
   )
 
+  const getDependenciesVariants = () =>{
+    setOptions(vaDependencies);
+    return options
+  }
+
+  const getTypologiesVariants = () =>{
+    setOptions(vaTypologies);
+    return options
+  }
+  
+  const getTypologyCategoriesVariants = () =>{
+    setOptions(vaTypologyCategories);
+    return options
+  }
+
   const getGenderVariants = () => {
     setOptions(vaGender);
     return options
@@ -75,6 +93,15 @@ const FormGroup = React.forwardRef((props, ref) => {
     }
     if (variants === "variantsGender") {
       getGenderVariants();
+    }
+    if (variants === "dependency") {
+      getDependenciesVariants();
+    }
+    if (variants === "tipology") {
+      getTypologiesVariants();
+    }
+    if (variants === "tipology_category") {
+      getTypologyCategoriesVariants();
     }
   }, [variants])
 
