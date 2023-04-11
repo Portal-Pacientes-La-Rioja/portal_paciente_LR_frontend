@@ -32,9 +32,6 @@ const Main = () => {
                     </Col>
                 )}
             </Row>
-            <Row>
-                <MapView latitud={-29.16195} longitud={-67.4974} descripcion={"Hola"}></MapView>
-            </Row>
         </Container>
     )
 }

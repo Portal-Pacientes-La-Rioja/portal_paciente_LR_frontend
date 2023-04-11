@@ -9,7 +9,7 @@ import FormGroup from "../../../../components/RegisterForm/Forms/FormGroup";
 import { confirm } from "../../../../components/SwalAlertData";
 import * as MdIcon from 'react-icons/md';
 import * as FaIcon from 'react-icons/fa';
-
+import MapView from "../../../../components/MapsView/MapsView";
 
 const EstablecimientoModal = (props) => {
 
@@ -301,6 +301,7 @@ const EstablecimientoModal = (props) => {
                                     <FaIcon.FaMapMarkerAlt style={{ fontSize: '1rem', marginRight: '0.5rem' }}></FaIcon.FaMapMarkerAlt>
                                     <h5 className="mb-0">Mapa</h5>
                                 </div>
+                                <MapView latitud={-29.16195} longitud={-67.4974} descripcion={"Hola"}></MapView>
                             </Row>
                             <div className='d-flex justify-content-end'>
                                 <Button variant='outline-secondary' className="me-2" onClick={() => handleClose()}>Cancelar</Button>
