@@ -1,12 +1,87 @@
-import { API_ENDPOINT_INSTITUCIONES, API_HEADER } from "../constants/api.constants";
-import { get } from "./httpServices";
+import { API_ENDPOINT_CREATE_INSTITUTION, API_ENDPOINT_ESPECIALIDADES_ALL, API_ENDPOINT_INSTITUCIONES, API_ENDPOINT_INSTITUTIONS_ALL, API_ENDPOINT_INSTITUTIONS_BY_ID, API_ENDPOINT_SERVICIOS_ALL, API_ENDPOINT_STATUS_INSTITUTION, API_ENDPOINT_UPDATE_INSTITUTION, API_HEADER, AUTH_HEADER } from "../constants/api.constants";
+import { get, post, put } from "./httpServices";
 
 export default async function institutionsServices() {
   try {
-    const promise = await get(API_ENDPOINT_INSTITUCIONES, API_HEADER()) 
-   return promise
+    const promise = await get(API_ENDPOINT_INSTITUCIONES, API_HEADER())
+    return promise
   }
   catch (err) {
-    console.log('Error al cargar las instituciones: ', err);
+    console.error('Error al cargar las instituciones: ', err);
   }
 }
+
+export async function getInstitutionsAll() {
+  try {
+    const promise = await get(API_ENDPOINT_INSTITUTIONS_ALL, AUTH_HEADER())
+    return promise
+  }
+  catch (err) {
+    console.error('Error al cargar las instituciones: ', err);
+  }
+}
+
+export async function getInstitutionsByID(id) {
+  try {
+    const searchParams = new URLSearchParams({
+      institution_id: id
+    });
+    let query = searchParams.toString();
+    const promise = await get(API_ENDPOINT_INSTITUTIONS_BY_ID(query), AUTH_HEADER())
+    return promise
+  }
+  catch (err) {
+    console.error('Error al cargar la institución: ', err);
+  }
+}
+
+export async function createInstitution(body) {
+  try {
+    const data = JSON.stringify(body);
+    const promise = await post(API_ENDPOINT_CREATE_INSTITUTION, AUTH_HEADER(), data);
+    return promise;
+  } catch (err) {
+    console.error("Error al crear institucion: ", err);
+  }
+}
+
+export async function updateInstitution(body) {
+  try {
+    const data = JSON.stringify(body);
+    const promise = await put(API_ENDPOINT_UPDATE_INSTITUTION, AUTH_HEADER(), data);
+    return promise;
+  } catch (err) {
+    console.error("Error al ACTUALIZAR institucion: ", err);
+  }
+}
+
+export async function updateStatusInstitution(body) {
+  try {
+    const data = JSON.stringify(body);
+    const promise = await put(API_ENDPOINT_STATUS_INSTITUTION, AUTH_HEADER(), data);
+    return promise;
+  } catch (err) {
+    console.error("Error al ACTUALIZAR institucion: ", err);
+  }
+}
+
+export async function getEspecialidadesAll() {
+  try {
+    const promise = await get(API_ENDPOINT_ESPECIALIDADES_ALL, AUTH_HEADER())
+    return promise
+  }
+  catch (err) {
+    console.error('Error al cargar las especialidades: ', err);
+  }
+}
+
+export async function getServiciosAll() {
+  try {
+    const promise = await get(API_ENDPOINT_SERVICIOS_ALL, AUTH_HEADER())
+    return promise
+  }
+  catch (err) {
+    console.error('Error al cargar los servicios: ', err);
+  }
+}
+

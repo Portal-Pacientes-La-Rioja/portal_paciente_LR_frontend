@@ -250,3 +250,20 @@ export const API_ENDPOINT_PERSONALHYSTORIES = (institution_id, patient_id) => {
   let url = `${baseUrl}/hcegeneral/${institution_id}/personalHistories/${patient_id}`;
   return url;
 };
+
+// INSTITUTIONS ---------------------------------------
+export const API_ENDPOINT_INSTITUTIONS_ALL = `${baseUrl}/getinstitutions`;
+export const API_ENDPOINT_CREATE_INSTITUTION = `${baseUrl}/createinstitution`;
+export const API_ENDPOINT_UPDATE_INSTITUTION = `${baseUrl}/updateinstitution`;
+export const API_ENDPOINT_STATUS_INSTITUTION = `${baseUrl}/onoffinstitution`;
+export const API_ENDPOINT_INSTITUTIONS_BY_ID = (query) => {
+  return `${baseUrl}/getinstitutionsbyid?${query}`;
+}
+export const API_ENDPOINT_ESPECIALIDADES_ALL = `${baseUrl}/especialidades`;
+export const API_ENDPOINT_ESPECIALIDADES_BY_ID = (especialidad) => {
+  return `${baseUrl}/especialidades/${especialidad}`;
+}
+export const API_ENDPOINT_SERVICIOS_ALL = `${baseUrl}/servicios`;
+export const API_ENDPOINT_SERVICIOS_BY_ID = (servicio) => {
+  return `${baseUrl}/servicios/${servicio}`;
+}
