@@ -9,7 +9,7 @@ import * as MdIcon from 'react-icons/md';
 import * as FaIcon from 'react-icons/fa';
 import Selector from "../Selector";
 import { getEspecialidadesAll, getInstitutionsByID, getServiciosAll } from "../../../../services/institutionsServices";
-
+import MapView from "../../../../components/MapsView/MapsView";
 
 const EstablecimientoModal = (props) => {
 
@@ -199,6 +199,7 @@ const EstablecimientoModal = (props) => {
                                             <FaIcon.FaMapMarkerAlt style={{ fontSize: '1rem', marginRight: '0.5rem' }}></FaIcon.FaMapMarkerAlt>
                                             <h5 className="mb-0">Ubicación</h5>
                                         </div>
+                                        <MapView latitud={-29.16195} longitud={-67.4974} descripcion={"Hola"}></MapView>
                                     </Row>
                                 </Col>
                             }
