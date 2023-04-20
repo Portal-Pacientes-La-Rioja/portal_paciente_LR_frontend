@@ -20,7 +20,9 @@ const FormGroup = React.forwardRef((props, ref) => {
     variants,
     selectValue,
     handleChange,
-    maxDate } = props
+    maxDate,
+    paste
+   } = props
 
   const vaGender = variantsGender;
   const vaDependencies = variantsDependencies;
@@ -105,6 +107,14 @@ const FormGroup = React.forwardRef((props, ref) => {
     }
   }, [variants])
 
+  const handlePaste = (e) =>{
+    if (paste) {
+      
+      } else {
+        e.preventDefault();
+        return false
+      }
+  } 
 
   return (
     <Form.Group className="mb-2">
@@ -118,10 +128,7 @@ const FormGroup = React.forwardRef((props, ref) => {
           disabled={disabled ? disabled : false}
           onChange={onChange}
           onBlur={onBlur}
-          onPaste={(e) => {
-            e.preventDefault();
-            return false
-          }}
+          onPaste={(e) => handlePaste(e)}
         />
       }
       {inputType === 'select' &&
