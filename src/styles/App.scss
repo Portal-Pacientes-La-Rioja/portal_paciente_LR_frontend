@@ -761,4 +761,32 @@
   
   }
 }
+// establecimientos modal
+.est-list {
+  background-color: $secondary-light;
+  min-height: 48px;
+  width: 100%;
+  padding: 0.5rem;
+  span {
+    font-size: 14px;
+  }
+}
+.backdrop-class{
+  opacity: 1;
+  z-index: 1055 !important;
+}
+.modal-body-height{
+  max-height: 500px;
+  min-height: 500px;
+}
+.selector {
+  max-height: 400px;
+  min-height: 400px;
+  overflow-y: scroll;
+  border: 0.1px solid $secondary-light;
+
+  .selector-li:hover {
+    background-color: $secondary-light;
+  }
+}
 
