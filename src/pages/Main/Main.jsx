@@ -2,7 +2,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import logoFondoBlanco from '../../assets/statics/logo-fondo-blanco-2.jpg'
 import * as MdIcon from 'react-icons/md';
-import MapView from '../../components/MapView';
+import MapView from '../../components/MapsView/MapsView';
 
 
 const Main = () => {
