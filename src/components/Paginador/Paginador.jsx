@@ -41,7 +41,7 @@ export default function Paginador({ datos, elementosPorPagina, handlePagination,
   }, [reset])
 
   return (
-    <Pagination>
+    <Pagination className="d-flex flex-wrap justify-content-center">
       <Pagination.Prev
         disabled={paginaActual === 1}
         onClick={() => cambiarPagina(paginaActual - 1)}
