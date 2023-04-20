@@ -24,14 +24,16 @@ const Establecimientos = () => {
     const [resetPaginator, setResetPaginator] = useState(false);
     const [show, setShow] = useState(false);
     const [action, setAction] = useState(false);
+    const [institution, setInstitution] = useState('');
     const handleShow = () => setShow(true);
     const handleClose = () => {
         setShow(false)
     };
 
-    const openModal = (action) => {
-        setAction(action);
-        handleShow();
+    const openModal = (action, id) => {
+        setAction(action)
+        setInstitution(id)
+        handleShow()
     }
 
     const getData = useCallback(
@@ -117,17 +119,17 @@ const Establecimientos = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {data.length > 0 && data.map((esatblecimiento, index) => {
+                            {data.length > 0 && data.map((establecimiento, index) => {
                                 return (
                                     <tr key={index}>
-                                        <td>{esatblecimiento.name}</td>
-                                        <td>{esatblecimiento.ciudad}</td>
-                                        <td>{esatblecimiento.direccion}</td>
-                                        <td>{esatblecimiento.telefono}</td>
+                                        <td>{establecimiento.name}</td>
+                                        <td>{establecimiento.ciudad}</td>
+                                        <td>{establecimiento.direccion}</td>
+                                        <td>{establecimiento.telefono}</td>
                                         <td>
                                             <div className="my-tooltip">
                                                 <div className="text-dark">
-                                                    <button className='btn text-secondary btn-icon' onClick={() => openModal('edit')}><MdIcon.MdEditNote style={{ fontSize: '1.5rem' }} /></button>
+                                                    <button className='btn text-secondary btn-icon' onClick={() => openModal('edit', establecimiento.id)}><MdIcon.MdEditNote style={{ fontSize: '1.5rem' }} /></button>
                                                     <span className="tiptext">
                                                         Editar
                                                     </span>
@@ -143,7 +145,7 @@ const Establecimientos = () => {
                     {establecimientos.length > 0 && <Paginador datos={establecimientos} elementosPorPagina={itemsPagina} handlePagination={handlePagination} reset={resetPaginator}></Paginador>}
                 </Row>
             }
-            {show && <EstablecimientoModal show={show} handleClose={handleClose} action={action} />}
+            {show && <EstablecimientoModal show={show} handleClose={handleClose} action={action} institution={institution} />}
         </Container>
     )
 }
