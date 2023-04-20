@@ -7,9 +7,9 @@ import { iconLocation } from './iconLocation'
 const MapView = (props) =>{
     const {latitud, longitud, descripcion} = props
     const position = [latitud, longitud]
-    const zoom = 13
+    const zoom = 15
     return (
-        <MapContainer className='leaflet-container' center={position} zoom={zoom} scrollWheelZoom={false}>
+        <MapContainer className='leaflet-container' center={position} zoom={zoom} scrollWheelZoom={true}>
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

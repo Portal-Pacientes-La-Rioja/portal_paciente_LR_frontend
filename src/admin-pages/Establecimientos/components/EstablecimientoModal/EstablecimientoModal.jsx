@@ -8,27 +8,29 @@ import { confirm, error } from "../../../../components/SwalAlertData";
 import * as MdIcon from 'react-icons/md';
 import * as FaIcon from 'react-icons/fa';
 import Selector from "../Selector";
-import { getEspecialidadesAll, getInstitutionsByID, getServiciosAll } from "../../../../services/institutionsServices";
+import { createInstitution, getEspecialidadesAll, getInstitutionsByID, getServiciosAll, updateInstitution } from "../../../../services/institutionsServices";
 import MapView from "../../../../components/MapsView/MapsView";
 
 const EstablecimientoModal = (props) => {
 
     const { show, handleClose, action, institution } = props;
     const [loading, setLoading] = useState(true);
+    const [actionModal, setActionModal] = useState(action);
     //////// FORM /////////////////////////////////////////////////////////////
     const initState = {
-        name: '',
-        codigo: '',
-        domicilio: '',
+        id: 0,
+        name: 'Centro Médico UNO',
+        codigo: '800000',
+        domicilio: 'Av. Belgrano 2936',
         lat: 0,
         long: 0,
         tipologia: '',
         categoria_tipologia: '',
         dependencia: '',
-        departamento: '',
-        localidad: '',
-        ciudad: '',
-        activate: 0,
+        departamento: 'La rioja',
+        localidad: 'La rioja',
+        ciudad: 'La rioja',
+        activate: 1,
         services: [],
         especialidades: []
     }
@@ -57,17 +59,17 @@ const EstablecimientoModal = (props) => {
 
 
     const getInstitutionData = useCallback(
-        (idInstitution) =>{
+        (idInstitution) => {
             getInstitutionsByID(idInstitution)
-            .then((res) => {
-                if (res) setForm(res)
-                setLoading(false)
-            })
-            .catch((err) => {
-                Swal.fire(error('Error al obtener datos de establecimeinto.'))
-                handleClose();
-            })
-    }, [])
+                .then((res) => {
+                    if (res) setForm(res)
+                    setLoading(false)
+                })
+                .catch((err) => {
+                    Swal.fire(error('Error al obtener datos de establecimeinto.'))
+                    handleClose();
+                })
+        }, [])
 
     //SET VALUES FROM DATA
     const setForm = (data) => {
@@ -81,7 +83,7 @@ const EstablecimientoModal = (props) => {
     useEffect(() => {
         getEspecialidades()
         getServicios()
-        if (action === 'edit') getInstitutionData(institution) 
+        if (actionModal === 'edit') getInstitutionData(institution)
         else setLoading(false)
     }, [show])
 
@@ -149,16 +151,11 @@ const EstablecimientoModal = (props) => {
         if (tipo === 'services') setServiciosSelected(data);
     }
 
-    // useEffect(() => {
-    //     if (show) {
-    //     }
-    //     setLoading(false);
-    // }, [show]);
 
     const onSubmit = () => {
-        Swal.fire(confirm(`¿Confirma ${action === 'add' ? 'creación' : 'edición'} de Establecimiento?`)).then((result) => {
+        Swal.fire(confirm(`¿Confirma ${actionModal === 'add' ? 'creación' : 'edición'} de Establecimiento?`)).then((result) => {
             if (result.isConfirmed) {
-                // sendUpdatePersonForm(body)
+                buildBodyToSend()
             } else {
                 setLoading(false)
             }
@@ -166,202 +163,246 @@ const EstablecimientoModal = (props) => {
         setLoading(true)
     }
 
-    const createEstablecimiento = () => {
-
+    const buildBodyToSend = () => {
+        // console.log(valuesForm)
+        const body = { ...valuesForm }
+        actionModal === 'add'
+            ? createEstablecimiento(body)
+            : updateEstablecimiento(body)
     }
 
-    const updateEstablecimiento = () => {
+    const createEstablecimiento = useCallback(
+        (body) => {
+            createInstitution(body)
+                .then((res) => {
+                    if (res.ok) {
+                        console.log('res', res);
+                        setActionModal('edit')
+                        setLoading(false)
+                    } else {
+                        throw new Error('Error')
+                    }
+                })
+                .catch((err) => {
+                    console.error(err)
+                    Swal.fire(error('Error al crear establecimiento'))
+                    setLoading(false)
+                })
+        }, [])
 
-    }
+    const updateEstablecimiento = useCallback(
+        (body) => {
+            updateInstitution(body)
+                .then((res) => {
+                    if (res.ok) {
+                        console.log('res', res);
+                        setActionModal('edit')
+                        setLoading(false)
+                    } else {
+                        throw new Error('Error')
+                    }
+                })
+                .catch((err) => {
+                    console.error(err)
+                    Swal.fire(error('Error al editar establecimiento'))
+                    setLoading(false)
+                })
+        }, [])
 
     return (
         <Modal
             show={show}
             onHide={handleClose}
             size="lg"
-            fullscreen={action === 'edit'}
+            fullscreen={actionModal === 'edit'}
             aria-labelledby="contained-modal-title-vcenter"
             centered
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter" className="d-flex align-items-center">
-                    {action === 'add' ? 'Agregar' : 'Editar'} Establecimiento
+                    {actionModal === 'add' ? 'Agregar' : 'Editar'} Establecimiento
                 </Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body style={{ minHeight: '500px' }}>
                 {loading ? <Loader isActive={loading} />
                     : <Container fluid>
                         <Row className="d-flex flex-wrap-reverse">
-                            {action === 'edit' &&
+                            {actionModal === 'edit' &&
                                 <Col xs={12} md={6}>
-                                    <Row className='in d-flex mb-3'>
-                                        <div className="d-flex align-items-center mb-2">
-                                            <FaIcon.FaMapMarkerAlt style={{ fontSize: '1rem', marginRight: '0.5rem' }}></FaIcon.FaMapMarkerAlt>
-                                            <h5 className="mb-0">Ubicación</h5>
-                                        </div>
-                                        <MapView latitud={-29.16195} longitud={-67.4974} descripcion={"Hola"}></MapView>
-                                    </Row>
+                                    <Container>
+                                        <Row className='in d-flex mb-3'>
+                                            <div className="d-flex align-items-center mb-2">
+                                                <FaIcon.FaMapMarkerAlt style={{ fontSize: '1rem', marginRight: '0.5rem' }}></FaIcon.FaMapMarkerAlt>
+                                                <h5 className="mb-0">Ubicación</h5>
+                                            </div>
+                                            {/* <div className="p-3"> */}
+                                            <MapView latitud={valuesForm.lat} longitud={valuesForm.long} descripcion={"Hola"}></MapView>
+                                            {/* </div> */}
+                                        </Row>
+                                    </Container>
                                 </Col>
                             }
                             <Col>
                                 <Form className="form-group form_register" onSubmit={handleSubmit(onSubmit)}>
-                                    <Row className='in d-flex'>
-                                        <div className="d-flex align-items-center mb-2">
-                                            <MdIcon.MdEditNote style={{ fontSize: '1rem', marginRight: '0.5rem' }}></MdIcon.MdEditNote>
-                                            <h5 className="mb-0">Datos del Establecimiento</h5>
-                                        </div>
-                                        <Col xs={12} className="mb-2">
-                                            <FormGroup
-                                                inputType={'input'}
-                                                label={'Nombre de Establecimiento'}
-                                                name={'name'}
-                                                value={valuesForm.name}
-                                                onChange={handleChange}
-                                            />
-                                        </Col>
-                                        {/* <Col xs={12} sm={4} className="mb-2">
-                                    <FormGroup
-                                        inputType={'input'}
-                                        label={'Código'}
-                                        name={'code'}
-                                        value={valuesForm.code}
-                                        onChange={handleChange}
-                                    />
-                                </Col> */}
-                                        <Col xs={12} sm={6} className="mb-2">
-                                            <FormGroup
-                                                inputType={'input'}
-                                                label={'Domicilio'}
-                                                name={'domicilio'}
-                                                value={valuesForm.domicilio}
-                                                onChange={handleChange}
-                                            />
-                                        </Col>
-                                        <Col xs={12} sm={6} className="mb-2">
-                                            <FormGroup
-                                                inputType={'input'}
-                                                label={'Departamento'}
-                                                name={'departamento'}
-                                                value={valuesForm.departamento}
-                                                onChange={handleChange}
-                                            />
-                                        </Col>
-                                        <Col xs={12} sm={6} className="mb-2">
-                                            <FormGroup
-                                                inputType={'input'}
-                                                label={'Localidad'}
-                                                name={'localidad'}
-                                                value={valuesForm.localidad}
-                                                onChange={handleChange}
-                                            />
-                                        </Col>
-                                        <Col xs={12} sm={6} className="mb-2">
-                                            <FormGroup
-                                                inputType={'input'}
-                                                label={'Ciudad'}
-                                                name={'ciudad'}
-                                                value={valuesForm.ciudad}
-                                                onChange={handleChange}
-                                            />
-                                        </Col>
-                                        <Col xs={12} sm={6} className="mb-2">
-                                            <FormGroup
-                                                inputType={'input'}
-                                                label={'Código de establecimiento'}
-                                                name={'codigo'}
-                                                value={valuesForm.codigo}
-                                                onChange={handleChange}
-                                            />
-                                        </Col>
-                                        <Col xs={12} sm={6} className="mb-2 justify-content-center">
-                                            {/* <FormGroup
-                                                inputType={'input'}
-                                                label={'Estado'}
-                                                name={'activate'}
-                                                value={valuesForm.activate}
-                                                onChange={handleChange}
-                                            /> */}
-                                            {action === 'edit' &&
-                                                <div
-                                                    className={`badge bg-${valuesForm.activate ? 'primary' : 'danger'} d-flex align-items-center justify-content-center`}
-                                                    style={{ height: '28px', marginTop: '14px', fontWeight: '500' }}>
-                                                    <span>
-                                                        {valuesForm.activate ? 'Activo ✓' : 'Inactivo'}
-                                                    </span>
+                                    <Container>
+                                        <Row className='in d-flex'>
+                                            <div className="d-flex align-items-center mb-2">
+                                                <MdIcon.MdEditNote style={{ fontSize: '1rem', marginRight: '0.5rem' }}></MdIcon.MdEditNote>
+                                                <h5 className="mb-0">Datos del Establecimiento</h5>
+                                            </div>
+                                            <Col xs={12} className="mb-2">
+                                                <FormGroup
+                                                    inputType={'input'}
+                                                    paste={true}
+                                                    label={'Nombre de Establecimiento'}
+                                                    name={'name'}
+                                                    value={valuesForm.name}
+                                                    onChange={handleChange}
+                                                />
+                                            </Col>
+                                            <Col xs={12} sm={6} className="mb-2">
+                                                <FormGroup
+                                                    inputType={'input'}
+                                                    paste={true}
+                                                    label={'Domicilio'}
+                                                    name={'domicilio'}
+                                                    value={valuesForm.domicilio}
+                                                    onChange={handleChange}
+                                                />
+                                            </Col>
+                                            <Col xs={12} sm={6} className="mb-2">
+                                                <FormGroup
+                                                    inputType={'input'}
+                                                    paste={true}
+                                                    label={'Departamento'}
+                                                    name={'departamento'}
+                                                    value={valuesForm.departamento}
+                                                    onChange={handleChange}
+                                                />
+                                            </Col>
+                                            <Col xs={12} sm={6} className="mb-2">
+                                                <FormGroup
+                                                    inputType={'input'}
+                                                    paste={true}
+                                                    label={'Localidad'}
+                                                    name={'localidad'}
+                                                    value={valuesForm.localidad}
+                                                    onChange={handleChange}
+                                                />
+                                            </Col>
+                                            <Col xs={12} sm={6} className="mb-2">
+                                                <FormGroup
+                                                    inputType={'input'}
+                                                    paste={true}
+                                                    label={'Ciudad'}
+                                                    name={'ciudad'}
+                                                    value={valuesForm.ciudad}
+                                                    onChange={handleChange}
+                                                />
+                                            </Col>
+                                            <Col xs={12} sm={6} className="mb-2">
+                                                <FormGroup
+                                                    inputType={'input'}
+                                                    paste={true}
+                                                    label={'Código de establecimiento'}
+                                                    name={'codigo'}
+                                                    value={valuesForm.codigo}
+                                                    onChange={handleChange}
+                                                />
+                                            </Col>
+                                            <Col xs={12} sm={6} className="mb-2 justify-content-center">
+                                                {/* <FormGroup
+                                                    inputType={'input'}
+                                                    paste={true}
+                                                    label={'Estado'}
+                                                    name={'activate'}
+                                                    value={valuesForm.activate}
+                                                    onChange={handleChange}
+                                                /> */}
+                                                {actionModal === 'edit' &&
+                                                    <div
+                                                        className={`badge bg-${valuesForm.activate ? 'primary' : 'danger'} d-flex align-items-center justify-content-center`}
+                                                        style={{ height: '28px', marginTop: '14px', fontWeight: '500' }}>
+                                                        <span>
+                                                            {valuesForm.activate ? 'Activo ✓' : 'Inactivo'}
+                                                        </span>
+                                                    </div>
+                                                }
+                                            </Col>
+                                        </Row>
+                                        <hr />
+                                        <Row className='in d-flex'>
+                                            <div className="d-flex align-items-center mb-2">
+                                                <FaIcon.FaHospital style={{ fontSize: '1rem', marginRight: '0.5rem' }}></FaIcon.FaHospital>
+                                                <h5 className="mb-0">Datos del Servicio</h5>
+                                            </div>
+                                            <Col xs={12} sm={6} className="mb-2">
+                                                <FormGroup
+                                                    inputType={'select'}
+                                                    label={'Dependencia'}
+                                                    name={'dependencia'}
+                                                    value={valuesForm.dependencia}
+                                                    selectValue={valuesForm.dependencia}
+                                                    variants={'dependency'}
+                                                    handleChange={handleChange}
+                                                />
+                                            </Col>
+                                            <Col xs={12} sm={6} className="mb-2">
+                                                <FormGroup
+                                                    inputType={'select'}
+                                                    label={'Tipo Efector'}
+                                                    name={'tipologia'}
+                                                    value={valuesForm.tipologia}
+                                                    selectValue={valuesForm.tipologia}
+                                                    variants={'tipology'}
+                                                    handleChange={handleChange}
+                                                />
+                                            </Col>
+                                            <Col xs={12} className="mb-2">
+                                                <FormGroup
+                                                    inputType={'select'}
+                                                    label={'Categoría'}
+                                                    name={'categoria_tipologia'}
+                                                    value={valuesForm.categoria_tipologia}
+                                                    selectValue={valuesForm.categoria_tipologia}
+                                                    variants={'tipology_category'}
+                                                    handleChange={handleChange}
+                                                />
+                                            </Col>
+                                            <Col xs={12} className="mb-2 d-flex">
+                                                <div className="d-flex align-items-baseline mb-2">
+                                                    <label className="form-label me-1">Especialidades</label>
+                                                    <button className="btn text-primary" type="button" onClick={() => openSelector('especialidades')}>{valuesForm.especialidades.length > 0 ? 'Agregar/Quitar' : 'Agregar'}...</button>
                                                 </div>
-                                            }
-                                        </Col>
-                                    </Row>
-                                    <hr />
-                                    <Row className='in d-flex'>
-                                        <div className="d-flex align-items-center mb-2">
-                                            <FaIcon.FaHospital style={{ fontSize: '1rem', marginRight: '0.5rem' }}></FaIcon.FaHospital>
-                                            <h5 className="mb-0">Datos del Servicio</h5>
-                                        </div>
-                                        <Col xs={12} sm={6} className="mb-2">
-                                            <FormGroup
-                                                inputType={'select'}
-                                                label={'Dependencia'}
-                                                name={'dependencia'}
-                                                value={valuesForm.dependencia}
-                                                selectValue={valuesForm.dependencia}
-                                                variants={'dependency'}
-                                                handleChange={handleChange}
-                                            />
-                                        </Col>
-                                        <Col xs={12} sm={6} className="mb-2">
-                                            <FormGroup
-                                                inputType={'select'}
-                                                label={'Tipo Efector'}
-                                                name={'tipologia'}
-                                                value={valuesForm.tipologia}
-                                                selectValue={valuesForm.tipologia}
-                                                variants={'tipology'}
-                                                handleChange={handleChange}
-                                            />
-                                        </Col>
-                                        <Col xs={12} className="mb-2">
-                                            <FormGroup
-                                                inputType={'select'}
-                                                label={'Categoría'}
-                                                name={'categoria_tipologia'}
-                                                value={valuesForm.categoria_tipologia}
-                                                selectValue={valuesForm.categoria_tipologia}
-                                                variants={'tipology_category'}
-                                                handleChange={handleChange}
-                                            />
-                                        </Col>
-                                        <Col xs={12} className="mb-2 d-flex">
-                                            <div className="d-flex align-items-baseline mb-2">
-                                                <label className="form-label me-1">Especialidades</label>
-                                                <button className="btn text-primary" type="button" onClick={() => openSelector('especialidades')}>{valuesForm.especialidades.length > 0 ? 'Agregar/Quitar' : 'Agregar'}...</button>
-                                            </div>
-                                            <div className="est-list">
-                                                {especialidadesSelected.length > 0 && especialidadesSelected.map((item) => {
-                                                    return <span className="me-1 d-inline-block" key={item.id}>{item.name + ' - '}</span>
-                                                })}
-                                            </div>
-                                        </Col>
-                                        <Col xs={12} className="mb-2 d-flex">
-                                            <div className="d-flex align-items-baseline mb-2">
-                                                <label className="form-label me-1">Servicios</label>
-                                                <button className="btn text-primary" type="button" onClick={() => openSelector('services')}>{valuesForm.services.length > 0 ? 'Agregar/Quitar' : 'Agregar'}...</button>
-                                            </div>
-                                            <div className="est-list">
-                                                {serviciosSelected.length > 0 && serviciosSelected.map((item) => {
-                                                    return <span className="me-1 d-inline-block" key={item.id}>{item.name + ' - '}</span>
-                                                })}
-                                            </div>
-                                        </Col>
-                                    </Row>
+                                                <div className="est-list">
+                                                    {especialidadesSelected.length > 0 && especialidadesSelected.map((item) => {
+                                                        return <span className="me-1 d-inline-block" key={item.id}>{item.name + ' - '}</span>
+                                                    })}
+                                                </div>
+                                            </Col>
+                                            <Col xs={12} className="mb-2 d-flex">
+                                                <div className="d-flex align-items-baseline mb-2">
+                                                    <label className="form-label me-1">Servicios</label>
+                                                    <button className="btn text-primary" type="button" onClick={() => openSelector('services')}>{valuesForm.services.length > 0 ? 'Agregar/Quitar' : 'Agregar'}...</button>
+                                                </div>
+                                                <div className="est-list">
+                                                    {serviciosSelected.length > 0 && serviciosSelected.map((item) => {
+                                                        return <span className="me-1 d-inline-block" key={item.id}>{item.name + ' - '}</span>
+                                                    })}
+                                                </div>
+                                            </Col>
+                                        </Row>
 
-                                    <div className='d-flex justify-content-end'>
-                                        <Button variant='outline-secondary' className="me-2" onClick={() => handleClose()}>Cancelar</Button>
-                                        <Button variant='primary' type="submit" >
-                                            {action === 'add' ? <MdIcon.MdAdd style={{ fontSize: '1.5rem', marginRight: '0.5rem' }} /> : <MdIcon.MdEditNote style={{ fontSize: '1.5rem', marginRight: '0.5rem' }} />}
-                                            {action === 'add' ? 'Agregar Esatblecimiento' : 'Guardar cambios'}
-                                        </Button>
-                                    </div>
+                                        <Row>
+                                            <Col className='d-flex justify-content-end py-4'>
+                                                <Button variant='outline-secondary' className="d-inline-block me-2" onClick={() => handleClose()}>Cancelar</Button>
+                                                <Button variant='primary' type="submit">
+                                                    {actionModal === 'add' ? <MdIcon.MdAdd style={{ fontSize: '1.5rem', marginRight: '0.5rem' }} /> : <MdIcon.MdEditNote style={{ fontSize: '1.5rem', marginRight: '0.5rem' }} />}
+                                                    {actionModal === 'add' ? 'Agregar Esatblecimiento' : 'Guardar cambios'}
+                                                </Button>
+                                            </Col>
+                                        </Row>
+                                    </Container>
                                 </Form>
                             </Col>
                         </Row>
