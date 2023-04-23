@@ -10,7 +10,7 @@ export const variantsDependencies = [
 ];
 
 export const variantsTypologies = [
-  { id: 'Centro de Salud "A"', name: 'Centro de Salud "A"' },
+  { id: 'Centro de salud "A"', name: 'Centro de Salud "A"' },
   { id: 'Hospital', name: "Hospital" },
   { id: 'Laboratorio', name: "Laboratorio" },
   { id: 'Transporte', name: "Transporte" }

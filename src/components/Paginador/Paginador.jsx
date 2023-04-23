@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Pagination } from "react-bootstrap";
 
-export default function Paginador({ datos, elementosPorPagina, handlePagination, reset}) {
+export default function Paginador({ datos, elementosPorPagina, handlePagination, reset, showItems}) {
   const [paginaActual, setPaginaActual] = useState(1);
   const cantidadDePaginas = Math.ceil(datos.length / elementosPorPagina);
 
@@ -46,11 +46,12 @@ export default function Paginador({ datos, elementosPorPagina, handlePagination,
         disabled={paginaActual === 1}
         onClick={() => cambiarPagina(paginaActual - 1)}
       />
-      {items}
+      {showItems && items}
       <Pagination.Next
         disabled={paginaActual === cantidadDePaginas}
         onClick={() => cambiarPagina(paginaActual + 1)}
       />
+      {!showItems && <span className="text-secondary p-2">pág. {paginaActual} de {items.length}</span>}
     </Pagination>
   );
 }

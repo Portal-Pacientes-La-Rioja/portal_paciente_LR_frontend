@@ -240,7 +240,7 @@ const EstablecimientoModal = (props) => {
                                                 <h5 className="mb-0">Ubicación</h5>
                                             </Col>
                                             <Col xs={12}>
-                                                <MapView latitud={valuesForm.lat ?? 0} longitud={valuesForm.long  ?? 0 } descripcion={"Hola"}></MapView>
+                                                <MapView latitud={valuesForm.lat ?? 0} longitud={valuesForm.long  ?? 0 } descripcion={valuesForm.domicilio +', '+ valuesForm.localidad}></MapView>
                                             </Col>
                                         </Row>
                                     </Container>

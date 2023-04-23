@@ -71,15 +71,16 @@ const Establecimientos = () => {
 
     const handleChangeSearch = (selected) => {
         if (typeof selected === 'string' && selected !== '') {
+            let value = selected.toLowerCase()
             let search = establecimientos.filter((item) => {
-                return item.name.includes(selected.toLocaleUpperCase())
-                    || item.ciudad.includes(selected)
-                    || item.localidad.includes(selected)
+                return item.name.toLowerCase().includes(value)
+                    || item.ciudad.toLowerCase().includes(value)
+                    || item.localidad.toLowerCase().includes(value)
             });
             setData(search);
         } else if (selected.name) {
             let search = establecimientos.filter((item) => {
-                return item.name === selected.name
+                return item.name.toLowerCase() === selected.name.toLowerCase()
             });
             setData(search)
         } else if (selected === '') {
@@ -143,7 +144,7 @@ const Establecimientos = () => {
                                     <th>Tipología</th>
                                     <th>Departamento</th>
                                     <th>Localidad</th>
-                                    <th style={{ width: "20px" }}>Acciones</th>
+                                    <th className='text-center' style={{ width: "20px" }}>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -179,7 +180,7 @@ const Establecimientos = () => {
                         </Table>
                     </div>
                     {data.length === 0 && <DataNotFound text="establecimientos"></DataNotFound>}
-                    {establecimientos.length > 0 && <Paginador datos={establecimientos} elementosPorPagina={itemsPagina} handlePagination={handlePagination} reset={resetPaginator}></Paginador>}
+                    {establecimientos.length > 0 && <Paginador datos={establecimientos} elementosPorPagina={itemsPagina} handlePagination={handlePagination} reset={resetPaginator} showItems={true}></Paginador>}
                 </Row>
             }
             {show && <EstablecimientoModal show={show} handleClose={handleClose} action={action} institution={institution} />}
