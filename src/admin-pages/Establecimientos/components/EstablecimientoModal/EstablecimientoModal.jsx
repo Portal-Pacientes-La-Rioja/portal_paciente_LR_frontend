@@ -19,17 +19,17 @@ const EstablecimientoModal = (props) => {
     //////// FORM /////////////////////////////////////////////////////////////
     const initState = {
         id: 0,
-        name: 'Centro Médico UNO',
-        codigo: '800000',
-        domicilio: 'Av. Belgrano 2936',
+        name: '',
+        codigo: '',
+        domicilio: '',
         lat: 0,
         long: 0,
         tipologia: '',
         categoria_tipologia: '',
         dependencia: '',
-        departamento: 'La rioja',
-        localidad: 'La rioja',
-        ciudad: 'La rioja',
+        departamento: '',
+        localidad: '',
+        ciudad: '',
         activate: 1,
         services: [],
         especialidades: []
@@ -64,6 +64,14 @@ const EstablecimientoModal = (props) => {
                 .then((res) => {
                     if (res) setForm(res)
                     setLoading(false)
+                    return valuesForm
+                })
+                .then((res) => {
+                    if (res) {
+                        console.log(res)
+                        setEspecialidadesYServicios('especialidades', res.especialidades)
+                        setEspecialidadesYServicios('services', res.services)
+                    }
                 })
                 .catch((err) => {
                     Swal.fire(error('Error al obtener datos de establecimeinto.'))
@@ -114,7 +122,7 @@ const EstablecimientoModal = (props) => {
                 .then((res) => {
                     if (res?.length > 0) {
                         let addIdArray = res.map((item) => {
-                            item.id = item.codigo
+                            item.id = parseInt(item.codigo) 
                             return item
                         })
                         setEspecialidades(addIdArray);
@@ -145,10 +153,10 @@ const EstablecimientoModal = (props) => {
     )
 
     const setEspecialidadesYServicios = (tipo, data) => {
-        let arrayIDs = data.map((item) => item.id);
-        setValuesForm({ ...valuesForm, [`${tipo}`]: arrayIDs });
-        if (tipo === 'especialidades') setEspecialidadesSelected(data);
-        if (tipo === 'services') setServiciosSelected(data);
+        let arrayIDs = data.map((item) => item.id)
+        valuesForm[tipo] = arrayIDs
+        if (tipo === 'especialidades') setEspecialidadesSelected(data)
+        if (tipo === 'services') setServiciosSelected(data)
     }
 
 
@@ -156,15 +164,12 @@ const EstablecimientoModal = (props) => {
         Swal.fire(confirm(`¿Confirma ${actionModal === 'add' ? 'creación' : 'edición'} de Establecimiento?`)).then((result) => {
             if (result.isConfirmed) {
                 buildBodyToSend()
-            } else {
-                setLoading(false)
             }
         });
-        setLoading(true)
     }
 
     const buildBodyToSend = () => {
-        // console.log(valuesForm)
+        setLoading(true)
         const body = { ...valuesForm }
         actionModal === 'add'
             ? createEstablecimiento(body)
@@ -175,9 +180,9 @@ const EstablecimientoModal = (props) => {
         (body) => {
             createInstitution(body)
                 .then((res) => {
-                    if (res.ok) {
-                        console.log('res', res);
+                    if (res.status) {
                         setActionModal('edit')
+                        // TODO: id de nuevo establecimiento
                         setLoading(false)
                     } else {
                         throw new Error('Error')
@@ -194,10 +199,9 @@ const EstablecimientoModal = (props) => {
         (body) => {
             updateInstitution(body)
                 .then((res) => {
-                    if (res.ok) {
-                        console.log('res', res);
-                        setActionModal('edit')
+                    if (res.status) {
                         setLoading(false)
+                        handleClose()
                     } else {
                         throw new Error('Error')
                     }
@@ -228,16 +232,16 @@ const EstablecimientoModal = (props) => {
                     : <Container fluid>
                         <Row className="d-flex flex-wrap-reverse">
                             {actionModal === 'edit' &&
-                                <Col xs={12} md={6}>
+                                <Col xs={12} lg={6}>
                                     <Container>
                                         <Row className='in d-flex mb-3'>
-                                            <div className="d-flex align-items-center mb-2">
+                                            <Col xs={12} className="d-flex align-items-center mb-2">
                                                 <FaIcon.FaMapMarkerAlt style={{ fontSize: '1rem', marginRight: '0.5rem' }}></FaIcon.FaMapMarkerAlt>
                                                 <h5 className="mb-0">Ubicación</h5>
-                                            </div>
-                                            {/* <div className="p-3"> */}
-                                            <MapView latitud={valuesForm.lat} longitud={valuesForm.long} descripcion={"Hola"}></MapView>
-                                            {/* </div> */}
+                                            </Col>
+                                            <Col xs={12}>
+                                                <MapView latitud={valuesForm.lat ?? 0} longitud={valuesForm.long  ?? 0 } descripcion={"Hola"}></MapView>
+                                            </Col>
                                         </Row>
                                     </Container>
                                 </Col>
@@ -311,17 +315,9 @@ const EstablecimientoModal = (props) => {
                                                 />
                                             </Col>
                                             <Col xs={12} sm={6} className="mb-2 justify-content-center">
-                                                {/* <FormGroup
-                                                    inputType={'input'}
-                                                    paste={true}
-                                                    label={'Estado'}
-                                                    name={'activate'}
-                                                    value={valuesForm.activate}
-                                                    onChange={handleChange}
-                                                /> */}
                                                 {actionModal === 'edit' &&
                                                     <div
-                                                        className={`badge bg-${valuesForm.activate ? 'primary' : 'danger'} d-flex align-items-center justify-content-center`}
+                                                        className={`badge bg-${valuesForm.activate ? 'success' : 'danger'} d-flex align-items-center justify-content-center opacity-75 rounded-pill`}
                                                         style={{ height: '28px', marginTop: '14px', fontWeight: '500' }}>
                                                         <span>
                                                             {valuesForm.activate ? 'Activo ✓' : 'Inactivo'}

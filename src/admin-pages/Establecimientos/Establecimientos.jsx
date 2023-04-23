@@ -6,9 +6,9 @@ import * as FaIcon from 'react-icons/fa';
 import AutocompleteComponent from '../../components/AutocompleteComponent';
 import { useCallback, useEffect, useState } from 'react';
 import EstablecimientoModal from './components/EstablecimientoModal';
-import { getInstitutionsAll } from '../../services/institutionsServices';
+import { getInstitutionsAll, updateInstitution, updateStatusInstitution } from '../../services/institutionsServices';
 import Swal from 'sweetalert2';
-import { error } from '../../components/SwalAlertData';
+import { confirm, error } from '../../components/SwalAlertData';
 import Loader from '../../components/Loader';
 import DataNotFound from '../../components/DataNotFound';
 import Paginador from '../../components/Paginador';
@@ -20,7 +20,7 @@ const Establecimientos = () => {
     const [loading, setLoading] = useState(true);
     const [establecimientos, setEstablecimientos] = useState([]);
     const [data, setData] = useState([]);
-    const itemsPagina = 10
+    const itemsPagina = 30
     const [resetPaginator, setResetPaginator] = useState(false);
     const [show, setShow] = useState(false);
     const [action, setAction] = useState(false);
@@ -62,7 +62,7 @@ const Establecimientos = () => {
 
     useEffect(() => {
         initData()
-    }, [])
+    }, [show])
 
     const initData = () => {
         setLoading(true)
@@ -82,10 +82,37 @@ const Establecimientos = () => {
                 return item.name === selected.name
             });
             setData(search)
-        } else if (selected === ''){
+        } else if (selected === '') {
             setResetPaginator(true)
         }
     }
+
+    const confirmOnOff = (currentState, institution) => { 
+        let action = currentState === 1 ? 'Anular' : 'Activar'
+        Swal.fire(confirm(`¿${action} Establecimiento ${institution.name}?`)).then((result) => {
+            if (result.isConfirmed) {
+                onOffInstitution(action, institution)
+            }
+        });
+    }
+
+    const onOffInstitution = useCallback(
+        (action, institution) =>{
+            setLoading(true)
+            let body = {...institution}
+            body.activate = action === 'Anular' ? 0 : 1
+            updateStatusInstitution(body)
+            .then((res) => {
+                if (res.ok) {
+                    initData()
+                }
+            })
+            .catch((err) => {
+                console.error(err)
+                Swal.fire(error(`Error al ${action} Establecimiento`))
+                setLoading(false)
+            })
+    },  [])
 
 
     return (
@@ -95,10 +122,10 @@ const Establecimientos = () => {
                     <FaIcon.FaHospital className="menu-icon text-danger me-1" style={{ fontSize: 'x-large' }} />
                     <h5 className='section-title'>Establecimientos</h5>
                 </Col>
-                <Col xs={8} sm={6} lg={3} className='d-flex justify-content-end'>
+                <Col xs={12} sm={6} lg={3} className='d-flex justify-content-end'>
                     <Button variant="danger" onClick={() => openModal('add')}>+ Agregar Establecimiento</Button>
                 </Col>
-                <Col xs={4} sm={6} lg={3}>
+                <Col xs={12} sm={6} lg={3}>
                     <AutocompleteComponent
                         variants={establecimientos}
                         handleChange={handleChangeSearch}
@@ -108,39 +135,49 @@ const Establecimientos = () => {
             {loading
                 ? <Loader isActive={loading} />
                 : <Row className='p-3'>
-                    <Table bordered borderless striped hover>
-                        <thead>
-                            <tr>
-                                <th>Establecimiento</th>
-                                <th>Municipio</th>
-                                <th>Dirección</th>
-                                <th>Teléfono</th>
-                                <th style={{ width: "20px" }}>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data.length > 0 && data.map((establecimiento, index) => {
-                                return (
-                                    <tr key={index}>
-                                        <td>{establecimiento.name}</td>
-                                        <td>{establecimiento.ciudad}</td>
-                                        <td>{establecimiento.direccion}</td>
-                                        <td>{establecimiento.telefono}</td>
-                                        <td>
-                                            <div className="my-tooltip">
-                                                <div className="text-dark">
-                                                    <button className='btn text-secondary btn-icon' onClick={() => openModal('edit', establecimiento.id)}><MdIcon.MdEditNote style={{ fontSize: '1.5rem' }} /></button>
-                                                    <span className="tiptext">
-                                                        Editar
-                                                    </span>
+                    <div className='overflow-auto mb-3' style={{ maxHeight: '600px' }}>
+                        <Table bordered borderless striped hover>
+                            <thead>
+                                <tr style={{position: 'sticky', top: 0, backgroundColor: 'white', zIndex: 1 }}>
+                                    <th>Establecimiento</th>
+                                    <th>Tipología</th>
+                                    <th>Departamento</th>
+                                    <th>Localidad</th>
+                                    <th style={{ width: "20px" }}>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {data.length > 0 && data.map((establecimiento, index) => {
+                                    return (
+                                        <tr key={index}>
+                                            <td>{establecimiento.name}</td>
+                                            <td>{establecimiento.tipologia}</td>
+                                            <td>{establecimiento.departamento}</td>
+                                            <td>{establecimiento.localidad}</td>
+                                            <td className='d-flex'>
+                                                <div className="my-tooltip">
+                                                    <div className="text-dark">
+                                                        <button className='btn text-secondary btn-icon' onClick={() => openModal('edit', establecimiento.id)}><MdIcon.MdEditNote style={{ fontSize: '1.5rem' }} /></button>
+                                                        <span className="tiptext">
+                                                            Editar
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )
-                            })}
-                        </tbody>
-                    </Table>
+                                                <div className="my-tooltip">
+                                                    <div className="text-dark">
+                                                        <button className='btn text-secondary btn-icon' onClick={() => confirmOnOff(establecimiento.activate, establecimiento)}><MdIcon.MdOutlinePowerSettingsNew style={{ fontSize: '1.5rem' }} /></button>
+                                                        <span className="tiptext">
+                                                            {establecimiento.activate === 1 ? 'Anular' : 'Activar'}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </Table>
+                    </div>
                     {data.length === 0 && <DataNotFound text="establecimientos"></DataNotFound>}
                     {establecimientos.length > 0 && <Paginador datos={establecimientos} elementosPorPagina={itemsPagina} handlePagination={handlePagination} reset={resetPaginator}></Paginador>}
                 </Row>

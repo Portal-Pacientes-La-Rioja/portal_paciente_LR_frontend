@@ -59,7 +59,7 @@ export async function updateInstitution(body) {
 export async function updateStatusInstitution(body) {
   try {
     const data = JSON.stringify(body);
-    const promise = await put(API_ENDPOINT_STATUS_INSTITUTION, AUTH_HEADER(), data);
+    const promise = await put(API_ENDPOINT_STATUS_INSTITUTION, UPDATE_HEADER(), data);
     return promise;
   } catch (err) {
     console.error("Error al ACTUALIZAR institucion: ", err);
