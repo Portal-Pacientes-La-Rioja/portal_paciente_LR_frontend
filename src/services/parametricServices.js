@@ -7,6 +7,6 @@ export default async function identificationsTypeServices() {
     return promise
     }
     catch (err) {
-      console.log('Error al cargar las instituciones: ', err);
+      console.error('Error al cargar datos: ', err);
     }
   }
