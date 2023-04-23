@@ -2,7 +2,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { SidebarData } from '../../components/Sidebar/SidebarData';
 import InstitucionesRouter from "./InstitucionesRouter";
-
+import * as FaIcon from 'react-icons/fa';
 
 export default function Instituciones() {
     const routes = SidebarData.instituciones;
@@ -10,7 +10,12 @@ export default function Instituciones() {
 
     return (
         <Container className='p-3' >
-            <h5 className="section-title mb-3">Instituciones</h5>
+            <Row>
+                <Col xs={12} lg={9} className="d-flex">
+                    <FaIcon.FaHospital className="menu-icon text-danger me-1" style={{ fontSize: 'x-large' }} />
+                    <h5 className='section-title'>Establecimientos</h5>
+                </Col>
+            </Row>
             <Row>
                 <Col className='switch-container'>
                     {routes.map((route) => {
