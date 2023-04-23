@@ -189,9 +189,9 @@ export const SidebarData = {
   instituciones: [
     {
       id: 11,
-      title: "Centros de salud",
+      title: "Establecimientos",
       path: "/usuario/instituciones/centros-medicos",
-      icon: <FaIcon.FaRegBuilding className="menu-icon" />,
+      icon: <FaIcon.FaHospital className="menu-icon" />,
       acordeon: false,
       a: false,
       cName: "sidebar-text",
