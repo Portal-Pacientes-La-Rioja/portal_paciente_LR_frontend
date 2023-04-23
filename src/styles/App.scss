@@ -790,3 +790,17 @@
   }
 }
 
+// establecimiento card
+.card-institution {
+  margin: 1rem;
+  padding: 1rem;
+  border-radius: 5px;
+  background-color: $third;
+  box-shadow: $shadow-four;
+  transition: 0.2s;
+
+  @media only screen and (min-width: $tablet) {
+    justify-content: space-between;
+    // height: 5.5rem;
+  }
+}
