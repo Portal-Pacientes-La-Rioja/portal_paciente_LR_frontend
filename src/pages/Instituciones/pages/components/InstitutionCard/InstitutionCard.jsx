@@ -14,7 +14,7 @@ const InstitutionCard = ({ institution }) => {
     return (
         <Card className="card-institution">
             <Row>
-                <Col xs={0} md={2} className="border-end d-flex justify-content-center align-items-center">
+                <Col xs={12} md={2} className="border-end d-flex justify-content-center align-items-center mb-2 mb-md-0">
                     {institutionData.tipologia === 'Hospital' && <FaIcon.FaHospital style={{fontSize: '3rem'}}/>}
                     {institutionData.tipologia === 'Transporte' && <FaIcon.FaAmbulance style={{fontSize: '3rem'}}/>}
                     {institutionData.tipologia === ("Centro de salud \"A\"" || 'Centro de salud "A"') && <MdIcon.MdOutlineHealthAndSafety style={{fontSize: '3rem'}}/>}

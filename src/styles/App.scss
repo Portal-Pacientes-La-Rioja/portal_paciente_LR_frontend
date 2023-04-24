@@ -804,3 +804,15 @@
     // height: 5.5rem;
   }
 }
+.select-institution {
+  select {
+    min-height: 36px !important;
+    border: 1px solid gray !important;
+  }
+}
+.select-institution{
+  select:focus {
+    box-shadow: none !important;
+  }
+}
+
