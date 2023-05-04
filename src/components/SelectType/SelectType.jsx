@@ -1,15 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { Form } from 'react-bootstrap';
 
 const SelectType = React.forwardRef((props, ref) => {
 
     const { variants, name, handleChange, onBlur, selectValue, disabled } = props;
-    const [idValue, setIdValue] = useState(selectValue ? selectValue : false)
+    const [idValue, setIdValue] = useState(false)
     const change = (e) => {
             handleChange(e)
             setIdValue(e.target.value)
     }
+
+    useEffect(() => {
+        setIdValue(selectValue)
+    },  [selectValue])
     
     return (
         <Form.Select className='m-0'

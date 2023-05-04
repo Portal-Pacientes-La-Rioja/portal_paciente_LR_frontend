@@ -144,3 +144,16 @@ export const receiverCategory = [
   { id: 3, description: "Pacientes con enfermedad respiratoria crónica" },
   { id: 4, description: "Pacientes con enfermedad renal crónica" },
 ];
+
+export const institutionData = {
+  name : 'Ministerio de Salud',
+  gob: 'Gobierno de La Rioja',
+  address:  'Av. Ortiz de Ocampo 1700 - Ciudad de La Rioja Argentina',
+  phone: '  (0380) 4453700',
+  webLink: "https://salud.larioja.gob.ar/",
+  instagram: 'https://www.instagram.com/saludlarioja/',
+  facebook: 'https://www.facebook.com/minsaludlrj',
+  twitter: 'https://twitter.com/Minsaludlrj',
+  lat: -29.429506,
+  long: -66.856521
+}

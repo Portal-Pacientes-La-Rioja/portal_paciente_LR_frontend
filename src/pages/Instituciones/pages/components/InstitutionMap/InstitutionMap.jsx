@@ -29,7 +29,7 @@ const InstitutionMap = ({ institution, show, handleClose }) => {
             {loading
                 ? <Loader isActive={true}/>
                 : <Modal.Body>
-                    <Col xs={12}>
+                    <Col xs={12} style={{height: '500px'}}>
                         <MapView latitud={institution.lat ?? 0} longitud={institution.long ?? 0} descripcion={adress} />
                     </Col>
                 </Modal.Body>

@@ -105,6 +105,9 @@ const FormGroup = React.forwardRef((props, ref) => {
     if (variants === "tipology_category") {
       getTypologyCategoriesVariants();
     }
+    if (typeof variants === 'object') {
+      setOptions(variants.data)
+    }
   }, [variants])
 
   const handlePaste = (e) =>{

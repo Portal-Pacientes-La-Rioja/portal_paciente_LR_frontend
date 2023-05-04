@@ -36,7 +36,6 @@ export async function getInstitutionsByID(id) {
 }
 
 export async function createInstitution(body) {
-  console.log('body', body)
   try {
     const data = JSON.stringify(body);
     const promise = await post(API_ENDPOINT_CREATE_INSTITUTION, UPDATE_HEADER(), data);

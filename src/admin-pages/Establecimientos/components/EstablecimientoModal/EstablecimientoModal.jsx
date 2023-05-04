@@ -4,12 +4,13 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import Loader from "../../../../components/Loader";
 import FormGroup from "../../../../components/RegisterForm/Forms/FormGroup";
-import { confirm, error } from "../../../../components/SwalAlertData";
+import { confirm, error, success } from "../../../../components/SwalAlertData";
 import * as MdIcon from 'react-icons/md';
 import * as FaIcon from 'react-icons/fa';
 import Selector from "../Selector";
 import { createInstitution, getEspecialidadesAll, getInstitutionsByID, getServiciosAll, updateInstitution } from "../../../../services/institutionsServices";
 import MapView from "../../../../components/MapsView/MapsView";
+import { getAllDepartamentosFrom, getAllLocalidadesFrom, getAllProvincias } from "../../../../services/searchAddressService";
 
 const EstablecimientoModal = (props) => {
 
@@ -56,6 +57,14 @@ const EstablecimientoModal = (props) => {
         setShowSelector(false);
     }
     /////// SELECTORES ////////////////////////////////////////////////////////
+    // //// LOCALIZACION ////////////////////////////////////////////////////////
+    const [ubicacion, setUbicacion] = useState({ lat: 0, long: 0 });
+    const provinciaID = '46' //hardcode; 
+    const [departamentos, setDepartamentos] = useState([]);
+    const [departamentoSelected, setDepartamentoSelected] = useState('');
+    const [localidades, setLocalidades] = useState([]);
+    const [localidadSelected, setLocalidadSelected] = useState('');
+
 
 
     const getInstitutionData = useCallback(
@@ -63,16 +72,16 @@ const EstablecimientoModal = (props) => {
             getInstitutionsByID(idInstitution)
                 .then((res) => {
                     if (res) setForm(res)
-                    setLoading(false)
                     return valuesForm
                 })
                 .then((res) => {
                     if (res) {
-                        console.log(res)
+                        setUbicacion({ lat: res.lat, long: res.long })
                         setEspecialidadesYServicios('especialidades', res.especialidades)
                         setEspecialidadesYServicios('services', res.services)
                     }
                 })
+                .then(() => setLoading(false))
                 .catch((err) => {
                     Swal.fire(error('Error al obtener datos de establecimeinto.'))
                     handleClose();
@@ -82,13 +91,15 @@ const EstablecimientoModal = (props) => {
     //SET VALUES FROM DATA
     const setForm = (data) => {
         if (show) {
-            Object.entries(data).forEach(([key, value]) => {
+            Object.entries(data).forEach(([key, value], index, arr) => {
                 setValue(`${key}`, value);
                 valuesForm[`${key}`] = value;
             });
         }
     }
+
     useEffect(() => {
+        getDepartamentos(provinciaID);
         getEspecialidades()
         getServicios()
         if (actionModal === 'edit') getInstitutionData(institution)
@@ -120,13 +131,7 @@ const EstablecimientoModal = (props) => {
                     return ordenado
                 })
                 .then((res) => {
-                    if (res?.length > 0) {
-                        let addIdArray = res.map((item) => {
-                            item.id = parseInt(item.codigo) 
-                            return item
-                        })
-                        setEspecialidades(addIdArray);
-                    }
+                    if (res?.length > 0) setEspecialidades(res);
                 })
                 .catch((err) => { console.error(err) })
         },
@@ -138,8 +143,8 @@ const EstablecimientoModal = (props) => {
             getServiciosAll()
                 .then((res) => {
                     let ordenado = res.sort((a, b) => {
-                        if (a.name === b.name) { return 0; }
-                        if (a.name < b.name) { return -1; }
+                        if (a.name.trim() === b.name.trim()) { return 0; }
+                        if (a.name.trim() < b.name.trim()) { return -1; }
                         return 1;
                     });
                     return ordenado
@@ -152,6 +157,48 @@ const EstablecimientoModal = (props) => {
         [],
     )
 
+    const getDepartamentos = useCallback(
+        (provinciaID) => {
+            getAllDepartamentosFrom(provinciaID)
+                .then((res) => {
+                    return res.map((item) => {
+                        item.name = item.nombre
+                        return item
+                    })
+                })
+                .then((res) => setDepartamentos(res))
+                .catch((err) => console.error(err))
+        }, [])
+
+    const getLocalidades = useCallback(
+        (departamentoID) => {
+            getAllLocalidadesFrom(departamentoID)
+                .then((res) => {
+                    return res.map((item) => {
+                        item.name = item.nombre
+                        return item
+                    })
+                })
+                .then((res) => setLocalidades(res))
+                .catch((err) => console.error(err))
+        }, [])
+
+    useEffect(() => {
+        if (departamentoSelected !== '') getLocalidades(departamentoSelected)
+    }, [departamentoSelected])
+
+    useEffect(() => {
+        if (actionModal === 'edit' && departamentos.length > 0 && valuesForm.departamento) {
+            setDepartamentoData(valuesForm.departamento)
+        }
+    }, [actionModal, departamentos, valuesForm.departamento])
+
+    useEffect(() => {
+        if (actionModal === 'edit' && localidades.length > 0 && valuesForm.localidad) {
+            setLocalidadData(valuesForm.localidad)
+        }
+    }, [actionModal, localidades, valuesForm])
+
     const setEspecialidadesYServicios = (tipo, data) => {
         let arrayIDs = data.map((item) => item.id)
         valuesForm[tipo] = arrayIDs
@@ -159,6 +206,28 @@ const EstablecimientoModal = (props) => {
         if (tipo === 'services') setServiciosSelected(data)
     }
 
+    const setDepartamentoData = (data) => {
+        let selected = departamentos.find((item) => item.name.toLowerCase().trim() === data.toLowerCase().trim());
+        if (selected) setDepartamentoSelected(selected.id)
+    }
+
+    const setLocalidadData = (data) => {
+        let selected = localidades.find((item) => item.name.toLowerCase().trim() === data.toLowerCase().trim());
+        if (selected) setLocalidadSelected(selected.id)
+    }
+
+    const handleChangeUbicacion = (e) => {
+        let targetName = e.target.name;
+        let targetValue = e.target.value;
+        let variants = targetName === 'departamento' ? departamentos : localidades
+        let stringValue = variants.find((item) => item.id === targetValue)?.name
+        setValue(`${targetName}`, stringValue);
+        valuesForm[`${targetName}`] = stringValue;
+
+        if (targetName === 'departamento') {
+            getLocalidades(targetValue)
+        }
+    }
 
     const onSubmit = () => {
         Swal.fire(confirm(`¿Confirma ${actionModal === 'add' ? 'creación' : 'edición'} de Establecimiento?`)).then((result) => {
@@ -180,10 +249,14 @@ const EstablecimientoModal = (props) => {
         (body) => {
             createInstitution(body)
                 .then((res) => {
-                    if (res.status) {
-                        setActionModal('edit')
-                        // TODO: id de nuevo establecimiento
-                        setLoading(false)
+                    if (res.ok) {
+                        return res.text()
+                            .then(text => {
+                                let readeble = JSON.parse(text)
+                                const newInstitution = readeble.value
+                                setActionModal('edit')
+                                getInstitutionData(newInstitution)
+                            })
                     } else {
                         throw new Error('Error')
                     }
@@ -200,8 +273,8 @@ const EstablecimientoModal = (props) => {
             updateInstitution(body)
                 .then((res) => {
                     if (res.status) {
-                        setLoading(false)
-                        handleClose()
+                        Swal.fire(success('Establecimiento actualizado'));
+                        getInstitutionData(institution)
                     } else {
                         throw new Error('Error')
                     }
@@ -231,7 +304,7 @@ const EstablecimientoModal = (props) => {
                 {loading ? <Loader isActive={loading} />
                     : <Container fluid>
                         <Row className="d-flex flex-wrap-reverse">
-                            {actionModal === 'edit' &&
+                            {actionModal === 'edit' && ubicacion.lat && ubicacion.long &&
                                 <Col xs={12} lg={6}>
                                     <Container>
                                         <Row className='in d-flex mb-3'>
@@ -239,8 +312,8 @@ const EstablecimientoModal = (props) => {
                                                 <FaIcon.FaMapMarkerAlt style={{ fontSize: '1rem', marginRight: '0.5rem' }}></FaIcon.FaMapMarkerAlt>
                                                 <h5 className="mb-0">Ubicación</h5>
                                             </Col>
-                                            <Col xs={12}>
-                                                <MapView latitud={valuesForm.lat ?? 0} longitud={valuesForm.long  ?? 0 } descripcion={valuesForm.domicilio +', '+ valuesForm.localidad}></MapView>
+                                            <Col xs={12} style={{ height: '800px' }}>
+                                                <MapView latitud={ubicacion.lat} longitud={ubicacion.long} descripcion={valuesForm.domicilio + ', ' + valuesForm.localidad}></MapView>
                                             </Col>
                                         </Row>
                                     </Container>
@@ -266,31 +339,33 @@ const EstablecimientoModal = (props) => {
                                             </Col>
                                             <Col xs={12} sm={6} className="mb-2">
                                                 <FormGroup
+                                                    inputType={'select'}
+                                                    label={'Departamento'}
+                                                    name={'departamento'}
+                                                    value={departamentoSelected}
+                                                    selectValue={departamentoSelected}
+                                                    variants={{ data: departamentos }}
+                                                    handleChange={handleChangeUbicacion}
+                                                />
+                                            </Col>
+                                            <Col xs={12} sm={6} className="mb-2">
+                                                <FormGroup
+                                                    inputType={'select'}
+                                                    label={'Localidad'}
+                                                    name={'localidad'}
+                                                    value={localidadSelected}
+                                                    selectValue={localidadSelected}
+                                                    variants={{ data: localidades }}
+                                                    handleChange={handleChangeUbicacion}
+                                                />
+                                            </Col>
+                                            <Col xs={12} sm={6} className="mb-2">
+                                                <FormGroup
                                                     inputType={'input'}
                                                     paste={true}
                                                     label={'Domicilio'}
                                                     name={'domicilio'}
                                                     value={valuesForm.domicilio}
-                                                    onChange={handleChange}
-                                                />
-                                            </Col>
-                                            <Col xs={12} sm={6} className="mb-2">
-                                                <FormGroup
-                                                    inputType={'input'}
-                                                    paste={true}
-                                                    label={'Departamento'}
-                                                    name={'departamento'}
-                                                    value={valuesForm.departamento}
-                                                    onChange={handleChange}
-                                                />
-                                            </Col>
-                                            <Col xs={12} sm={6} className="mb-2">
-                                                <FormGroup
-                                                    inputType={'input'}
-                                                    paste={true}
-                                                    label={'Localidad'}
-                                                    name={'localidad'}
-                                                    value={valuesForm.localidad}
                                                     onChange={handleChange}
                                                 />
                                             </Col>

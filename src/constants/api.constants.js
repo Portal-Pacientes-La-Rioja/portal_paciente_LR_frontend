@@ -267,3 +267,13 @@ export const API_ENDPOINT_SERVICIOS_ALL = `${baseUrl}/servicios`;
 export const API_ENDPOINT_SERVICIOS_BY_ID = (servicio) => {
   return `${baseUrl}/servicios/${servicio}`;
 }
+export const API_ENDPOINT_ALL_PROVINCIAS = () => {
+  return `${baseUrl}/get_all_provincias`;
+}
+export const API_ENDPOINT_ALL_DEPARTAMENTOS_FROM = (query) => {
+  return `${baseUrl}/get_all_departamentos_from?${query}`;
+}
+export const API_ENDPOINT_ALL_LOCALIDADES_FROM = (query) => {
+  return `${baseUrl}/get_all_localidades_from?${query}`;
+}
+

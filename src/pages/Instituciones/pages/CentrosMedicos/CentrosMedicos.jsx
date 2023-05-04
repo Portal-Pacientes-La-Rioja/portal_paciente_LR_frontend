@@ -4,7 +4,7 @@ import Loader from '../../../../components/Loader'
 import DataNotFound from "../../../../components/DataNotFound";
 import Swal from "sweetalert2";
 import { error } from "../../../../components/SwalAlertData";
-import { Col, Row} from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import AutocompleteComponent from "../../../../components/AutocompleteComponent";
 import Paginador from "../../../../components/Paginador";
 import InstitutionCard from "../components/InstitutionCard";
@@ -21,7 +21,7 @@ export default function CentrosMedicos() {
     const itemsPagina = 10
     const [resetPaginator, setResetPaginator] = useState(false);
     const variantsSearch = [
-        { id: "1", name: 'Buscar por Nombre' },
+        { id: "1", name: 'Buscar por Nombre de establecimiento' },
         { id: "2", name: 'Buscar por Departamento' },
         { id: "3", name: 'Buscar por Especialidad' },
         { id: "4", name: 'Buscar por Servicio' }
@@ -188,7 +188,7 @@ export default function CentrosMedicos() {
             }
             {!loading &&
                 <Col xs={12} lg={4} className="ms-auto p-3 in">
-                    <Row className="mb-2">
+                    <Row className="mb-2" style={{ position: 'sticky', top: '8rem' }}>
                         <Col className="select-institution">
                             <SelectType
                                 name='select'
@@ -198,10 +198,14 @@ export default function CentrosMedicos() {
                             />
                         </Col>
                     </Row>
-                    <AutocompleteComponent
-                        variants={variants}
-                        handleChange={handleChangeSearch}
-                    />
+                    <Row style={{ position: 'sticky', top: '11rem' }}>
+                        <Col>
+                            <AutocompleteComponent
+                                variants={variants}
+                                handleChange={handleChangeSearch}
+                            />
+                        </Col>
+                    </Row>
                 </Col>
             }
         </Row>
