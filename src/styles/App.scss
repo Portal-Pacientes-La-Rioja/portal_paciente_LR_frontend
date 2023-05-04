@@ -398,7 +398,7 @@
 .error-form {
   transition: 0.2s;
   display: flex;
-  color: $primary-dark;
+  color: $primary;
   p {
     display: flex;
     font-size: 0.8rem;
@@ -813,6 +813,18 @@
 .select-institution{
   select:focus {
     box-shadow: none !important;
+  }
+}
+
+.form_establecimiento {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  .col-12,
+  .col-6 {
+    display: flex;
+    flex-direction: column;
   }
 }
 

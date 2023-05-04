@@ -120,7 +120,7 @@ const FormGroup = React.forwardRef((props, ref) => {
   } 
 
   return (
-    <Form.Group className="mb-2">
+    <Form.Group>
       <Form.Label className="mb-0">{label}</Form.Label>
       {inputType === 'input' &&
         <Form.Control

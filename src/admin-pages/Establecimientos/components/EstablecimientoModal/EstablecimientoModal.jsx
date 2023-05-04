@@ -11,6 +11,7 @@ import Selector from "../Selector";
 import { createInstitution, getEspecialidadesAll, getInstitutionsByID, getServiciosAll, updateInstitution } from "../../../../services/institutionsServices";
 import MapView from "../../../../components/MapsView/MapsView";
 import { getAllDepartamentosFrom, getAllLocalidadesFrom, getAllProvincias } from "../../../../services/searchAddressService";
+import { ErrorMessage } from "../../../../components/ErrorMessage/ErrorMessage";
 
 const EstablecimientoModal = (props) => {
 
@@ -38,6 +39,12 @@ const EstablecimientoModal = (props) => {
     const [valuesForm, setValuesForm] = useState(initState);
     const [newValue, setNewValue] = useState("") //Get and set values form to validate required fields
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
+    const registerRequired = {
+        required: {
+            value: true,
+            message: "El campo es requerido.",
+        },
+    }
     //////// FORM /////////////////////////////////////////////////////////////
     /////// SELECTORES ////////////////////////////////////////////////////////
     const [especialidades, setEspecialidades] = useState([]);
@@ -118,6 +125,23 @@ const EstablecimientoModal = (props) => {
             setNewValue(targetName);
         }
     }
+
+    const handleChangeUbicacion = (e) => {
+        let targetName = e.target.name;
+        let targetValue = e.target.value;
+        let variants = targetName === 'departamento' ? departamentos : localidades
+        let stringValue = variants.find((item) => item.id === targetValue)?.name
+        valuesForm[`${targetName}`] = stringValue;
+        setNewValue(targetName);
+
+        if (targetName === 'departamento') {
+            getLocalidades(targetValue)
+        }
+    }
+
+    useEffect(() => {
+        setValue(`${newValue}`, valuesForm[newValue]);
+    }, [newValue, valuesForm[newValue]])
 
     const getEspecialidades = useCallback(
         () => {
@@ -216,19 +240,6 @@ const EstablecimientoModal = (props) => {
         if (selected) setLocalidadSelected(selected.id)
     }
 
-    const handleChangeUbicacion = (e) => {
-        let targetName = e.target.name;
-        let targetValue = e.target.value;
-        let variants = targetName === 'departamento' ? departamentos : localidades
-        let stringValue = variants.find((item) => item.id === targetValue)?.name
-        setValue(`${targetName}`, stringValue);
-        valuesForm[`${targetName}`] = stringValue;
-
-        if (targetName === 'departamento') {
-            getLocalidades(targetValue)
-        }
-    }
-
     const onSubmit = () => {
         Swal.fire(confirm(`¿Confirma ${actionModal === 'add' ? 'creación' : 'edición'} de Establecimiento?`)).then((result) => {
             if (result.isConfirmed) {
@@ -286,6 +297,13 @@ const EstablecimientoModal = (props) => {
                 })
         }, [])
 
+    // useEffect(() => {
+    //     if (errors) {
+    //       // do the your logic here
+    //       console.log(errors)
+    //     }
+    //   }, [errors]); // ✅ 
+
     return (
         <Modal
             show={show}
@@ -320,7 +338,7 @@ const EstablecimientoModal = (props) => {
                                 </Col>
                             }
                             <Col>
-                                <Form className="form-group form_register" onSubmit={handleSubmit(onSubmit)}>
+                                <Form className="form-group form_establecimiento" onSubmit={handleSubmit(onSubmit)}>
                                     <Container>
                                         <Row className='in d-flex'>
                                             <div className="d-flex align-items-center mb-2">
@@ -334,8 +352,10 @@ const EstablecimientoModal = (props) => {
                                                     label={'Nombre de Establecimiento'}
                                                     name={'name'}
                                                     value={valuesForm.name}
+                                                    {...register('name', registerRequired)}
                                                     onChange={handleChange}
                                                 />
+                                                {errors.name && <ErrorMessage><p>{errors.name.message}</p></ErrorMessage>}
                                             </Col>
                                             <Col xs={12} sm={6} className="mb-2">
                                                 <FormGroup
@@ -346,7 +366,9 @@ const EstablecimientoModal = (props) => {
                                                     selectValue={departamentoSelected}
                                                     variants={{ data: departamentos }}
                                                     handleChange={handleChangeUbicacion}
+                                                    {...register('departamento', registerRequired)}
                                                 />
+                                                {errors.departamento && <ErrorMessage><p>{errors.departamento.message}</p></ErrorMessage>}
                                             </Col>
                                             <Col xs={12} sm={6} className="mb-2">
                                                 <FormGroup
@@ -357,7 +379,9 @@ const EstablecimientoModal = (props) => {
                                                     selectValue={localidadSelected}
                                                     variants={{ data: localidades }}
                                                     handleChange={handleChangeUbicacion}
+                                                    {...register('localidad', registerRequired)}
                                                 />
+                                                {errors.localidad && <ErrorMessage><p>{errors.localidad.message}</p></ErrorMessage>}
                                             </Col>
                                             <Col xs={12} sm={6} className="mb-2">
                                                 <FormGroup
@@ -366,8 +390,10 @@ const EstablecimientoModal = (props) => {
                                                     label={'Domicilio'}
                                                     name={'domicilio'}
                                                     value={valuesForm.domicilio}
+                                                    {...register('domicilio', registerRequired)}
                                                     onChange={handleChange}
                                                 />
+                                                {errors.domicilio && <ErrorMessage><p>{errors.domicilio.message}</p></ErrorMessage>}
                                             </Col>
                                             <Col xs={12} sm={6} className="mb-2">
                                                 <FormGroup
@@ -416,7 +442,9 @@ const EstablecimientoModal = (props) => {
                                                     selectValue={valuesForm.dependencia}
                                                     variants={'dependency'}
                                                     handleChange={handleChange}
+                                                    {...register('dependencia', registerRequired)}
                                                 />
+                                                {errors.dependencia && <ErrorMessage><p>{errors.dependencia.message}</p></ErrorMessage>}
                                             </Col>
                                             <Col xs={12} sm={6} className="mb-2">
                                                 <FormGroup
@@ -427,7 +455,9 @@ const EstablecimientoModal = (props) => {
                                                     selectValue={valuesForm.tipologia}
                                                     variants={'tipology'}
                                                     handleChange={handleChange}
+                                                    {...register('tipologia', registerRequired)}
                                                 />
+                                                {errors.tipologia && <ErrorMessage><p>{errors.tipologia.message}</p></ErrorMessage>}
                                             </Col>
                                             <Col xs={12} className="mb-2">
                                                 <FormGroup
@@ -438,7 +468,9 @@ const EstablecimientoModal = (props) => {
                                                     selectValue={valuesForm.categoria_tipologia}
                                                     variants={'tipology_category'}
                                                     handleChange={handleChange}
+                                                    {...register('categoria_tipologia', registerRequired)}
                                                 />
+                                                {errors.categoria_tipologia && <ErrorMessage><p>{errors.categoria_tipologia.message}</p></ErrorMessage>}
                                             </Col>
                                             <Col xs={12} className="mb-2 d-flex">
                                                 <div className="d-flex align-items-baseline mb-2">

@@ -24,3 +24,21 @@
     transform: translateY(0px);
   }
 }
+
+.in-error{
+  animation: inError;
+  animation-duration: 0.2s;
+}
+
+@keyframes inError {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  50% {
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(0px);
+  }
+}
