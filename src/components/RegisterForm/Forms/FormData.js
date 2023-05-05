@@ -219,10 +219,38 @@ export const LabelsFormData = {
       },
     },
   },
+  // locality: {
+  //   form_name: "locality",
+  //   label: "Localidad",
+  //   inputType: "input",
+  //   type: "text",
+  //   variants: false,
+  //   sm: 8,
+  //   register: {
+  //     required: {
+  //       value: true,
+  //       message: "El campo es requerido.",
+  //     },
+  //   },
+  // },
+  // department: {
+  //   form_name: "department",
+  //   label: "Departamento",
+  //   inputType: "input",
+  //   type: "text",
+  //   variants: false,
+  //   sm: 8,
+  //   register: {
+  //     required: {
+  //       value: true,
+  //       message: "El campo es requerido.",
+  //     },
+  //   },
+  // },
   locality: {
     form_name: "locality",
     label: "Localidad",
-    inputType: "input",
+    inputType: "select",
     type: "text",
     variants: false,
     sm: 8,
@@ -236,7 +264,7 @@ export const LabelsFormData = {
   department: {
     form_name: "department",
     label: "Departamento",
-    inputType: "input",
+    inputType: "select",
     type: "text",
     variants: false,
     sm: 8,
