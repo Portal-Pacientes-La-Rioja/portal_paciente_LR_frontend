@@ -3,7 +3,7 @@ import { Card } from 'react-bootstrap';
 const InformationCard = (props) => {
 
     const { date, group, subgroup, description, diagnosis, code, weight, blood_pressure } = props
-    const formatDate = date.split('T')[0]
+    const formatDate = new Date(date).toLocaleDateString()
 
     return (
         <Card className="mb-3 shadow-sm">

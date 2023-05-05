@@ -181,9 +181,7 @@ export default function RegisterForm(formType) {
         delete body.postal_address
         delete body.file1 //note - is necesary, but not now
         delete body.file2 //note - is necesary, but not now
-        const [month, day, year] = [body.birthdate.getMonth() + 1, body.birthdate.getDate(), body.birthdate.getFullYear()];
-        let date = `${day}/${month}/${year}`
-        body.birthdate = date
+        body.birthdate = new Date(body.birthdate).toLocaleDateString();
         body.id_identification_type = parseInt(body.id_identification_type)
         body.id_gender = parseInt(body.id_gender)
         body.id_usual_institution = parseInt(body.id_usual_institution)

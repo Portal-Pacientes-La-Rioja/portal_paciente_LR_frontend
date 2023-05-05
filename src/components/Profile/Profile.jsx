@@ -23,27 +23,30 @@ function Profile({ show, handleClose, type }) {
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
     const [values, setValues] = useState(ValuesRegisterForm)
     const [newValue, setNewValue] = useState("") //Get and set values form to required
-     // geogrphic data
-     const provinciaID = '46' //hardcode; 
-     const [departments, setDepartments] = useState([]);
-     const [departmentSelected, setDepartmentSelected] = useState('');
-     const [localities, setLocalities] = useState([]);
-     const [localitySelected, setLocalitySelected] = useState('');
+    // geogrphic data
+    const provinciaID = '46' //hardcode; 
+    const [departments, setDepartments] = useState([]);
+    const [departmentSelected, setDepartmentSelected] = useState('');
+    const [localities, setLocalities] = useState([]);
+    const [localitySelected, setLocalitySelected] = useState('');
 
     //set form with data
     const setForm = (data) => {
-        if (show) {
-            Object.entries(data).forEach(([key, value], i) => {
-                setValue(`${key}`, value);
-            })
-        }
+        Object.entries(data).forEach(([key, value], i) => {
+            setValue(`${key}`, value);
+        })
     }
 
 
     useEffect(() => {
-        setForm(data);
-        setValues(data);
-        setLoading(false);
+        if (show) {
+            getDepartments(provinciaID);
+            let newData = { ...data }
+            newData.birthdate = new Date(data.birthdate).toLocaleDateString()
+            setForm(newData);
+            setValues(newData);
+            setLoading(false);
+        }
     }, [])
 
     // set new values 
@@ -60,7 +63,9 @@ function Profile({ show, handleClose, type }) {
     }
 
     useEffect(() => {
-        setValue(`${newValue}`, values[newValue]);
+        if (show) {
+            setValue(`${newValue}`, values[newValue]);
+        }
     }, [newValue, values])
 
     const handleChangeUbicacion = (e) => {
@@ -74,10 +79,6 @@ function Profile({ show, handleClose, type }) {
             getLocalities(targetValue)
         }
     }
-
-    useEffect(() => {
-        getDepartments(provinciaID);
-    }, [])
 
     const getDepartments = useCallback(
         (provinciaID) => {
@@ -106,18 +107,24 @@ function Profile({ show, handleClose, type }) {
         }, [])
 
     useEffect(() => {
-        if (departmentSelected !== '') getLocalities(departmentSelected)
+        if (show) {
+            if (departmentSelected !== '') getLocalities(departmentSelected)
+        }
     }, [departmentSelected])
 
     useEffect(() => {
-        if (departments.length > 0 && values.department) {
-            setDepartamentoData(values.department)
+        if (show) {
+            if (departments.length > 0 && values.department) {
+                setDepartamentoData(values.department)
+            }
         }
     }, [departments, values.department])
 
     useEffect(() => {
-        if (localities.length > 0 && values.locality) {
-            setLocalidadData(values.locality)
+        if (show) {
+            if (localities.length > 0 && values.locality) {
+                setLocalidadData(values.locality)
+            }
         }
     }, [localities, values])
 
@@ -147,8 +154,6 @@ function Profile({ show, handleClose, type }) {
         body.is_hypertensive = body.is_hypertensive.toString() == 'true' ? true : false
         body.is_chronic_kidney_disease = body.is_chronic_kidney_disease.toString() == 'true' ? true : false
         body.is_chronic_respiratory_disease = body.is_chronic_respiratory_disease.toString() == 'true' ? true : false
-        let setDate = values.birthdate.split('-')
-        body.birthdate = `${setDate[2].split('T')[0]}/${setDate[1]}/${setDate[0]}`
         Swal.fire(confirm(`¿Desea actualizar los datos de ${type === 'user' ? 'usuario' : 'paciente'}`)).then((result) => {
             if (result.isConfirmed) {
                 sendUpdatePersonForm(body)
@@ -218,14 +223,14 @@ function Profile({ show, handleClose, type }) {
             </Col>
             <Col className="mb-2" xs={12} sm={6}>
                 <FormGroup inputType={f.department.inputType} label={f.department.label} name={f.department.form_name} value={values.department}
-                    variants={{data: departments}} selectValue={departmentSelected} handleChange={handleChangeUbicacion}
+                    variants={{ data: departments }} selectValue={departmentSelected} handleChange={handleChangeUbicacion}
                     {...register(`${f.department.form_name}`, f.department.register)}
                 />
                 {errors[f.department.form_name] && <ErrorMessage><p>{errors[f.department.form_name].message}</p></ErrorMessage>}
             </Col>
             <Col className="mb-2" xs={12} sm={6}>
                 <FormGroup inputType={f.locality.inputType} label={f.locality.label} name={f.locality.form_name} value={values.locality}
-                    variants={{data: localities}} selectValue={localitySelected} handleChange={handleChangeUbicacion}
+                    variants={{ data: localities }} selectValue={localitySelected} handleChange={handleChangeUbicacion}
                     {...register(`${f.locality.form_name}`, f.locality.register)}
                 />
                 {errors[f.locality.form_name] && <ErrorMessage><p>{errors[f.locality.form_name].message}</p></ErrorMessage>}
@@ -243,7 +248,7 @@ function Profile({ show, handleClose, type }) {
                     onChange={handleChange}
                 />
                 {errors[f.address_number.form_name] && <ErrorMessage><p>{errors[f.address_number.form_name].message}</p></ErrorMessage>}
-            </Col>            
+            </Col>
             <Col className="mb-2" xs={12} >
                 <FormGroup inputType={f.phone_number.inputType} label={f.phone_number.label} name={f.phone_number.form_name} value={values.phone_number}
                     {...register(`${f.phone_number.form_name}`, f.phone_number.register)}

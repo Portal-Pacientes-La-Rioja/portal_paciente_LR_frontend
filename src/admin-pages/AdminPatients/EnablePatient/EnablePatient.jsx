@@ -45,11 +45,8 @@ export default function EnablePatient({ show, handleClose, id, action }) {
         [id],
     )
     const getBirthdate = (birthdate) => {
-        let date = birthdate.split('-')
-        let y = date[0]
-        let m = date[1]
-        let d = date[2].split('T')[0]
-        setBirthdate(`${d} / ${m} / ${y}`)
+        let date = new Date(birthdate).toLocaleDateString();
+        setBirthdate(date)
     }
     const getDNIVariants = useCallback(
         (idType) => {

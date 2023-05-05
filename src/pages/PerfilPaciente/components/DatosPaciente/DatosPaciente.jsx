@@ -7,10 +7,8 @@ import institutionsServices from '../../../../services/institutionsServices';
 function DatosPaciente() {
 
     const p = usePatient();
-    const birthdateY = p.patient.birthdate.split('-')[0]
-    const birthdateM = p.patient.birthdate.split('-')[1]
-    const birthdateD = p.patient.birthdate.split('-')[2].split('T')[0]
-    const birthdate = birthdateD + '/' + birthdateM + '/' + birthdateY
+    const birthdate = new Date(p.patient.birthdate).toLocaleDateString()
+
     function calculateAge(birthdate) {
         let today = new Date();
         let b = new Date(birthdate);
