@@ -659,6 +659,10 @@
     background-color: $primary;
   }
 }
+.admin-patients__patient:hover,
+.admin-message__message:hover {
+  background-color: $background-main;
+}
 .status-container {
   display: flex;
   justify-content: center;
@@ -680,12 +684,13 @@
 .admin-patient__modal {
   .modal-content {
     min-height: 80vh;
+    background-color: $background-main !important;
   }
 }
 .admin-patient__list {
   list-style: none;
-  border-right: 1px solid $secondary-light;
-  padding-left: 0;
+  border: 1px solid $secondary-light;
+  padding: 1rem;
   font-weight: lighter;
   li {
     margin-bottom: 0.5rem;
