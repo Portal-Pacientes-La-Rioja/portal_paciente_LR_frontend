@@ -6,7 +6,6 @@ import {
   error
 } from "../components/SwalAlertData";
 import { loginPersonService } from "../services/loginPersonService";
-
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
@@ -62,7 +61,7 @@ const AuthProvider = ({ children }) => {
           return tokenUser;
         })
         .catch((err) => {
-          console.log("error: ", err);
+          console.error("error: ", err);
           switch (err.message) {
             case 'Mail not validated.':
               Swal.fire(error('Email no validado'));
@@ -123,8 +122,7 @@ const AuthProvider = ({ children }) => {
       let data = JSON.parse(vals);
       let isTimed = new Date().getTime() - data > exp;
       if (isTimed) {
-        console.log("Error: El almacenamiento ha expirado");
-        setTokenUser(null);
+        console.error("Error: El almacenamiento ha expirado");
         logout(isTimed);
         return null;
       } else {
@@ -141,14 +139,11 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   const logout = (expired) => {
+    deleteDataSession();
     if (expired) {
       Swal.fire(expiredSession).then((result) => {
-        if (result.isConfirmed) {
-          deleteDataSession();
-        }
+        window.location.reload();
       });
-    } else {
-      deleteDataSession();
     }
   };
 
