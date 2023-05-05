@@ -17,7 +17,7 @@ export default function Instituciones() {
                 </Col>
             </Row>
             <Row>
-                <Col className='switch-container'>
+                <Col className='switch-container p-3'>
                     {routes.map((route) => {
                         return (
                             <NavLink key={route.path} className='me-2' activeClassName='active-switch' to={route.path}>{route.title}</NavLink>

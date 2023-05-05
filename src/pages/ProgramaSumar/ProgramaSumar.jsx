@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
+import { Col, Container } from "react-bootstrap";
 import usePatient from '../../hooks/usePatient';
 import DataNotFound from "../../components/DataNotFound";
 import Loader from "../../components/Loader";
@@ -7,13 +7,14 @@ import sumarServices from "../../services/sumarServices";
 import InformationCard from "./InformationCard";
 import Swal from "sweetalert2";
 import { error } from "../../components/SwalAlertData";
+import * as MdIcon from 'react-icons/md';
 
 export default function ProgramaSumar() {
 
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState([])
     const p = usePatient()
-    const idnPatient = p.patient.identification_number 
+    const idnPatient = p.patient.identification_number
 
     const getData = useCallback(
         (idn) => {
@@ -38,12 +39,15 @@ export default function ProgramaSumar() {
     )
 
     useEffect(() => {
-        getData(idnPatient) 
+        getData(idnPatient)
     }, [])
 
     return (
         <Container className='programa-sumar p-3'>
-            <h5 className='section-title'>Programa Sumar</h5>
+            <Col xs={12} lg={9} className="d-flex">
+                <MdIcon.MdAddCircleOutline className="menu-icon text-danger me-1" style={{ fontSize: 'x-large' }} />
+                <h5 className='section-title'>Programa SUMAR</h5>
+            </Col>
             {loading
                 ? <Loader isActive={loading} />
                 : <div className="mt-5">

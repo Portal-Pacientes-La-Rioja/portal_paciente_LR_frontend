@@ -596,6 +596,10 @@
     font-size: 0.8rem;
   }
 }
+.mensaje_container:hover,
+.message_container:hover{
+  background-color: $background-main;
+}
 // Tooltip
 .my-tooltip {
   position: relative;
