@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Button, Col, Form } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 // import DataNotFound from "../../../../components/DataNotFound";
 import Loader from "../../../../components/Loader";
 // import { getPersons } from "../../../../services/adminServices";
@@ -13,6 +13,8 @@ import { ErrorMessage } from "../../../../components/ErrorMessage/ErrorMessage";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { deleteUserAdmin, getUserAdminById, postCreateUserAdmin, putUpdateUserAdmin, putUpdateUserAdminPassword } from "../../../../services/adminServices";
 import * as FaIcon from 'react-icons/fa'
+import Selector from "../../../Establecimientos/components/Selector";
+import {  getInstitutionsAll } from "../../../../services/institutionsServices";
 
 export default function RegisterAdmin() {
 
@@ -31,6 +33,28 @@ export default function RegisterAdmin() {
     const [confirmPassword, setConfirmPassword] = useState("")
 
     const { register, handleSubmit, setValue, getValues, formState: { errors } } = useForm();
+     /////// SELECTORES ////////////////////////////////////////////////////////
+     const [instituciones, setInstituciones] = useState([]);
+     const [institucionesSelected, setInstitucionesSelected] = useState([]);
+     const [showSelector, setShowSelector] = useState(false);
+     const [tipoSelector, setTipoSelector] = useState('');
+     const openSelector = (tipo) => {
+         setTipoSelector(tipo)
+         setShowSelector(true);
+     }
+     const closeSelector = (tipo, dataSelecetd) => {
+         if (dataSelecetd) {
+            setInstitucionesEnForm(tipo, dataSelecetd)
+         }
+         setShowSelector(false);
+     }
+
+     const setInstitucionesEnForm = (tipo, data) => {
+        let arrayIDs = data.map((item) => item.id)
+        values[tipo] = arrayIDs
+        if (tipo === 'instituciones') setInstitucionesSelected(data)
+    }
+     /////// SELECTORES ////////////////////////////////////////////////////////
 
     // SI EL FORMULARIO ES DE EDICION, BUSCA DATOS DE USUARIo
     useEffect(() => {
@@ -39,6 +63,7 @@ export default function RegisterAdmin() {
             getUserData(data);
             setChangePassword(false);
         }
+        getInstituciones()
     }, [])
 
 
@@ -105,6 +130,26 @@ export default function RegisterAdmin() {
         setConfirmPassword(value);
         setValue('confirmPassword', value)
     }
+
+    const getInstituciones = useCallback(
+        () => {
+            getInstitutionsAll()
+                .then((res) => {
+                    let ordenado = res.sort((a, b) => {
+                        if (a.name === b.name) { return 0; }
+                        if (a.name < b.name) { return -1; }
+                        return 1;
+                    });
+                    return ordenado
+                })
+                .then((res) => {
+                    if (res?.length > 0) setInstituciones(res);
+                })
+                .catch((err) => { console.error(err) })
+        },
+        [],
+    )
+
     const buildBody = () => {
         let body = values
         delete body.confirmPassword
@@ -122,6 +167,8 @@ export default function RegisterAdmin() {
             }
         }
     }
+
+    
 
     const onSubmit = () => {
         Swal.fire(confirm(`¿Confirma ${action === 'registrar' ? 'registro' : 'edición'} de usuario administrador?`, false)).then((result) => {
@@ -243,87 +290,87 @@ export default function RegisterAdmin() {
             {loading ?
                 <Loader isActive={loading}></Loader>
                 : <>
-                    <Col xs={12} sm={7} lg={5} className="border border-secundary p-3 rounded mb-2 border-opacity-50">
+                    <Row className="border border-secundary p-3 rounded mb-2 border-opacity-50">
                         <h5 className="text-capitalize">{action} usuario</h5>
                         <Form className="form-group form_register" onSubmit={handleSubmit(() => onSubmit())}>
-                            {/* <Col xs={12}>
-                                <FormGroup inputType='input' label='Nombre' name='name' value={values.name}
-                                    {...register('name', {
-                                        required: { value: true, message: "El campo es requerido." }
-                                    })}
-                                    onChange={handleChange}
-                                />
-                                {errors.name && <ErrorMessage><p>{errors.name.message}</p></ErrorMessage>}
-                            </Col>
-                            <Col xs={12}>
-                                <FormGroup inputType='input' label='Apellido' name='surname' value={values.surname}
-                                    {...register('surname', {
-                                        required: { value: true, message: "El campo es requerido." },
-                                    })}
-                                    onChange={handleChange}
-                                />
-                                {errors.surname && <ErrorMessage><p>{errors.surname.message}</p></ErrorMessage>}
-                            </Col> */}
-                            <Col xs={12} sm={6}>
-                                <FormGroup inputType='input' label='Nombre de Usuario' name='username' value={values.username}
-                                    {...register('username', {
-                                        required: { value: true, message: "El campo es requerido." },
-                                    })}
-                                    onChange={handleChange}
-                                />
-                                {errors.username && <ErrorMessage><p>{errors.username.message}</p></ErrorMessage>}
-                            </Col>
-                            {!changePassword &&
-                                <Col>
-                                    <p className="text-primary mt-2 cursor"
-                                        onClick={() => handleChangePassword()} ><FaIcon.FaKey /> Cambiar contraseña
-                                    </p>
-                                </Col>
-                            }
-                            {changePassword &&
-                                <Col xs={12} sm={6}>
-                                    <FormGroup inputType='input' type='password' label='Contraseña' name='password'
-                                        value={password}
-                                        {...register('password', {
+                            <Col xs={12} md={6} lg={4}>
+                                <Col xs={12} className="mb-2">
+                                    <FormGroup inputType='input' label='Nombre de Usuario' name='username' value={values.username}
+                                        {...register('username', {
                                             required: { value: true, message: "El campo es requerido." },
                                         })}
-                                        onChange={(e) => onPasswordChange(e.target.value)}
+                                        onChange={handleChange}
                                     />
+                                    {errors.username && <ErrorMessage><p>{errors.username.message}</p></ErrorMessage>}
+                                </Col>
+                                {!changePassword &&
+                                    <Col xs={12} className="mb-2">
+                                        <p className="text-primary mt-2 cursor"
+                                            onClick={() => handleChangePassword()} ><FaIcon.FaKey /> Cambiar contraseña
+                                        </p>
+                                    </Col>
+                                }
+                                {changePassword &&
+                                    <Col xs={12} className="mb-2">
+                                        <FormGroup inputType='input' type='password' label='Contraseña' name='password'
+                                            value={password}
+                                            {...register('password', {
+                                                required: { value: true, message: "El campo es requerido." },
+                                            })}
+                                            onChange={(e) => onPasswordChange(e.target.value)}
+                                        />
 
-                                    {errors.password && <ErrorMessage><p>{errors.password.message}</p></ErrorMessage>}
-                                </Col>
-                            }
-                            {changePassword &&
-                                <Col xs={12} sm={6} >
-                                    <FormGroup inputType='input' type='password' label='Confirmar Contraseña' name='confirmPassword'
-                                        value={confirmPassword}
-                                        {...register('confirmPassword', {
-                                            validate: (value) => value === getValues("password") || 'Las contraseñas no coinciden'
+                                        {errors.password && <ErrorMessage><p>{errors.password.message}</p></ErrorMessage>}
+                                    </Col>
+                                }
+                                {changePassword &&
+                                    <Col xs={12} className="mb-2">
+                                        <FormGroup inputType='input' type='password' label='Confirmar Contraseña' name='confirmPassword'
+                                            value={confirmPassword}
+                                            {...register('confirmPassword', {
+                                                validate: (value) => value === getValues("password") || 'Las contraseñas no coinciden'
+                                            })}
+                                            onChange={(e) => onConfirmPasswordChange(e.target.value)}
+                                        />
+                                        {errors.confirmPassword && <ErrorMessage><p>{errors.confirmPassword.message}</p></ErrorMessage>}
+                                    </Col>
+                                }
+                            </Col>
+                            <Col xs={12}>
+                                <Col xs={12} className="mb-2 d-flex">
+                                    <div className="d-flex align-items-baseline mb-2">
+                                        <label className="form-label me-1">Establecimientos asignados</label>
+                                        <button className="btn text-primary" type="button" onClick={() => openSelector('instituciones')}>{values.instituciones?.length > 0 ? 'Agregar/Quitar' : 'Agregar'}...</button>
+                                    </div>
+                                    <div className="est-list">
+                                        {institucionesSelected.length > 0 && institucionesSelected.map((item) => {
+                                            return <span className="me-1 d-inline-block" key={item.id}>{item.name + ' - '}</span>
                                         })}
-                                        onChange={(e) => onConfirmPasswordChange(e.target.value)}
-                                    />
-                                    {errors.confirmPassword && <ErrorMessage><p>{errors.confirmPassword.message}</p></ErrorMessage>}
+                                    </div>
                                 </Col>
-                            }
-                            {/* <Col>
-                                <FormGroup inputType='radio' label='Activo' name='status' value={values.status} type='radio'
-                                    onChange={handleChange}
-                                />
-                            </Col> */}
+                            </Col>
                             <Col xs={12} className="my-3">
                                 <div className="d-flex w-100 justify-content-end align-items-center">
                                     {values.username && action === 'editar' && values.username !== userName &&
                                         <Button variant="danger" type="button" className="text-capitalize me-3" onClick={() => { submitDelete(values.id) }}>Eliminar</Button>
                                     }
                                     <Link to="/admin/panel/listado">
-                                        <button className='btn btn-secondary me-3'>Cancelar</button>
+                                        <button className='btn btn-outline-secondary me-3'>Cancelar</button>
                                     </Link>
                                     <Button variant="primary" type="submit" className="text-capitalize">{action}</Button>
                                 </div>
                             </Col>
                         </Form>
-                    </Col>
+                    </Row>
                 </>
+            }
+            {showSelector &&
+                <Selector
+                    show={showSelector}
+                    tipo={tipoSelector}
+                    close={closeSelector}
+                    values={values}
+                    dataList={instituciones} />
             }
         </>
     )

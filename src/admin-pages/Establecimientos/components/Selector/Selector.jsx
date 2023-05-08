@@ -64,7 +64,7 @@ const Selector = (props) => {
 
     const submit = () => {
         if (dataSelected.length === 0) {
-            Swal.fire(warning('Debe seleccionar al menos una especialidad'))
+            Swal.fire(warning('Debe seleccionar al menos un elemento'))
         } else {
             close(tipo, dataSelected);
         }
