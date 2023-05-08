@@ -15,19 +15,24 @@ const InstitutionCard = ({ institution }) => {
         <Card className="card-institution">
             <Row>
                 <Col xs={12} md={2} className="border-end d-flex justify-content-center align-items-center mb-2 mb-md-0">
-                    {institutionData.tipologia === 'Hospital' && <FaIcon.FaHospital style={{fontSize: '3rem'}}/>}
-                    {institutionData.tipologia === 'Transporte' && <FaIcon.FaAmbulance style={{fontSize: '3rem'}}/>}
-                    {institutionData.tipologia === ("Centro de salud \"A\"" || 'Centro de salud "A"') && <MdIcon.MdOutlineHealthAndSafety style={{fontSize: '3rem'}}/>}
-                    {institutionData.tipologia === 'Laboratorio' && <MdIcon.MdOutlineScience style={{fontSize: '3rem'}}/>}
+                    {institutionData.tipologia === 'Hospital' && <FaIcon.FaHospital style={{ fontSize: '3rem' }} />}
+                    {institutionData.tipologia === 'Transporte' && <FaIcon.FaAmbulance style={{ fontSize: '3rem' }} />}
+                    {institutionData.tipologia === ("Centro de salud \"A\"" || 'Centro de salud "A"') && <MdIcon.MdOutlineHealthAndSafety style={{ fontSize: '3rem' }} />}
+                    {institutionData.tipologia === 'Laboratorio' && <MdIcon.MdOutlineScience style={{ fontSize: '3rem' }} />}
                 </Col>
-                <Col xs={12} md={10}>
-                    <h4 className="text-uppercase">{institutionData.name}</h4>
-                    <h6 className="text-uppercase">{institutionData.tipologia} - {institutionData.categoria_tipologia}</h6>
-                    <div className="d-block d-md-flex text-capitalize mb-2 cursor-pointer">
-                        <span className="me-2">{institutionData.departamento}, {institutionData.localidad}</span>
-                        <div className="text-primary" style={{cursor: 'pointer'}} onClick={() => handleShow()}><MdIcon.MdLocationOn className="menu-icon" /><span>Ver ubicación</span></div>
+                <Col xs={12} md={10} className="d-flex flex-column justify-content-between">
+                    <div>
+                        <h4 className="text-uppercase">{institutionData.name}</h4>
+                        <h6 className="text-uppercase">{institutionData.tipologia} - {institutionData.categoria_tipologia}</h6>
+                        <span className="my-2">
+                            {institutionData.services.length > 0 && <div className="">Servicios: {institutionData.services.map(item => <span key={item.id}>{item.name} - </span>)}</div>}
+                        </span>
+                        <br />
                     </div>
-                    {institutionData.services.length > 0 && <div className="text-secondary fst-italic">Servicios: {institutionData.services.map(item => <span key={item.id}>{item.name} - </span>)}</div>}
+                    <div>
+                        <span className="text-secondary fst-italic" style={{ cursor: 'pointer' }} onClick={() => handleShow()}>{institutionData.domicilio}, {institutionData.departamento}, {institutionData.localidad}<MdIcon.MdLocationOn className="menu-icon ms-2" /><span>Ver ubicación</span></span>
+                        <span className="text-secondary fst-italic d-block">{institutionData.telefono && 'Teléfono: ' + institutionData.telefono}</span>
+                    </div>
                 </Col>
             </Row>
             {show && <InstitutionMap institution={institution} show={show} handleClose={handleClose} />}

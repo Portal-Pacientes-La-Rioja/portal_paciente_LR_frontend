@@ -144,6 +144,7 @@ const Establecimientos = () => {
                                     <th>Tipología</th>
                                     <th>Departamento</th>
                                     <th>Localidad</th>
+                                    <th>Teléfono</th>
                                     <th className='text-center' style={{ width: "20px" }}>Acciones</th>
                                 </tr>
                             </thead>
@@ -155,6 +156,7 @@ const Establecimientos = () => {
                                             <td>{establecimiento.tipologia}</td>
                                             <td>{establecimiento.departamento}</td>
                                             <td>{establecimiento.localidad}</td>
+                                            <td>{establecimiento.telefono}</td>
                                             <td className='d-flex'>
                                                 <div className="my-tooltip">
                                                     <div className="text-dark">

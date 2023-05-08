@@ -32,6 +32,7 @@ const EstablecimientoModal = (props) => {
         departamento: '',
         localidad: '',
         ciudad: '',
+        tetlefono: '',
         activate: 1,
         services: [],
         especialidades: []
@@ -260,10 +261,12 @@ const EstablecimientoModal = (props) => {
         (body) => {
             createInstitution(body)
                 .then((res) => {
+                    console.log(res)
                     if (res.ok) {
                         return res.text()
                             .then(text => {
                                 let readeble = JSON.parse(text)
+                                console.log(text)
                                 const newInstitution = readeble.value
                                 setActionModal('edit')
                                 getInstitutionData(newInstitution)
@@ -296,13 +299,6 @@ const EstablecimientoModal = (props) => {
                     setLoading(false)
                 })
         }, [])
-
-    // useEffect(() => {
-    //     if (errors) {
-    //       // do the your logic here
-    //       console.log(errors)
-    //     }
-    //   }, [errors]); // ✅ 
 
     return (
         <Modal
@@ -398,10 +394,11 @@ const EstablecimientoModal = (props) => {
                                             <Col xs={12} sm={6} className="mb-2">
                                                 <FormGroup
                                                     inputType={'input'}
+                                                    type='number'
                                                     paste={true}
-                                                    label={'Ciudad'}
-                                                    name={'ciudad'}
-                                                    value={valuesForm.ciudad}
+                                                    label={'Teléfono'}
+                                                    name={'telefono'}
+                                                    value={valuesForm.telefono}
                                                     onChange={handleChange}
                                                 />
                                             </Col>
