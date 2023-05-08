@@ -20,7 +20,7 @@ function UserHeader() {
         p.getPatient(dniPatient)
     }
     useEffect(() => {
-        if(dniPatient !== p.patient.identification_number){
+        if (dniPatient !== p.patient.identification_number) {
             handleChange();
         }
     }, [dniPatient]);
@@ -45,7 +45,7 @@ function UserHeader() {
                     }
                 })
                 .catch((err) => {
-                    console.log(err)
+                    console.error(err)
                     Swal.fire(error('Error al cargar los mensajes'))
                 })
         },
@@ -63,7 +63,9 @@ function UserHeader() {
                     <div className='d-flex align-items-center w-100 w-md-0 justify-content-between '>
                         <p className='mb-0 ms-3 fw-lighter'>Paciente: <span className='fw-normal text-uppercase'>{p.patient.name} {p.patient.surname} </span></p>
                         <NavLink to={"/usuario/notificaciones"}>
-                            <div className='icon_container me-4 me-md-0'><FaIcon.FaRegBell className='notification_icon' />{messages.length > 0 && <div className='notification_circle in'></div>}</div>
+                            <div className='icon_container me-4 me-md-0'><FaIcon.FaRegBell className='notification_icon' />
+                                {messages.length > 0 && <div className='notification_circle in'><span>{messages.length}</span></div>}
+                            </div>
                         </NavLink>
                     </div>
                     <div className='d-flex align-items-center  me-4'>
