@@ -10,10 +10,10 @@ export default function AdminPanel() {
 
     return (
         <Container className='p-3'>
-            <div className="d-flex">
+            <Col xs={12} lg={6} className="d-flex">
                 <FaIcon.FaUsersCog className="menu-icon text-danger me-2" style={{fontSize: 'x-large'}}/>
                 <h5 className='section-title mb-3'>Panel de administradores</h5>
-            </div>
+            </Col>
             <Row>
                 <Col className='switch-container p-3'>
                     {routes.map((route) => {

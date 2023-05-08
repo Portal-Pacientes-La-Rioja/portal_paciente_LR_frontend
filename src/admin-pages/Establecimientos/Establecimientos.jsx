@@ -117,7 +117,7 @@ const Establecimientos = () => {
 
 
     return (
-        <Container className="main pt-5">
+        <Container className="p-3">
             <Row className="d-flex justify-content-center align-items-center">
                 <Col xs={12} lg={6} className="d-flex">
                     <FaIcon.FaHospital className="menu-icon text-danger me-1" style={{ fontSize: 'x-large' }} />
