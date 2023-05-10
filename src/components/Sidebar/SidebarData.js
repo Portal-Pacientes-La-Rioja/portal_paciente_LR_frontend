@@ -155,11 +155,20 @@ export const SidebarData = {
       title: "Programa Sumar",
       path: "/usuario/programa-sumar",
       icon: <MdIcon.MdAddCircleOutline className="menu-icon" />,
-      acordeon: false,
+      acordeon: true,
       a: false,
       cName: "sidebar-text",
       aIcon: <MdIcon.MdKeyboardArrowDown className="menu-icon" />,
-      options: false,
+      options: [
+        {
+          title: "Historia Clínica",
+          path: "/usuario/programa-sumar/hc"
+        },
+        {
+          title: "Cobertura  Efectiva Básica",
+          path: "/usuario/programa-sumar/ceb"
+        }
+      ],
     },
   ],
   grupoFamiliar: [
