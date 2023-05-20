@@ -4,7 +4,7 @@ import PendingPatient from "../../PendingPatient";
 import DataNotFound from "../../../../components/DataNotFound";
 import Loader from "../../../../components/Loader";
 import { getPersons } from "../../../../services/adminServices";
-import institutionsServices from '../../../../services/institutionsServices'
+import { getInstitutionsAllWithNewData } from '../../../../services/institutionsServices'
 import { getAdminStatus } from "../../../../services/personServices";
 import Swal from "sweetalert2";
 import { error } from "../../../../components/SwalAlertData";
@@ -74,11 +74,13 @@ export default function PendingPatients() {
 
     const getInstitutions = useCallback(
         () => {
-            institutionsServices()
+            getInstitutionsAllWithNewData()
                 .then((res) => {
-                    const allInstitutions = res
-                    setInstitutions(allInstitutions);
-                    return allInstitutions;
+                    if (res.length > 0) {
+                        const allInstitutions = res
+                        setInstitutions(allInstitutions);
+                        return allInstitutions;
+                    }
                 })
                 .catch((err) => { console.log(err) })
         },
@@ -93,8 +95,10 @@ export default function PendingPatients() {
                     <h5 className="mt-5 mb-3">Pacientes pendientes <span className="fw-light text-danger">({patientsPending.length})</span></h5>
                     {patientsPending.length > 0 ? patientsPending.map((p, i) => {
                         return (
-                            <PendingPatient key={i} name={p.name + " " + p.surname} status_id={p.id_admin_status} 
-                            status_name={statusName} id={p.id} est={institutions.find((item) => item.id === p.id_usual_institution)?.name || null} action={getData}></PendingPatient>
+                            <PendingPatient key={i} name={p.name + " " + p.surname} status_id={p.id_admin_status}
+                                status_name={statusName} id={p.id} 
+                                est={institutions.find((item) => item.id === p.id_usual_institution && item.portal === p.inst_from_portal)?.name || null} 
+                                action={getData}></PendingPatient>
                         )
                     })
                         :
