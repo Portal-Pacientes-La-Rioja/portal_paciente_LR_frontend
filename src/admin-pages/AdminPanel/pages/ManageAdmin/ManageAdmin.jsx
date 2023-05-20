@@ -66,7 +66,7 @@ export default function ManageAdmin() {
                                         return (
                                             <tr key={i}>
                                                 <td>{a.username}</td>
-                                                <td>Activo</td>
+                                                <td>{a.is_admin_activate ? 'Activo' : 'Inactivo'}</td>
                                                 <td>
                                                     <div className="my-tooltip">
                                                         <Link className="text-dark" to={`/admin/panel/editar?id=${a.id}`} >

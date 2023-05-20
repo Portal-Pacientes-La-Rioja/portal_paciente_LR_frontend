@@ -1,4 +1,4 @@
-import { API_ENDPOINT_CREATEUSERADMIN, API_ENDPOINT_DELETEUSERADMIN, API_ENDPOINT_GETPERSONS, API_ENDPOINT_GETPERSONSACCEPTED, API_ENDPOINT_GET_USERS_ADMIN_LIST, API_ENDPOINT_GET_USER_ADMIN_BY_ID, API_ENDPOINT_PERSONACCEPTED, API_ENDPOINT_PERSONNOTACCEPT, API_ENDPOINT_UPDTAEUSERADMIN, API_ENDPOINT_UPDTAEUSERADMINPASSWORD, AUTH_HEADER, UPDATE_HEADER } from "../constants/api.constants";
+import { API_ENDPOINT_ASSIGN_INSTITUTIONS, API_ENDPOINT_CREATEUSERADMIN, API_ENDPOINT_DELETEUSERADMIN, API_ENDPOINT_GETPERSONS, API_ENDPOINT_GETPERSONSACCEPTED, API_ENDPOINT_GET_USERS_ADMIN_LIST, API_ENDPOINT_GET_USER_ADMIN_BY_ID, API_ENDPOINT_ONOFFADMIN, API_ENDPOINT_PERSONACCEPTED, API_ENDPOINT_PERSONNOTACCEPT, API_ENDPOINT_UPDTAEUSERADMIN, API_ENDPOINT_UPDTAEUSERADMINPASSWORD, AUTH_HEADER, UPDATE_HEADER } from "../constants/api.constants";
 import { get, post, put } from "./httpServices";
 
 export async function getPersons() {
@@ -41,6 +41,8 @@ export async function getPersonsAccepted() {
     }
   }
 
+  // crud ADMINISTRADORES -------------------------------------------------
+
   export async function getUsersAdminList() {
     try {
       const promise = await get(API_ENDPOINT_GET_USERS_ADMIN_LIST, AUTH_HEADER());
@@ -60,6 +62,8 @@ export async function getPersonsAccepted() {
       console.error("Error al cargar datos: ", err);
     }
   }
+
+
   export async function postCreateUserAdmin(body) {
     try {
       const data = JSON.stringify(body);
@@ -70,6 +74,29 @@ export async function getPersonsAccepted() {
     }
   }
   
+  export async function putAssignInstitutionsAdmin(username, body) {
+    try {
+      const searchParams = new URLSearchParams(username);
+      let query = searchParams.toString();
+      const data = JSON.stringify(body);
+      const promise = await put(API_ENDPOINT_ASSIGN_INSTITUTIONS(query), UPDATE_HEADER(), data);
+      return promise;
+    } catch (err) {
+      console.error("Error al cargar datos: ", err);
+    }
+  }
+
+  export async function getOnOffAdmin(id) {
+    try {
+      const searchParams = new URLSearchParams(id);
+      let query = searchParams.toString();
+      const promise = await get(API_ENDPOINT_ONOFFADMIN(query), AUTH_HEADER());
+      return promise;
+    } catch (err) {
+      console.error("Error al cargar datos: ", err);
+    }
+  }
+
   export async function putUpdateUserAdmin(body) {
     try {
       const data = JSON.stringify(body);

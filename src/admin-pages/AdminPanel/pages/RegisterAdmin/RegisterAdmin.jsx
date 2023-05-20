@@ -11,10 +11,10 @@ import { ValuesRegisterAdminForm } from "../../../../components/RegisterForm/For
 import FormGroup from "../../../../components/RegisterForm/Forms/FormGroup";
 import { ErrorMessage } from "../../../../components/ErrorMessage/ErrorMessage";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { deleteUserAdmin, getUserAdminById, postCreateUserAdmin, putUpdateUserAdmin, putUpdateUserAdminPassword } from "../../../../services/adminServices";
+import { deleteUserAdmin, getOnOffAdmin, getUserAdminById, postCreateUserAdmin, putAssignInstitutionsAdmin, putUpdateUserAdmin, putUpdateUserAdminPassword } from "../../../../services/adminServices";
 import * as FaIcon from 'react-icons/fa'
 import Selector from "../../../Establecimientos/components/Selector";
-import {  getInstitutionsAll } from "../../../../services/institutionsServices";
+import { getInstitutionsAll } from "../../../../services/institutionsServices";
 
 export default function RegisterAdmin() {
 
@@ -33,28 +33,28 @@ export default function RegisterAdmin() {
     const [confirmPassword, setConfirmPassword] = useState("")
 
     const { register, handleSubmit, setValue, getValues, formState: { errors } } = useForm();
-     /////// SELECTORES ////////////////////////////////////////////////////////
-     const [instituciones, setInstituciones] = useState([]);
-     const [institucionesSelected, setInstitucionesSelected] = useState([]);
-     const [showSelector, setShowSelector] = useState(false);
-     const [tipoSelector, setTipoSelector] = useState('');
-     const openSelector = (tipo) => {
-         setTipoSelector(tipo)
-         setShowSelector(true);
-     }
-     const closeSelector = (tipo, dataSelecetd) => {
-         if (dataSelecetd) {
+    /////// SELECTORES ////////////////////////////////////////////////////////
+    const [instituciones, setInstituciones] = useState([]);
+    const [institucionesSelected, setInstitucionesSelected] = useState([]);
+    const [showSelector, setShowSelector] = useState(false);
+    const [tipoSelector, setTipoSelector] = useState('');
+    const openSelector = (tipo) => {
+        setTipoSelector(tipo)
+        setShowSelector(true);
+    }
+    const closeSelector = (tipo, dataSelecetd) => {
+        if (dataSelecetd) {
             setInstitucionesEnForm(tipo, dataSelecetd)
-         }
-         setShowSelector(false);
-     }
+        }
+        setShowSelector(false);
+    }
 
-     const setInstitucionesEnForm = (tipo, data) => {
+    const setInstitucionesEnForm = (tipo, data) => {
         let arrayIDs = data.map((item) => item.id)
         values[tipo] = arrayIDs
         if (tipo === 'instituciones') setInstitucionesSelected(data)
     }
-     /////// SELECTORES ////////////////////////////////////////////////////////
+    /////// SELECTORES ////////////////////////////////////////////////////////
 
     // SI EL FORMULARIO ES DE EDICION, BUSCA DATOS DE USUARIo
     useEffect(() => {
@@ -71,22 +71,22 @@ export default function RegisterAdmin() {
         getUserAdminById(id)
             .then(
                 (res) => {
-                    let user = {
-                        id: res.id,
-                        username: res.username,
-                        password: res.password,
-                        confirmPassword: res.password,
-                        id_person: 0,
-                        id_user_status: 1,
-                        id_role: 1,
-                        is_admin: 1
-                    }
+                    // let user = {
+                    //     id: res.id,
+                    //     username: res.username,
+                    //     // password: res.password,
+                    //     // confirmPassword: res.password,
+                    //     id_person: 0,
+                    //     id_user_status: 1,
+                    //     id_role: 1,
+                    //     is_admin: 1
+                    // }
                     // SETEA EN VALUES
-                    setValues(user);
-                    setPassword(user.password)
-                    setConfirmPassword(user.password)
+                    setValues(res[0]);
+                    // setPassword(user.password)
+                    // setConfirmPassword(user.password)
                     // SETEA EN FORM
-                    Object.entries(user).forEach(([key, value]) => {
+                    Object.entries(res[0]).forEach(([key, value]) => {
                         setValue(`${key}`, value);
                     })
                 }
@@ -151,13 +151,24 @@ export default function RegisterAdmin() {
     )
 
     const buildBody = () => {
-        let body = values
-        delete body.confirmPassword
+        // let body = values
+        // delete body.confirmPassword
+
+        let body = {
+            username: 'testHardcode',
+            id_person: 0,
+            id_user_status: 0,
+            id: 0,
+            is_admin_activate: 1
+        }
+
         if (action === 'registrar') {
-            body.password = password;
+            // body.password = password;
             registerNewUserAdmin(body);
         }
         else if (action === 'editar') {
+            const arrayInstitutions = institucionesSelected.map(item => item.id);
+            assignInstitutions({username: values.username}, arrayInstitutions)
             if (changePassword) {
                 body.password = password;
                 editUserAdminPassword(body)
@@ -168,7 +179,7 @@ export default function RegisterAdmin() {
         }
     }
 
-    
+
 
     const onSubmit = () => {
         Swal.fire(confirm(`¿Confirma ${action === 'registrar' ? 'registro' : 'edición'} de usuario administrador?`, false)).then((result) => {
@@ -230,18 +241,20 @@ export default function RegisterAdmin() {
     const editUserAdminPassword = useCallback((body) => {
         putUpdateUserAdminPassword(body)
             .then((res) => {
-                if (res.ok) {
-                    return res.text().then(text => {
-                        let readeble = JSON.parse(text)
-                        if (readeble.status) {
-                            Swal.fire(success('Usuario administrador editado'))
-                            history.push('/admin/panel/listado')
-                        } else {
-                            Swal.fire(error('Hubo un error editar usuario'))
-                            throw new Error(text)
-                        }
-                    })
-                }
+
+                // TODO: con la respuesta que debe contener el id, y en caso de que haya instituciones seleccionadas, se realiza put de instituciones
+                // if (res.ok) {
+                //     return res.text().then(text => {
+                //         let readeble = JSON.parse(text)
+                //         if (readeble.status) {
+                //             Swal.fire(success('Usuario administrador editado'))
+                //             history.push('/admin/panel/listado')
+                //         } else {
+                //             Swal.fire(error('Hubo un error editar usuario'))
+                //             throw new Error(text)
+                //         }
+                //     })
+                // }
             })
             .catch((err) => {
                 console.error('error', err)
@@ -252,24 +265,34 @@ export default function RegisterAdmin() {
             })
     }, [])
 
-    const submitDelete = (idUser) => {
-        Swal.fire(confirm(`¿Desea eliminar usuario administrador?`, false)).then((result) => {
+    const assignInstitutions = useCallback(
+        (username, arrayIDsInst) => {
+            putAssignInstitutionsAdmin(username, arrayIDsInst)
+            .then((res) => {
+                // console.log(res)
+            })
+            .catch((err) => console.error(err));
+        }, [])
+
+    const submitOnOff = (idUser, estadoActual) => {
+        let change = estadoActual === 1 ? 'desactivar' : 'activar'
+        Swal.fire(confirm(`¿Desea ${change} usuario administrador?`, false)).then((result) => {
             if (result.isConfirmed) {
                 setLoading(true)
-                let data = { person_id: idUser }
-                deleteUser(data);
+                let data = { user_id: idUser }
+                onOffUser(data);
             }
         })
     }
 
-    const deleteUser = useCallback(
+    const onOffUser = useCallback(
         (idUser) => {
-            deleteUserAdmin(idUser)
+            getOnOffAdmin(idUser)
                 .then(
                     (res) => {
-                        if (res.ok) {
+                        if (res.status) {
                             history.push('/admin/panel/listado');
-                            Swal.fire(success('El administrador ha sido eliminado'));
+                            Swal.fire(success('El administrador ha sido modificado'));
                         } else {
                             throw new Error('Hubo un error al eliminar usuario administrador')
                         }
@@ -295,7 +318,11 @@ export default function RegisterAdmin() {
                         <Form className="form-group form_register" onSubmit={handleSubmit(() => onSubmit())}>
                             <Col xs={12} md={6} lg={4}>
                                 <Col xs={12} className="mb-2">
-                                    <FormGroup inputType='input' label='Nombre de Usuario' name='username' value={values.username}
+                                    <FormGroup
+                                        inputType='input'
+                                        label='Nombre de Usuario'
+                                        name='username'
+                                        value={values.username}
                                         {...register('username', {
                                             required: { value: true, message: "El campo es requerido." },
                                         })}
@@ -352,7 +379,10 @@ export default function RegisterAdmin() {
                             <Col xs={12} className="my-3">
                                 <div className="d-flex w-100 justify-content-end align-items-center">
                                     {values.username && action === 'editar' && values.username !== userName &&
-                                        <Button variant="danger" type="button" className="text-capitalize me-3" onClick={() => { submitDelete(values.id) }}>Eliminar</Button>
+                                        <>
+                                            {values.is_admin_activate === 1 && <Button variant="danger" type="button" className="text-capitalize me-3" onClick={() => { submitOnOff(values.id, values.is_admin_activate) }}>Desactivar</Button>}
+                                            {values.is_admin_activate === 0 && <Button variant="success" type="button" className="text-capitalize me-3" onClick={() => { submitOnOff(values.id, values.is_admin_activate) }}>Activar</Button>}
+                                        </>
                                     }
                                     <Link to="/admin/panel/listado">
                                         <button className='btn btn-outline-secondary me-3'>Cancelar</button>

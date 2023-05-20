@@ -110,22 +110,32 @@ export const API_ENDPOINT_PERSONACCEPTED = `${baseUrl}/accepted`;
 
 export const API_ENDPOINT_PERSONNOTACCEPT = `${baseUrl}/notaccept`;
 
-export const API_ENDPOINT_GET_USERS_ADMIN_LIST = `${baseUrl}/get-users-admin-list`;
+// CRUD ADMINS ------------------------------------------------------
+export const API_ENDPOINT_GET_USERS_ADMIN_LIST = `${baseUrl}/admins`;
 
 export const API_ENDPOINT_GET_USER_ADMIN_BY_ID = (query) => {
-  let url = `${baseUrl}/getuseradminbyid?${query}`;
+  let url = `${baseUrl}/adminbyid?${query}`;
   return url;
 }
+
+export const API_ENDPOINT_CREATEUSERADMIN = `${baseUrl}/create_admin`;
+
+
 export const API_ENDPOINT_UPDTAEUSERADMIN = `${baseUrl}/updateuseradmin`;
 export const API_ENDPOINT_UPDTAEUSERADMINPASSWORD = `${baseUrl}/updateuserpassword`;
-
-export const API_ENDPOINT_CREATEUSERADMIN = `${baseUrl}/createuseradmin`;
+export const API_ENDPOINT_ASSIGN_INSTITUTIONS = (query) => {
+  let url = `${baseUrl}/assign_institutions?${query}`;
+  return url;
+}
 
 export const API_ENDPOINT_DELETEUSERADMIN = (query) => {
   let url = `${baseUrl}/deleteuseradmin?${query}`;
   return url;
 }
-
+export const API_ENDPOINT_ONOFFADMIN = (query) => {
+  let url = `${baseUrl}/onoffadmin?${query}`;
+  return url;
+}
 // get patients/users data ---------------------------------------
 
 export const API_ENDPOINT_GETPERSONBYIDENTIFICATIONNUMBER = (query) => {

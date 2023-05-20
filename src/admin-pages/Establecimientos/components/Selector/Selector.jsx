@@ -12,7 +12,7 @@ const Selector = (props) => {
 
     useEffect(() => {
         let checkBoxList = dataList.map((item) => {
-            let isSelected = values[tipo].find((dato) => dato === item.id)
+            let isSelected = values[tipo]?.find((dato) => dato === item.id)
             item.selected = isSelected ? true : false;
             return item;
         })
