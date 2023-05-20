@@ -8,9 +8,11 @@ import usePatient from '../../hooks/usePatient';
 import { updatePerson } from '../../services/personServices';
 import Loader from '../Loader/Loader';
 import { LabelsFormData, ValuesRegisterForm } from '../RegisterForm/Forms/FormData';
-import { error, success, confirm } from '../SwalAlertData';
+import { error, confirm } from '../SwalAlertData';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { getAllDepartamentosFrom, getAllLocalidadesFrom } from '../../services/searchAddressService';
+import { getInstitutionsAllWithNewData } from '../../services/institutionsServices';
+import AutocompleteComponent from '../AutocompleteComponent';
 
 function Profile({ show, handleClose, type }) {
 
@@ -29,6 +31,12 @@ function Profile({ show, handleClose, type }) {
     const [departmentSelected, setDepartmentSelected] = useState('');
     const [localities, setLocalities] = useState([]);
     const [localitySelected, setLocalitySelected] = useState('');
+    // SET INSTITUTION
+    const [usualInstitution, setUsualInstitution] = useState('');
+    const [institutionsList, setInstitutionsList] = useState([]);
+    const [changeInstitution, setChangeInstitution] = useState(false);
+    const handleChangeInstitution = () => setChangeInstitution(!changeInstitution);
+
 
     //set form with data
     const setForm = (data) => {
@@ -44,6 +52,7 @@ function Profile({ show, handleClose, type }) {
             let newData = { ...data }
             newData.birthdate = new Date(data.birthdate).toLocaleDateString()
             setForm(newData);
+            getInstitutionsAll(newData);
             setValues(newData);
             setLoading(false);
         }
@@ -79,6 +88,37 @@ function Profile({ show, handleClose, type }) {
             getLocalities(targetValue)
         }
     }
+
+    const handleChangeSearch = (institution) => {
+        if (typeof institution !== 'string' && institution.id) {
+            let selectedInst = institutionsList.find((item) => {
+                return item.name.toLowerCase().trim() === institution.name.toLowerCase()
+            })
+            setUsualInstitution(selectedInst)
+            values['id_usual_institution'] = selectedInst.id;
+            values['inst_from_portal'] = selectedInst.portal;
+            setNewValue('id_usual_institution');
+        }
+    }
+
+    const getInstitutionsAll = useCallback(
+        (patient) => {
+            getInstitutionsAllWithNewData()
+                .then((res) => {
+                    if (res.length > 0) {
+                        setInstitutionsList(res);
+                    }
+                    return res
+                })
+                .then((res) => {
+                    let actuallyInst = res.find((item) => {
+                        return item.id === patient.id_usual_institution && item.portal === patient.inst_from_portal
+                    });
+                    setUsualInstitution(actuallyInst);
+                })
+                .catch((err) => console.error(err));
+        }, [])
+
 
     const getDepartments = useCallback(
         (provinciaID) => {
@@ -261,11 +301,17 @@ function Profile({ show, handleClose, type }) {
     const conditionDataForm =
         <Row className="in">
             <Col className="mb-2" xs={12} >
-                <FormGroup inputType={f.id_usual_institution.inputType} label={f.id_usual_institution.label} name={f.id_usual_institution.form_name} selectValue={values.id_usual_institution}
-                    variants={f.id_usual_institution.variants}
-                    handleChange={(e) => handleChange(e)}
-                    {...register(`${f.id_usual_institution.form_name}`, f.id_usual_institution.register)}
-                />
+                Establecimiento de atención usual
+                <div className='d-flex align-items-center'>
+                    <span >{usualInstitution?.name}</span>
+                    {!changeInstitution && <button type="button" className='btn text-primary' onClick={() => handleChangeInstitution()}>Cambiar...</button>}
+                </div>
+                {changeInstitution &&
+                    <AutocompleteComponent
+                        variants={institutionsList}
+                        handleChange={handleChangeSearch}
+                    />
+                }
                 {errors[f.id_usual_institution.form_name] && <ErrorMessage><p>{errors[f.id_usual_institution.form_name].message}</p></ErrorMessage>}
             </Col>
             <Col className="mb-2 mt-3" xs={12}>

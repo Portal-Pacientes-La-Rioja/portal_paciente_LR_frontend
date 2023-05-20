@@ -157,6 +157,7 @@ export const API_ENDPOINT_SEND_TURNO_MAIL = (query) => {
 
 // formData---------------------------------------
 export const API_ENDPOINT_INSTITUCIONES = `${baseUrl}/institutions/all`;
+export const API_ENDPOINT_INSTITUCIONESAallWithNewData = `${baseUrl}/allWithNewData`;
 
 export const API_ENDPOINT_PARAMETRIC = `${baseUrl}/parametric`;
 

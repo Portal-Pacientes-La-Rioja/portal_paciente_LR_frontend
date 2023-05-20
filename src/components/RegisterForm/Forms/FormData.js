@@ -291,7 +291,7 @@ export const LabelsFormData = {
   },
   id_usual_institution: {
     form_name: "id_usual_institution",
-    label: "Establecimiento de atención usual",
+    label: "Nuevo establecimiento de atención usual",
     inputType: "select",
     type: "number",
     variants: "variantsInstitutions",
@@ -407,6 +407,7 @@ export const ValuesRegisterForm = {
   postal_address: "",
   phone_number: "",
   id_usual_institution: "",
+  inst_from_portal: true,
   is_diabetic: false,
   is_hypertensive: false,
   is_chronic_respiratory_disease: false,

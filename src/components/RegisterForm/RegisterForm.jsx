@@ -14,6 +14,8 @@ import { error, successRegister } from "../SwalAlertData";
 import { registerPersonAndUserService, registerPersonService, uploadIdentificationImagesService } from "../../services/registerServices";
 import * as MdIcon from "react-icons/md";
 import { getAllDepartamentosFrom, getAllLocalidadesFrom } from "../../services/searchAddressService";
+import { getInstitutionsAllWithNewData } from "../../services/institutionsServices";
+import AutocompleteComponent from "../AutocompleteComponent";
 
 export default function RegisterForm(formType) {
 
@@ -40,6 +42,8 @@ export default function RegisterForm(formType) {
     const [departmentSelected, setDepartmentSelected] = useState('');
     const [localities, setLocalities] = useState([]);
     const [localitySelected, setLocalitySelected] = useState('');
+    // SET INSTITUTION
+    const [institutionsList, setInstitutionsList] = useState([]);
 
 
     // set values 
@@ -106,6 +110,7 @@ export default function RegisterForm(formType) {
 
     useEffect(() => {
         if (step === 2 && type === 'user') getDepartments(provinciaID);
+        if ((step === 3 && type === 'user') || (step === 1 && type === 'patient')) getInstitutionsAll();
     }, [step])
 
     const getDepartments = useCallback(
@@ -159,6 +164,30 @@ export default function RegisterForm(formType) {
         let selected = localities.find((item) => item.name.toLowerCase().trim() === data.toLowerCase().trim());
         if (selected) setLocalitySelected(selected.id)
     }
+
+    const handleChangeSearch = (institution) => {
+        if (typeof institution !== 'string' && institution.id) {
+            let selectedInst = institutionsList.find((item) => {
+                return item.name.toLowerCase().trim() === institution.name.toLowerCase()
+            })
+            values['id_usual_institution'] = selectedInst.id;
+            values['inst_from_portal'] = selectedInst.portal;
+            setNewValue('id_usual_institution');
+        }
+    }
+
+    const getInstitutionsAll = useCallback(
+        () => {
+            getInstitutionsAllWithNewData()
+                .then((res) => {
+                    if (res.length > 0) {
+                        setInstitutionsList(res);
+                    }
+                    return res
+                })
+                .catch((err) => console.error(err));
+        }, [])
+
 
     useEffect(() => {
         setValue('birthdate', values.birthdate);
@@ -460,15 +489,15 @@ export default function RegisterForm(formType) {
                         :
                         <>
                             <Col className="mb-2" xs={12} sm={6}>
-                                <FormGroup inputType={f.department.inputType} label={f.department.label} name={f.department.form_name} value={values.department} 
-                                variants={{data: departments}} handleChange={handleChangeUbicacion}
+                                <FormGroup inputType={f.department.inputType} label={f.department.label} name={f.department.form_name} value={values.department}
+                                    variants={{ data: departments }} handleChange={handleChangeUbicacion}
                                     {...register(`${f.department.form_name}`, f.department.register)}
                                 />
                                 {errors[f.department.form_name] && <ErrorMessage><p>{errors[f.department.form_name].message}</p></ErrorMessage>}
                             </Col>
                             <Col className="mb-2" xs={12} sm={6}>
-                                <FormGroup inputType={f.locality.inputType} label={f.locality.label} name={f.locality.form_name} value={values.locality} 
-                                variants={{data: localities}} handleChange={handleChangeUbicacion}
+                                <FormGroup inputType={f.locality.inputType} label={f.locality.label} name={f.locality.form_name} value={values.locality}
+                                    variants={{ data: localities }} handleChange={handleChangeUbicacion}
                                     {...register(`${f.locality.form_name}`, f.locality.register)}
                                 />
                                 {errors[f.locality.form_name] && <ErrorMessage><p>{errors[f.locality.form_name].message}</p></ErrorMessage>}
@@ -505,11 +534,12 @@ export default function RegisterForm(formType) {
             {(step === 3 && type === 'user') || (step === 1 && type === 'patient') ?
                 <>
                     <Col className="mb-2" xs={12} >
-                        <FormGroup inputType={f.id_usual_institution.inputType} label={f.id_usual_institution.label} name={f.id_usual_institution.form_name} selectValue={values.id_usual_institution}
-                            variants={f.id_usual_institution.variants}
-                            handleChange={(e) => handleChange(e)}
+
+                        {institutionsList.length > 0 && <AutocompleteComponent
+                            variants={institutionsList}
+                            handleChange={handleChangeSearch}
                             {...register(`${f.id_usual_institution.form_name}`, f.id_usual_institution.register)}
-                        />
+                        />}
                         {errors[f.id_usual_institution.form_name] && <ErrorMessage><p>{errors[f.id_usual_institution.form_name].message}</p></ErrorMessage>}
                     </Col>
                     <Col xs={12} className="mt-3 mb-2">

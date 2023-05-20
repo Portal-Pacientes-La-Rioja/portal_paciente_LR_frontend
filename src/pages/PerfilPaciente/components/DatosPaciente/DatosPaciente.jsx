@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import usePatient from '../../../../hooks/usePatient';
 import { Col, Row } from "react-bootstrap";
 import { variantsGender } from '../../../../components/ComponentsData';
-import institutionsServices from '../../../../services/institutionsServices';
+import { getInstitutionsAllWithNewData } from '../../../../services/institutionsServices';
 
 function DatosPaciente() {
 
@@ -24,16 +24,18 @@ function DatosPaciente() {
     const [institution, setInstitution] = useState([]);
     const getInstitutions = useCallback(
         () => {
-            institutionsServices()
+            getInstitutionsAllWithNewData()
                 .then((res) => {
                     return res
                 })
                 .then((res) => {
-                    let find = res.find(i => i.id === p.patient.id_usual_institution) || 1
-                    // console.log(find.name)
+                    console.log(res)
+                    let find = res.find((i) => {
+                        return i.id === p.patient.id_usual_institution && i.portal === p.patient.inst_from_portal
+                    }) 
                     setInstitution(find.name)
                 })
-                .catch((err) => { console.log(err) })
+                .catch((err) => { console.error(err) })
         },
         [institution],
     )

@@ -1,4 +1,4 @@
-import { API_ENDPOINT_CREATE_INSTITUTION, API_ENDPOINT_ESPECIALIDADES_ALL, API_ENDPOINT_INSTITUCIONES, API_ENDPOINT_INSTITUTIONS_ALL, API_ENDPOINT_INSTITUTIONS_BY_ID, API_ENDPOINT_SERVICIOS_ALL, API_ENDPOINT_STATUS_INSTITUTION, API_ENDPOINT_UPDATE_INSTITUTION, API_HEADER, AUTH_HEADER, UPDATE_HEADER } from "../constants/api.constants";
+import { API_ENDPOINT_CREATE_INSTITUTION, API_ENDPOINT_ESPECIALIDADES_ALL, API_ENDPOINT_INSTITUCIONES, API_ENDPOINT_INSTITUCIONESAallWithNewData, API_ENDPOINT_INSTITUTIONS_ALL, API_ENDPOINT_INSTITUTIONS_BY_ID, API_ENDPOINT_SERVICIOS_ALL, API_ENDPOINT_STATUS_INSTITUTION, API_ENDPOINT_UPDATE_INSTITUTION, API_HEADER, AUTH_HEADER, UPDATE_HEADER } from "../constants/api.constants";
 import { get, post, put } from "./httpServices";
 
 export default async function institutionsServices() {
@@ -14,6 +14,16 @@ export default async function institutionsServices() {
 export async function getInstitutionsAll() {
   try {
     const promise = await get(API_ENDPOINT_INSTITUTIONS_ALL, AUTH_HEADER())
+    return promise
+  }
+  catch (err) {
+    console.error('Error al cargar las instituciones: ', err);
+  }
+}
+
+export async function getInstitutionsAllWithNewData() {
+  try {
+    const promise = await get(API_ENDPOINT_INSTITUCIONESAallWithNewData, AUTH_HEADER())
     return promise
   }
   catch (err) {
