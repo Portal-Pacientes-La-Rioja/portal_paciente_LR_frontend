@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Form } from 'react-bootstrap'
 import institutionsServices from '../../../services/institutionsServices';
 import identificationsTypeServices from '../../../services/parametricServices';
-import { variantsDependencies, variantsGender, variantsTypologies, variantsTypologyCategories } from '../../ComponentsData';
+import { variantsDependencies, variantsGender, variantsTimeAvaialability, variantsTypologies, variantsTypologyCategories } from '../../ComponentsData';
 import DatePickerComponent from '../../DatePickerComponent';
 import SelectType from '../../SelectType';
 
@@ -25,6 +25,7 @@ const FormGroup = React.forwardRef((props, ref) => {
    } = props
 
   const vaGender = variantsGender;
+  const vaTimeAvailability = variantsTimeAvaialability;
   const vaDependencies = variantsDependencies;
   const vaTypologies = variantsTypologies;
   const vaTypologyCategories = variantsTypologyCategories;
@@ -86,6 +87,12 @@ const FormGroup = React.forwardRef((props, ref) => {
     return options
   }
 
+  const getTimeAvailabilityVariants = () => {
+    setOptions(vaTimeAvailability);
+    return options
+  }
+
+
   useEffect(() => {
     if (variants === "variantsInstitutions") {
       getInstitutionsVariants();
@@ -104,6 +111,9 @@ const FormGroup = React.forwardRef((props, ref) => {
     }
     if (variants === "tipology_category") {
       getTypologyCategoriesVariants();
+    }
+    if (variants === "time_availability") {
+      getTimeAvailabilityVariants();
     }
     if (typeof variants === 'object') {
       setOptions(variants.data)

@@ -209,7 +209,7 @@ function Profile({ show, handleClose, type }) {
                         return res.text().then(text => {
                             let readeble = JSON.parse(text)
                             if (readeble.status) {
-                                Swal.fire(confirm('El usuario ha sido actualizado. Verás los cambios cuando vuelvas a iniciar sesión.', true))
+                                Swal.fire(confirm('El usuario ha sido actualizado. Verás los cambios cuando inicies sesión nuevamente.', true))
                                 setLoading(false)
                                 handleClose()
                             } else {

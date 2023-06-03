@@ -4,6 +4,12 @@ export const variantsGender = [
   { id: 3, name: "No-binario" },
 ];
 
+export const variantsTimeAvaialability = [
+  { id: 'Por la mañana', name: "Por la mañana" },
+  { id: 'Por la tarde', name: "Por la tarde" },
+  { id: 'Indistinto', name: "Indistitnto" },
+];
+
 export const variantsDependencies = [
   { id: 'Municipal', name: "Municipal" },
   { id: 'Provincial', name: "Provincial" }

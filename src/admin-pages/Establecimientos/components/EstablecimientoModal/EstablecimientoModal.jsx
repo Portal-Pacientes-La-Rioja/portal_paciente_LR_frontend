@@ -33,6 +33,7 @@ const EstablecimientoModal = (props) => {
         localidad: '',
         ciudad: '',
         tetlefono: '',
+        email: '',
         activate: 1,
         services: [],
         especialidades: []
@@ -100,8 +101,9 @@ const EstablecimientoModal = (props) => {
     const setForm = (data) => {
         if (show) {
             Object.entries(data).forEach(([key, value], index, arr) => {
-                setValue(`${key}`, value);
-                valuesForm[`${key}`] = value;
+                let newValue = value ?? '';
+                setValue(`${key}`, newValue);
+                valuesForm[`${key}`] = newValue;
             });
         }
     }
@@ -261,7 +263,6 @@ const EstablecimientoModal = (props) => {
         (body) => {
             createInstitution(body)
                 .then((res) => {
-                    console.log(res)
                     if (res.ok) {
                         return res.text()
                             .then(text => {
@@ -286,7 +287,7 @@ const EstablecimientoModal = (props) => {
         (body) => {
             updateInstitution(body)
                 .then((res) => {
-                    if (res.status) {
+                    if (res.ok) {
                         Swal.fire(success('Establecimiento actualizado'));
                         getInstitutionData(institution)
                     } else {
@@ -355,6 +356,32 @@ const EstablecimientoModal = (props) => {
                                             </Col>
                                             <Col xs={12} sm={6} className="mb-2">
                                                 <FormGroup
+                                                    inputType={'input'}
+                                                    type='number'
+                                                    paste={true}
+                                                    label={'Teléfono'}
+                                                    name={'telefono'}
+                                                    value={valuesForm.telefono}
+                                                    {...register('telefono', registerRequired)}
+                                                    onChange={handleChange}
+                                                />
+                                                {errors.telefono && <ErrorMessage><p>{errors.telefono.message}</p></ErrorMessage>}
+                                            </Col>
+                                            <Col xs={12} sm={6} className="mb-2">
+                                                <FormGroup
+                                                    inputType={'input'}
+                                                    type='email'
+                                                    paste={true}
+                                                    label={'Email'}
+                                                    name={'email'}
+                                                    value={valuesForm.email}
+                                                    {...register('email', registerRequired)}
+                                                    onChange={handleChange}
+                                                />
+                                                {errors.email && <ErrorMessage><p>{errors.email.message}</p></ErrorMessage>}
+                                            </Col>
+                                            <Col xs={12} sm={6} className="mb-2">
+                                                <FormGroup
                                                     inputType={'select'}
                                                     label={'Departamento'}
                                                     name={'departamento'}
@@ -390,17 +417,6 @@ const EstablecimientoModal = (props) => {
                                                     onChange={handleChange}
                                                 />
                                                 {errors.domicilio && <ErrorMessage><p>{errors.domicilio.message}</p></ErrorMessage>}
-                                            </Col>
-                                            <Col xs={12} sm={6} className="mb-2">
-                                                <FormGroup
-                                                    inputType={'input'}
-                                                    type='number'
-                                                    paste={true}
-                                                    label={'Teléfono'}
-                                                    name={'telefono'}
-                                                    value={valuesForm.telefono}
-                                                    onChange={handleChange}
-                                                />
                                             </Col>
                                             <Col xs={12} sm={6} className="mb-2">
                                                 <FormGroup
