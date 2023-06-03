@@ -122,7 +122,7 @@ export const API_ENDPOINT_CREATEUSERADMIN = `${baseUrl}/create_admin`;
 
 
 export const API_ENDPOINT_UPDTAEUSERADMIN = `${baseUrl}/updateuseradmin`;
-export const API_ENDPOINT_UPDTAEUSERADMINPASSWORD = `${baseUrl}/updateuserpassword`;
+export const API_ENDPOINT_UPDTAEUSERADMINPASSWORD = `${baseUrl}/change_password`;
 export const API_ENDPOINT_ASSIGN_INSTITUTIONS = (query) => {
   let url = `${baseUrl}/assign_institutions?${query}`;
   return url;

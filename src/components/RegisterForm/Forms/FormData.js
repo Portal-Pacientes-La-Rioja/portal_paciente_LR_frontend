@@ -424,14 +424,7 @@ export const ValuesRegisterForm = {
 
 export const ValuesRegisterAdminForm = {
   username: "",
-  password: "",
-  confirmPassword: "",
-  id_person: 0,
-  id_user_status: 1,
-  is_admin_activate: 1,
-  id_role: 1,
-  is_admin: 1,
   id: "",
-  instituciones: []
+  institutions: []
 };
 

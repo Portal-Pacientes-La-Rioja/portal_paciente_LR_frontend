@@ -11,7 +11,7 @@ import { ValuesRegisterAdminForm } from "../../../../components/RegisterForm/For
 import FormGroup from "../../../../components/RegisterForm/Forms/FormGroup";
 import { ErrorMessage } from "../../../../components/ErrorMessage/ErrorMessage";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { deleteUserAdmin, getOnOffAdmin, getUserAdminById, postCreateUserAdmin, putAssignInstitutionsAdmin, putUpdateUserAdmin, putUpdateUserAdminPassword } from "../../../../services/adminServices";
+import { deleteUserAdmin, getUserAdminById, postCreateUserAdmin, putAssignInstitutionsAdmin, putOnOffAdmin, putUpdateUserAdmin, putUpdateUserAdminPassword } from "../../../../services/adminServices";
 import * as FaIcon from 'react-icons/fa'
 import Selector from "../../../Establecimientos/components/Selector";
 import { getInstitutionsAll } from "../../../../services/institutionsServices";
@@ -52,13 +52,14 @@ export default function RegisterAdmin() {
     const setInstitucionesEnForm = (tipo, data) => {
         let arrayIDs = data.map((item) => item.id)
         values[tipo] = arrayIDs
-        if (tipo === 'instituciones') setInstitucionesSelected(data)
+        if (tipo === 'institutions') setInstitucionesSelected(data)
     }
     /////// SELECTORES ////////////////////////////////////////////////////////
 
     // SI EL FORMULARIO ES DE EDICION, BUSCA DATOS DE USUARIo
     useEffect(() => {
         if (action === 'editar' && editId) {
+            setLoading(true)
             let data = { user_id: editId }
             getUserData(data);
             setChangePassword(false);
@@ -66,31 +67,25 @@ export default function RegisterAdmin() {
         getInstituciones()
     }, [])
 
-
     const getUserData = useCallback((id) => {
         getUserAdminById(id)
             .then(
                 (res) => {
-                    // let user = {
-                    //     id: res.id,
-                    //     username: res.username,
-                    //     // password: res.password,
-                    //     // confirmPassword: res.password,
-                    //     id_person: 0,
-                    //     id_user_status: 1,
-                    //     id_role: 1,
-                    //     is_admin: 1
-                    // }
                     // SETEA EN VALUES
-                    setValues(res[0]);
-                    // setPassword(user.password)
-                    // setConfirmPassword(user.password)
+                    let data = res[0]
+                    setForm(data)
+                    setPassword("password")
+                    setConfirmPassword("confirmPassword")
+
                     // SETEA EN FORM
-                    Object.entries(res[0]).forEach(([key, value]) => {
-                        setValue(`${key}`, value);
-                    })
+                    setValue('username', data.username)
+                    setValue('password', 'password')
+                    setValue('confirmPassword', 'password')
+                    return values
                 }
             )
+            .then((res) => setInstitucionesEnForm('institutions', res.institutions))
+            .then(() => setLoading(false))
             .catch(
                 (err) => {
                     console.error(err);
@@ -99,6 +94,14 @@ export default function RegisterAdmin() {
                 }
             )
     }, [])
+
+    //SET VALUES FROM DATA
+    const setForm = (data) => {
+        Object.entries(data).forEach(([key, value], index, arr) => {
+            setValue(`${key}`, value);
+            values[`${key}`] = value;
+        });
+    }
 
     // set values 
     const handleChange = (e) => {
@@ -151,31 +154,17 @@ export default function RegisterAdmin() {
     )
 
     const buildBody = () => {
-        // let body = values
-        // delete body.confirmPassword
 
         let body = {
-            username: 'testHardcode',
-            id_person: 0,
-            id_user_status: 0,
-            id: 0,
-            is_admin_activate: 1
+            username: values.username,
+            password: password
         }
-
         if (action === 'registrar') {
-            // body.password = password;
             registerNewUserAdmin(body);
         }
         else if (action === 'editar') {
             const arrayInstitutions = institucionesSelected.map(item => item.id);
-            assignInstitutions({username: values.username}, arrayInstitutions)
-            if (changePassword) {
-                body.password = password;
-                editUserAdminPassword(body)
-            } else {
-                delete body.password
-                editUserAdmin(body);
-            }
+            assignInstitutions({ username: values.username }, arrayInstitutions)
         }
     }
 
@@ -213,48 +202,14 @@ export default function RegisterAdmin() {
             })
     }, []);
 
-    const editUserAdmin = useCallback((body) => {
-        putUpdateUserAdmin(body)
-            .then((res) => {
-                if (res.ok) {
-                    return res.text().then(text => {
-                        let readeble = JSON.parse(text)
-                        if (readeble.status) {
-                            Swal.fire(success('Usuario administrador editado'))
-                            history.push('/admin/panel/listado')
-                        } else {
-                            Swal.fire(error('Hubo un error al editar usuario'))
-                            throw new Error(text)
-                        }
-                    })
-                }
-            })
-            .catch((err) => {
-                console.error('error', err)
-                Swal.fire(error('Hubo un error al editar usuario'))
-                setLoading(false)
-                let data = { user_id: editId }
-                getUserData(data)
-            })
-    }, [])
 
     const editUserAdminPassword = useCallback((body) => {
         putUpdateUserAdminPassword(body)
             .then((res) => {
-
-                // TODO: con la respuesta que debe contener el id, y en caso de que haya instituciones seleccionadas, se realiza put de instituciones
-                // if (res.ok) {
-                //     return res.text().then(text => {
-                //         let readeble = JSON.parse(text)
-                //         if (readeble.status) {
-                //             Swal.fire(success('Usuario administrador editado'))
-                //             history.push('/admin/panel/listado')
-                //         } else {
-                //             Swal.fire(error('Hubo un error editar usuario'))
-                //             throw new Error(text)
-                //         }
-                //     })
-                // }
+                if (res.ok) {
+                    Swal.fire(success('Usuario actualizado'))
+                    history.push('/admin/panel/listado')
+                }
             })
             .catch((err) => {
                 console.error('error', err)
@@ -268,10 +223,21 @@ export default function RegisterAdmin() {
     const assignInstitutions = useCallback(
         (username, arrayIDsInst) => {
             putAssignInstitutionsAdmin(username, arrayIDsInst)
-            .then((res) => {
-                // console.log(res)
-            })
-            .catch((err) => console.error(err));
+                .then((res) => {
+                    if (res.ok) {
+                        if (changePassword) {
+                            let body = {
+                                username: values.username,
+                                password: password
+                            }
+                            editUserAdminPassword(body)
+                        } else {
+                            Swal.fire(success('Usuario actualizado'))
+                            history.push('/admin/panel/listado')
+                        }
+                    }
+                })
+                .catch((err) => console.error(err));
         }, [])
 
     const submitOnOff = (idUser, estadoActual) => {
@@ -287,7 +253,7 @@ export default function RegisterAdmin() {
 
     const onOffUser = useCallback(
         (idUser) => {
-            getOnOffAdmin(idUser)
+            putOnOffAdmin(idUser)
                 .then(
                     (res) => {
                         if (res.status) {
@@ -323,6 +289,7 @@ export default function RegisterAdmin() {
                                         label='Nombre de Usuario'
                                         name='username'
                                         value={values.username}
+                                        disabled={action === 'editar'}
                                         {...register('username', {
                                             required: { value: true, message: "El campo es requerido." },
                                         })}
@@ -346,7 +313,6 @@ export default function RegisterAdmin() {
                                             })}
                                             onChange={(e) => onPasswordChange(e.target.value)}
                                         />
-
                                         {errors.password && <ErrorMessage><p>{errors.password.message}</p></ErrorMessage>}
                                     </Col>
                                 }
@@ -363,31 +329,29 @@ export default function RegisterAdmin() {
                                     </Col>
                                 }
                             </Col>
-                            <Col xs={12}>
-                                <Col xs={12} className="mb-2 d-flex">
-                                    <div className="d-flex align-items-baseline mb-2">
-                                        <label className="form-label me-1">Establecimientos asignados</label>
-                                        <button className="btn text-primary" type="button" onClick={() => openSelector('instituciones')}>{values.instituciones?.length > 0 ? 'Agregar/Quitar' : 'Agregar'}...</button>
-                                    </div>
-                                    <div className="est-list">
-                                        {institucionesSelected.length > 0 && institucionesSelected.map((item) => {
-                                            return <span className="me-1 d-inline-block" key={item.id}>{item.name + ' - '}</span>
-                                        })}
-                                    </div>
-                                </Col>
+                            <Col xs={12} className="mb-2 d-flex">
+                                <div className="d-flex align-items-baseline mb-2">
+                                    <label className="form-label me-1">Establecimientos asignados</label>
+                                    <button className="btn text-primary" type="button" onClick={() => openSelector('institutions')}>{values.institutions?.length > 0 ? 'Agregar/Quitar' : 'Agregar'}...</button>
+                                </div>
+                                <div className="est-list">
+                                    {institucionesSelected.length > 0 && institucionesSelected.map((item) => {
+                                        return <span className="me-1 d-inline-block" key={item.id}>{item.name + ' - '}</span>
+                                    })}
+                                </div>
                             </Col>
                             <Col xs={12} className="my-3">
                                 <div className="d-flex w-100 justify-content-end align-items-center">
                                     {values.username && action === 'editar' && values.username !== userName &&
                                         <>
-                                            {values.is_admin_activate === 1 && <Button variant="danger" type="button" className="text-capitalize me-3" onClick={() => { submitOnOff(values.id, values.is_admin_activate) }}>Desactivar</Button>}
-                                            {values.is_admin_activate === 0 && <Button variant="success" type="button" className="text-capitalize me-3" onClick={() => { submitOnOff(values.id, values.is_admin_activate) }}>Activar</Button>}
+                                            {values.is_admin_activate === 1 && <Button variant="danger" type="button" className="text-capitalize me-3" onClick={() => { submitOnOff(values.id, values.is_admin_activate) }}>Desactivar Usuario</Button>}
+                                            {values.is_admin_activate === 0 && <Button variant="success" type="button" className="text-capitalize me-3" onClick={() => { submitOnOff(values.id, values.is_admin_activate) }}>Activar Usuario</Button>}
                                         </>
                                     }
                                     <Link to="/admin/panel/listado">
                                         <button className='btn btn-outline-secondary me-3'>Cancelar</button>
                                     </Link>
-                                    <Button variant="primary" type="submit" className="text-capitalize">{action}</Button>
+                                    {(changePassword || institucionesSelected.length > 0) && <Button variant="primary" type="submit" className="text-capitalize">{action}</Button>}
                                 </div>
                             </Col>
                         </Form>

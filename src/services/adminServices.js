@@ -86,11 +86,11 @@ export async function getPersonsAccepted() {
     }
   }
 
-  export async function getOnOffAdmin(id) {
+  export async function putOnOffAdmin(id) {
     try {
       const searchParams = new URLSearchParams(id);
       let query = searchParams.toString();
-      const promise = await get(API_ENDPOINT_ONOFFADMIN(query), AUTH_HEADER());
+      const promise = await put(API_ENDPOINT_ONOFFADMIN(query), AUTH_HEADER());
       return promise;
     } catch (err) {
       console.error("Error al cargar datos: ", err);

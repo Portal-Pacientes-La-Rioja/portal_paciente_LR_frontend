@@ -23,7 +23,7 @@ export async function getInstitutionsAll() {
 
 export async function getInstitutionsAllWithNewData() {
   try {
-    const promise = await get(API_ENDPOINT_INSTITUCIONESAallWithNewData, AUTH_HEADER())
+    const promise = await get(API_ENDPOINT_INSTITUCIONESAallWithNewData, API_HEADER())
     return promise
   }
   catch (err) {
