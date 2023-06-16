@@ -13,6 +13,8 @@
     "dotenv": "^16.0.0",
     "http-proxy-middleware": "^2.0.3",
     "leaflet": "^1.9.3",
+    "mdb-react-ui-kit": "^6.0.0",
+    "mdbreact": "^5.2.0",
     "react": "^17.0.2",
     "react-bootstrap": "^2.0.2",
     "react-datepicker": "^4.5.0",

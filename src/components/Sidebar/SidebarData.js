@@ -59,17 +59,17 @@ export const SidebarData = {
         }
       ]
     },
-    // {
-    //   id: 5,
-    //   title: "Estudios",
-    //   path: "/usuario/estudios",
-    //   icon: <MdIcon.MdTextSnippet className="menu-icon" />,
-    //   acordeon: false,
-    //   a: false,
-    //   cName: "sidebar-text acordeon",
-    //   aIcon: <MdIcon.MdKeyboardArrowDown className="menu-icon" />,
-    //   options: false,
-    // },
+    {
+       id: 5,
+       title: "Estudios",
+       path: "/usuario/estudios",
+       icon: <MdIcon.MdTextSnippet className="menu-icon" />,
+       acordeon: false,
+       a: false,
+       cName: "sidebar-text acordeon",
+       aIcon: <MdIcon.MdKeyboardArrowDown className="menu-icon" />,
+       options: false,
+    },
     {
       id: 6,
       title: "Historia Clínica",
