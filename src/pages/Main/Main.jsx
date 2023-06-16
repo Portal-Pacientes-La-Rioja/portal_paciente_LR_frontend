@@ -29,7 +29,8 @@ const Main = () => {
                         </Link>
                     </Col>
                 )}
-            </Row>
+
+      </Row>
         </Container>
     )
 }

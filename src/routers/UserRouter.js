@@ -13,6 +13,7 @@ import Turnos from '../pages/Turnos';
 // import Estudios from '../pages/Estudios';
 import NotFound from '../pages/NotFound/NotFound';
 import AgregarPaciente from '../pages/GrupoFamiliar/AgregarPaciente';
+import Estudios from '../pages/Estudios';
 
 export default function UserRouter() {
 
@@ -33,7 +34,7 @@ export default function UserRouter() {
 
                 <Route path='/usuario/notificaciones' component={Notificaciones }/>    
                 <Route path='/usuario/turnos' component={Turnos}/>    
-                {/* <Route path='/usuario/estudios' component={Estudios}/> */}
+                <Route path='/usuario/estudios' component={Estudios}/>
                 <Route path='/usuario/404' component={NotFound}/>   
                 <Route path='/usuario/*'><Redirect to='/usuario/404'/></Route>        
             </Switch>
