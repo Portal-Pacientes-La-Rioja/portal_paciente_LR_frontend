@@ -56,10 +56,6 @@ const AuthProvider = ({ children }) => {
           }
         })
         .then((data) => {
-          verifyUserAdmin(data.access_token);
-          return data
-        })
-        .then((data) => {
           setTypeUser(1); //hardcode - 1 = user-admin. 2 = user-person
           setUser(data);
           setTokenUser(data.access_token);
@@ -82,16 +78,9 @@ const AuthProvider = ({ children }) => {
     [tokenUser]
   );
 
-  const verifyUserAdmin = useCallback(
-    (jwt) => {
-      jwtVerify(jwt)
-      .then((res) => {
-        console.log(res)
-      }) 
-      .catch((err) => {
-        console.error(err)
-      }) 
-  }, []);
+  const getAdminData = () => {        
+    return jwtVerify(tokenUser);
+  }
 
   const loginPerson = useCallback(
     (u, p) => {
@@ -192,6 +181,7 @@ const AuthProvider = ({ children }) => {
     loginPerson,
     loginAdmin,
     logout,
+    getAdminData,
     isLogged() {
       getLocalStorage("curtime");
       if (tokenUser) {

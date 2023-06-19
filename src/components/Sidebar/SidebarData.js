@@ -232,22 +232,6 @@ export const SidebarData = {
   ],
   admin: [
     {
-      id: 16,
-      title: "Panel de administradores",
-      path: "/admin/panel/listado",
-      icon: <FaIcon.FaUsersCog className="menu-icon" />,
-      acordeon: false,
-      a: false,
-      cName: "sidebar-text",
-      aIcon: <MdIcon.MdKeyboardArrowDown className="menu-icon" />,
-      options: [
-        {
-          title: "Listado",
-          path: "/admin/panel/listado"
-        }
-      ],
-    },
-    {
       id: 14,
       title: "Alta de pacientes",
       path: "/admin/alta-de-pacientes/pacientes-pendientes",
@@ -299,4 +283,22 @@ export const SidebarData = {
       options: [],
     }
   ],
+  superadmin: [
+    {
+      id: 16,
+      title: "Panel de administradores",
+      path: "/admin/panel/listado",
+      icon: <FaIcon.FaUsersCog className="menu-icon" />,
+      acordeon: false,
+      a: false,
+      cName: "sidebar-text",
+      aIcon: <MdIcon.MdKeyboardArrowDown className="menu-icon" />,
+      options: [
+        {
+          title: "Listado",
+          path: "/admin/panel/listado"
+        }
+      ],
+    }
+  ]
 };

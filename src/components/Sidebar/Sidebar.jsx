@@ -12,6 +12,7 @@ function Sidebar({ isActive, action }) {
     const perfilDelPacienteOpciones = sidebarData.perfilDelPaciente
     const grupoFamiliarOpciones = sidebarData.grupoFamiliar
     const prop = [perfilDelPacienteOpciones, grupoFamiliarOpciones]
+    const isSuperAdmin = auth.getAdminData().is_superadmin;
 
     const showAcordeon = (i, id) => {
         const promise = prop[i].find((item) => {
@@ -172,6 +173,23 @@ function Sidebar({ isActive, action }) {
                             )
                         })
                         }</>}
+                    {auth.typeUser === 1 && <>
+                        {isSuperAdmin ? SidebarData.superadmin.map((item, index) => {
+                            return (
+                                <li
+                                    key={index}
+                                    className={item.cName}
+                                    onClick={action} >
+                                    <NavLink
+                                        activeClassName="active"
+                                        exact
+                                        to={item.path}>{item.icon}
+                                        <span>{item.title}</span>
+                                    </NavLink>
+                                </li>
+                            )
+                        })
+                        : ''}</>}
                 </ul>
             </div>
         </>

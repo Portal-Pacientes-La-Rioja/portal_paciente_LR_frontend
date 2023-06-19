@@ -5,7 +5,7 @@ import AdminPanelRouter from "./AdminPanelRouter";
 import * as FaIcon from 'react-icons/fa'
 
 export default function AdminPanel() {
-    const data = SidebarData.admin.find(d => d.id === 16);
+    const data = SidebarData.superadmin.find(d => d.id === 16);
     const routes = data.options
 
     return (

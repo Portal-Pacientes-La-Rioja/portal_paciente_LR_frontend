@@ -117,17 +117,18 @@ export default function RegisterAdmin() {
         }
     }
     const handleChangePassword = () => {
-        setChangePassword(true);
-        setPassword("");;
-        setConfirmPassword("");
-        // SETVALUE DE REACT FORM SIRVE PARA QUE EL FORM DETECTE LOS CAMBIOS
-        setValue('password', "");
-
+        if (!changePassword) {
+            setChangePassword(true);
+            setPassword("");;
+            setConfirmPassword("");
+            // SETVALUE DE REACT FORM SIRVE PARA QUE EL FORM DETECTE LOS CAMBIOS
+            setValue('password', "");
+        }
     }
 
     const onPasswordChange = (value) => {
-        setPassword(value);
         setValue('password', value)
+        setPassword(value);
     }
     const onConfirmPasswordChange = (value) => {
         setConfirmPassword(value);
@@ -153,33 +154,31 @@ export default function RegisterAdmin() {
         [],
     )
 
-    const buildBody = () => {
-
-        let body = {
+    const buildBody = (psw) => {
+        return {
             username: values.username,
-            password: password
-        }
-        if (action === 'registrar') {
-            registerNewUserAdmin(body);
-        }
-        else if (action === 'editar') {
-            const arrayInstitutions = institucionesSelected.map(item => item.id);
-            assignInstitutions({ username: values.username }, arrayInstitutions)
+            password: psw
         }
     }
-
-
 
     const onSubmit = () => {
         Swal.fire(confirm(`¿Confirma ${action === 'registrar' ? 'registro' : 'edición'} de usuario administrador?`, false)).then((result) => {
             if (result.isConfirmed) {
                 setLoading(true)
-                buildBody();
+
+                if (action === 'registrar') {
+                    registerNewUserAdmin(password);
+                }
+                else if (action === 'editar') {
+                    const arrayInstitutions = institucionesSelected.map(item => item.id);
+                    assignInstitutions({username: values.username}, arrayInstitutions, password)
+                }
             }
         })
     }
 
-    const registerNewUserAdmin = useCallback((body) => {
+    const registerNewUserAdmin = useCallback((psw) => {
+        const body = buildBody(psw)
         postCreateUserAdmin(body)
             .then((res) => {
                 if (res.ok) {
@@ -203,7 +202,8 @@ export default function RegisterAdmin() {
     }, []);
 
 
-    const editUserAdminPassword = useCallback((body) => {
+    const editUserAdminPassword = useCallback((psw) => {
+        const body = buildBody(psw)
         putUpdateUserAdminPassword(body)
             .then((res) => {
                 if (res.ok) {
@@ -221,16 +221,12 @@ export default function RegisterAdmin() {
     }, [])
 
     const assignInstitutions = useCallback(
-        (username, arrayIDsInst) => {
+        (username, arrayIDsInst, psw) => {
             putAssignInstitutionsAdmin(username, arrayIDsInst)
                 .then((res) => {
                     if (res.ok) {
                         if (changePassword) {
-                            let body = {
-                                username: values.username,
-                                password: password
-                            }
-                            editUserAdminPassword(body)
+                            editUserAdminPassword(psw)
                         } else {
                             Swal.fire(success('Usuario actualizado'))
                             history.push('/admin/panel/listado')
