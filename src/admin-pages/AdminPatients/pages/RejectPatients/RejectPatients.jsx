@@ -16,7 +16,7 @@ export default function PendingPatients() {
     const [patientsPending, setPendingPatients] = useState([]);
     const [adminStatus, setAdminStatus] = useState([])
     const [institutions, setInstitutions] = useState([]);
-    const status = adminStatus.find(s => s.name === 'RECHAZADO')
+    const status = adminStatus?.find(s => s.name === 'RECHAZADO')
     const statusName = status ? status.name : 'rechazado'
 
     const getData = useCallback(

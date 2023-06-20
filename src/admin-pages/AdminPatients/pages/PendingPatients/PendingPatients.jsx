@@ -16,7 +16,7 @@ export default function PendingPatients() {
     const [patientsPending, setPendingPatients] = useState([]);
     const [adminStatus, setAdminStatus] = useState([])
     const [institutions, setInstitutions] = useState([]);
-    const status = adminStatus.find(s => s.name === 'PENDIENTE DE VALIDACIÓN')
+    const status = adminStatus?.find(s => s.name === 'PENDIENTE DE VALIDACIÓN')
     const statusName = status ? status.name : 'pendiente'
 
     const getData = useCallback(
@@ -32,7 +32,7 @@ export default function PendingPatients() {
                     }
                 })
                 .catch((err) => {
-                    console.log('error', err)
+                    console.error('error', err)
                     Swal.fire(error('Hubo un error al cargar pacientes pendientes'));
                     setLoading(false)
                 })
@@ -48,7 +48,7 @@ export default function PendingPatients() {
                     setLoading(false)
                 })
                 .catch((err) => {
-                    console.log('Error', err)
+                    console.error('Error', err)
                     Swal.fire(error('Error al obtenter estados'))
                 })
 
@@ -82,7 +82,7 @@ export default function PendingPatients() {
                         return allInstitutions;
                     }
                 })
-                .catch((err) => { console.log(err) })
+                .catch((err) => { console.error(err) })
         },
         [institutions],
     )

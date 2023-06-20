@@ -1,23 +1,25 @@
 import { Container, Row, Col, Table, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import logoFondoBlanco from '../../assets/statics/logo-fondo-blanco-2.jpg'
 import * as MdIcon from 'react-icons/md';
 import * as FaIcon from 'react-icons/fa';
 import AutocompleteComponent from '../../components/AutocompleteComponent';
 import { useCallback, useEffect, useState } from 'react';
 import EstablecimientoModal from './components/EstablecimientoModal';
-import { getInstitutionsAll, updateInstitution, updateStatusInstitution } from '../../services/institutionsServices';
+import { getInstitutionsAll, updateStatusInstitution } from '../../services/institutionsServices';
 import Swal from 'sweetalert2';
 import { confirm, error } from '../../components/SwalAlertData';
 import Loader from '../../components/Loader';
 import DataNotFound from '../../components/DataNotFound';
 import Paginador from '../../components/Paginador';
+import useAuth from '../../hooks/useAuth';
+import { getUserAdminById } from '../../services/adminServices';
 
 
 
 const Establecimientos = () => {
 
     const [loading, setLoading] = useState(true);
+    const auth = useAuth();
+    const isSuperAdmin = auth.getAdminData().is_superadmin;
     const [establecimientos, setEstablecimientos] = useState([]);
     const [data, setData] = useState([]);
     const itemsPagina = 30
@@ -55,6 +57,20 @@ const Establecimientos = () => {
         [establecimientos],
     )
 
+    const getAdminInstitutions = useCallback(
+        () => {
+            let idAdmin = auth.getAdminData().id
+            getUserAdminById({user_id: idAdmin})
+            .then((res) => {
+                if (res[0].institutions) {
+                    setEstablecimientos(res[0].institutions)
+                    setLoading(false)
+                }
+            })
+            .catch((err) => console.error(err))
+        }, [])
+
+
     const handlePagination = (elementosEnPaginaActual) => {
         setData(elementosEnPaginaActual);
         setResetPaginator(false);
@@ -66,7 +82,8 @@ const Establecimientos = () => {
 
     const initData = () => {
         setLoading(true)
-        getData()
+        if (isSuperAdmin) getData()
+        else getAdminInstitutions()
     }
 
     const handleChangeSearch = (selected) => {
@@ -88,7 +105,7 @@ const Establecimientos = () => {
         }
     }
 
-    const confirmOnOff = (currentState, institution) => { 
+    const confirmOnOff = (currentState, institution) => {
         let action = currentState === 1 ? 'Anular' : 'Activar'
         Swal.fire(confirm(`¿${action} Establecimiento ${institution.name}?`)).then((result) => {
             if (result.isConfirmed) {
@@ -98,22 +115,22 @@ const Establecimientos = () => {
     }
 
     const onOffInstitution = useCallback(
-        (action, institution) =>{
+        (action, institution) => {
             setLoading(true)
-            let body = {...institution}
+            let body = { ...institution }
             body.activate = action === 'Anular' ? 0 : 1
             updateStatusInstitution(body)
-            .then((res) => {
-                if (res.ok) {
-                    initData()
-                }
-            })
-            .catch((err) => {
-                console.error(err)
-                Swal.fire(error(`Error al ${action} Establecimiento`))
-                setLoading(false)
-            })
-    },  [])
+                .then((res) => {
+                    if (res.ok) {
+                        initData()
+                    }
+                })
+                .catch((err) => {
+                    console.error(err)
+                    Swal.fire(error(`Error al ${action} Establecimiento`))
+                    setLoading(false)
+                })
+        }, [])
 
 
     return (
@@ -139,7 +156,7 @@ const Establecimientos = () => {
                     <div className='overflow-auto mb-3' style={{ maxHeight: '600px' }}>
                         <Table bordered borderless striped hover>
                             <thead>
-                                <tr style={{position: 'sticky', top: 0, backgroundColor: 'white', zIndex: 1 }}>
+                                <tr style={{ position: 'sticky', top: 0, backgroundColor: 'white', zIndex: 1 }}>
                                     <th>Establecimiento</th>
                                     <th>Tipología</th>
                                     <th>Departamento</th>

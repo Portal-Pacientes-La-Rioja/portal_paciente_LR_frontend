@@ -78,7 +78,7 @@ const AuthProvider = ({ children }) => {
     [tokenUser]
   );
 
-  const getAdminData = () => {        
+  const getAdminData = () => {    
     return jwtVerify(tokenUser);
   }
 
