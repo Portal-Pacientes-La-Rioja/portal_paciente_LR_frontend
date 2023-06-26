@@ -213,6 +213,11 @@ export const API_ENDPOINT_SUMAR = (idn) => {
   return url;
 };
 
+export const API_ENDPOINT_CEB = (idn) => {
+  let url = `${baseUrl}/ceb/${idn}`;
+  return url;
+};
+
 // hce---------------------------------------
 export const API_ENDPOINT_ALLERGIES = (institution_id, patient_id) => {
   let url = `${baseUrl}/hcegeneral/${institution_id}/allergies/${patient_id}`;
