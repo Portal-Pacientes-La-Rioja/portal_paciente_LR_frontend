@@ -58,7 +58,9 @@ export default function FilesDragAndDrop({ onUpload }) {
 
       <div className="lista">
         <h5>Sus estudios</h5>
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
+        {errorMessage && (
+          <p style={{ color: 'red', fontWeight: 'bold' }}>{errorMessage}</p>
+        )}
         <ul>
           {fileList.map((file, index) => (
             <li key={index}>

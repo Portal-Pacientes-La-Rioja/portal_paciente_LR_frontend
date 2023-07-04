@@ -291,6 +291,9 @@ export const API_ENDPOINT_STATUS_INSTITUTION = `${baseUrl}/onoffinstitution`;
 export const API_ENDPOINT_INSTITUTIONS_BY_ID = (query) => {
   return `${baseUrl}/getinstitutionsbyid?${query}`;
 }
+export const API_ENDPOINT_SHORTEST_ROUTE= (query) => {
+  return `${baseUrl}/shortest-route?${query}`;
+}
 export const API_ENDPOINT_ESPECIALIDADES_ALL = `${baseUrl}/especialidades`;
 export const API_ENDPOINT_ESPECIALIDADES_BY_ID = (especialidad) => {
   return `${baseUrl}/especialidades/${especialidad}`;

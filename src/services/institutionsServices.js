@@ -1,4 +1,4 @@
-import { API_ENDPOINT_CREATE_INSTITUTION, API_ENDPOINT_ESPECIALIDADES_ALL, API_ENDPOINT_INSTITUCIONES, API_ENDPOINT_INSTITUCIONESAallWithNewData, API_ENDPOINT_INSTITUTIONS_ALL, API_ENDPOINT_INSTITUTIONS_BY_ID, API_ENDPOINT_SERVICIOS_ALL, API_ENDPOINT_STATUS_INSTITUTION, API_ENDPOINT_UPDATE_INSTITUTION, API_HEADER, AUTH_HEADER, UPDATE_HEADER } from "../constants/api.constants";
+import { API_ENDPOINT_CREATE_INSTITUTION, API_ENDPOINT_ESPECIALIDADES_ALL, API_ENDPOINT_INSTITUCIONES, API_ENDPOINT_INSTITUCIONESAallWithNewData, API_ENDPOINT_INSTITUTIONS_ALL, API_ENDPOINT_INSTITUTIONS_BY_ID, API_ENDPOINT_SERVICIOS_ALL, API_ENDPOINT_SHORTEST_ROUTE, API_ENDPOINT_STATUS_INSTITUTION, API_ENDPOINT_UPDATE_INSTITUTION, API_HEADER, AUTH_HEADER, UPDATE_HEADER } from "../constants/api.constants";
 import { get, post, put } from "./httpServices";
 
 export default async function institutionsServices() {
@@ -95,3 +95,17 @@ export async function getServiciosAll() {
   }
 }
 
+export async function getShortestRoute(patientId, institucionId) {
+  try {
+    const searchParams = new URLSearchParams({
+      person_id: patientId,
+      institution_id: institucionId
+    });
+    let query = searchParams.toString();
+    const promise = await get(API_ENDPOINT_SHORTEST_ROUTE(query), AUTH_HEADER())
+    return promise
+  }
+  catch (err) {
+    console.error('Error al cargar los servicios: ', err);
+  }
+}
