@@ -299,6 +299,17 @@ export const SidebarData = {
           path: "/admin/panel/listado"
         }
       ],
+    },
+    {
+      id: 17,
+      title: "Indicadores",
+      path: "/admin/indicadores",
+      icon: <MdIcon.MdOutlineDashboard className="menu-icon" />,
+      acordeon: false,
+      a: false,
+      cName: "sidebar-text",
+      aIcon: <MdIcon.MdKeyboardArrowDown className="menu-icon" />,
+      options: [],
     }
   ]
 };

@@ -311,4 +311,13 @@ export const API_ENDPOINT_ALL_DEPARTAMENTOS_FROM = (query) => {
 export const API_ENDPOINT_ALL_LOCALIDADES_FROM = (query) => {
   return `${baseUrl}/get_all_localidades_from?${query}`;
 }
+// // INDICADORES
+export const INDICADOR_USUARIOS_ACTIVOS = () => {
+  let url = `${environment.baseURL}/indicador_usuarios_activos`;
+  return url;
+};
 
+export const INDICADOR_GRUPO_FAMILIAR = () => {
+  let url = `${environment.baseURL}/indicador_grupo_familiar`;
+  return url;
+};
