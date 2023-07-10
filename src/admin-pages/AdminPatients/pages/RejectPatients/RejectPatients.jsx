@@ -26,11 +26,11 @@ export default function PendingPatients() {
                     if (res) {
                         let patients = res.filter(p => p.id_admin_status === 3)//note - table db =>  1: pending , 2: validated , 3: refused
                         setPendingPatients(patients)
-                        setLoading(false)
                     } else {
                         throw new Error(res)
                     }
                 })
+                .then(() => setLoading(false))
                 .catch((err) => {
                     console.log('error', err)
                     Swal.fire(error('Hubo un error al cargar pacientes rechazados'));
@@ -45,7 +45,6 @@ export default function PendingPatients() {
             getAdminStatus()
                 .then((res) => {
                     setAdminStatus(res)
-                    setLoading(false)
                 })
                 .catch((err) => {
                     console.log('Error', err)

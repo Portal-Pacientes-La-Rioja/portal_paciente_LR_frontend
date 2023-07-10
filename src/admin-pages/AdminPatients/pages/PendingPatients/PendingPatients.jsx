@@ -21,16 +21,17 @@ export default function PendingPatients() {
 
     const getData = useCallback(
         () => {
+            setLoading(true)
             getPersons()
                 .then((res) => {
                     if (res) {
                         let patients = res.filter(p => p.id_admin_status === 1)//note - table db =>  1: pending , 2: validated , 3: refused
                         setPendingPatients(patients)
-                        setLoading(false)
                     } else {
                         throw new Error(res)
                     }
                 })
+                .then(() => setLoading(false))
                 .catch((err) => {
                     console.error('error', err)
                     Swal.fire(error('Hubo un error al cargar pacientes pendientes'));
@@ -45,7 +46,6 @@ export default function PendingPatients() {
             getAdminStatus()
                 .then((res) => {
                     setAdminStatus(res)
-                    setLoading(false)
                 })
                 .catch((err) => {
                     console.error('Error', err)
@@ -59,7 +59,6 @@ export default function PendingPatients() {
         getAdminStatusToSetPerson()
         getInstitutions()
     }, [])
-
 
     const reloadTime = () => {
         setTimeout(() => {
