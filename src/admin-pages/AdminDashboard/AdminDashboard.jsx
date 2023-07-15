@@ -1,5 +1,5 @@
 import { Container, Row, } from "react-bootstrap";
-// import {LoginChart} from "./charts/LoginChart/LoginChart";
+import {AltaUsers} from "./charts/AltaUsers/AltaUsers";
 // import { FamilyGroupChart } from "./charts/FamilyGroupChart/FamilyGroupChart";
 // import { HSIChart } from "./charts/HSIChart/HSIChart";
 // import { SumarChart } from "./charts/SumarChart/SumarChart";
@@ -15,8 +15,8 @@ export default function AdminDashboard() {
                 <h5 className='section-title'>Indicadores</h5>
             </div>
             <Row className="p-3">
-                {/* <LoginChart reasults={data1} handleSearch={handleSearch}/> */}
                 <ActiveUsers/>
+                <AltaUsers/>
                 {/* <FamilyGroupChart reasults={data2} handleSearch={handleSearch}/> */}
                 {/* <HSIChart reasults={data3} handleSearch={handleSearch}/>
                 <SumarChart reasults={data4} handleSearch={handleSearch}/> */}
