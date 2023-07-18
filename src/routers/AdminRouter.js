@@ -10,7 +10,7 @@ import AdminDashboard from "../admin-pages/AdminDashboard/AdminDashboard";
 
 export default function AdminRouter() {
   const auth = useAuth()
-  const isSuperAdmin = auth.getAdminData().is_superadmin
+  const isSuperAdmin = auth.getAdminData()?.is_superadmin
   return (
     <div className="user-container">
       <div className="admin-container">
