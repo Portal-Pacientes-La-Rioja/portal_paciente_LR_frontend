@@ -12,7 +12,7 @@ function Sidebar({ isActive, action }) {
     const perfilDelPacienteOpciones = sidebarData.perfilDelPaciente
     const grupoFamiliarOpciones = sidebarData.grupoFamiliar
     const prop = [perfilDelPacienteOpciones, grupoFamiliarOpciones]
-    const isSuperAdmin = auth.getAdminData().is_superadmin;
+    const isSuperAdmin = auth.getAdminData()?.is_superadmin;
 
     const showAcordeon = (i, id) => {
         const promise = prop[i].find((item) => {
