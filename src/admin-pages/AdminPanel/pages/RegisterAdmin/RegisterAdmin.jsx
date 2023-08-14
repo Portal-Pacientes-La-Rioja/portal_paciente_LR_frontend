@@ -11,10 +11,10 @@ import { ValuesRegisterAdminForm } from "../../../../components/RegisterForm/For
 import FormGroup from "../../../../components/RegisterForm/Forms/FormGroup";
 import { ErrorMessage } from "../../../../components/ErrorMessage/ErrorMessage";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { deleteUserAdmin, getUserAdminById, postCreateUserAdmin, putAssignInstitutionsAdmin, putOnOffAdmin, putUpdateUserAdmin, putUpdateUserAdminPassword } from "../../../../services/adminServices";
+import { getUserAdminById, postCreateUserAdmin, putAssignInstitutionsAdmin, putOnOffAdmin, putUpdateUserAdmin, putUpdateUserAdminPassword } from "../../../../services/adminServices";
 import * as FaIcon from 'react-icons/fa'
 import Selector from "../../../Establecimientos/components/Selector";
-import { getInstitutionsAll } from "../../../../services/institutionsServices";
+import { getInstitutionsAllWithNewData } from "../../../../services/institutionsServices";
 
 export default function RegisterAdmin() {
 
@@ -136,7 +136,7 @@ export default function RegisterAdmin() {
 
     const getInstituciones = useCallback(
         () => {
-            getInstitutionsAll()
+            getInstitutionsAllWithNewData()
                 .then((res) => {
                     let ordenado = res.sort((a, b) => {
                         if (a.name === b.name) { return 0; }
