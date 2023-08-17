@@ -15,11 +15,10 @@ export default function AdminDashboard() {
                 <h5 className='section-title'>Indicadores</h5>
             </div>
             <Row className="p-3">
-                <ActiveUsers/>
                 <AltaUsers/>
-                {/* <FamilyGroupChart reasults={data2} handleSearch={handleSearch}/> */}
-                {/* <HSIChart reasults={data3} handleSearch={handleSearch}/>
-                <SumarChart reasults={data4} handleSearch={handleSearch}/> */}
+            </Row>
+            <Row className="p-3">
+                <ActiveUsers/>
             </Row>
         </Container>
     )

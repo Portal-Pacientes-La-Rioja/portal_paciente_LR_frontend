@@ -317,7 +317,32 @@ export const INDICADOR_USUARIOS_ACTIVOS = () => {
   return url;
 };
 
+export const INDICADOR_USUARIOS_MASTER = () => {
+  let url = `${environment.baseURL}/indicador_usuarios_master`;
+  return url;
+};
+
+export const INDICADOR_CANTIDAD_USUARIOS = () => {
+  let url = `${environment.baseURL}/indicador_cantidad_usuarios`;
+  return url;
+};
+
 export const INDICADOR_GRUPO_FAMILIAR = () => {
   let url = `${environment.baseURL}/indicador_grupo_familiar`;
+  return url;
+};
+
+export const INDICADOR_USUARIOS_VALIDADOS = () => {
+  let url = `${environment.baseURL}/indicador_usuarios_validados`;
+  return url;
+};
+
+export const INDICADOR_USUARIOS_RECHAZADOS = () => {
+  let url = `${environment.baseURL}/indicador_usuarios_recazados`;
+  return url;
+};
+
+export const INDICADOR_USUARIOS_PENDIENTES = () => {
+  let url = `${environment.baseURL}/indicador_usuarios_pendientes`;
   return url;
 };

@@ -1,19 +1,14 @@
-import { Row, Col, Button } from "react-bootstrap";
+import { Col } from "react-bootstrap";
 import {
     Chart as ChartJS,
-    // CategoryScale,
-    // LinearScale,
-    // BarElement,
-    // Title,
     Tooltip,
     Legend,
     ArcElement,
 } from 'chart.js';
 import { useEffect, useState } from "react";
-import * as MdIcon from "react-icons/md";
-import { Bar, Pie } from 'react-chartjs-2';
+import { Pie } from 'react-chartjs-2';
 import { useCallback } from "react";
-import { getFamilyGroupIndicators, getUsersIndicators } from "../../../../services/dashboardService";
+import { getMasterUsersIndicators, getPendingUsersIndicators, getRejectedUsersIndicators, getValidatedUsersIndicators } from "../../../../services/dashboardService";
 import Swal from 'sweetalert2';
 import { error } from "../../../../components/SwalAlertData";
 
@@ -21,21 +16,23 @@ export const AltaUsers = () => {
 
     const fromDate = new Date('01/01/2023').toISOString().split('T')[0]
     const toDate = new Date().toISOString().split('T')[0];
-    const [labels, setLabels] = useState(['Usuarios']);
-    const [dataUsers, setDataUsers] = useState([]);
-    const [dataFamilyGroup, setDataFamilyGroup] = useState([]);
+    const [dataValidated, setDataValidated] = useState(0);
+    const [dataRejected, setDataRejected] = useState(0);
+    const [dataPending, setDataPending] = useState(0);
 
 
     useEffect(() => {
-        handleDataUsers();
-        handleDataFamilyGroup();
+        handleDataValidatedUsers();
+        handleDataRejectedUsers();
+        handleDataPendingUsers();
     }, []);
 
-    const handleDataUsers = useCallback(() => {
-        getUsersIndicators()
+    const handleDataValidatedUsers = useCallback(() => {
+        getValidatedUsersIndicators()
             .then(
                 (res) => {
-                    setDataUsers([res])
+                    let value = res?.usuarios_validados ?? 0
+                    setDataValidated(value)
                 })
             .catch(
                 (err) => {
@@ -45,11 +42,12 @@ export const AltaUsers = () => {
             )
     }, [])
 
-    const handleDataFamilyGroup = useCallback(() => {
-        getFamilyGroupIndicators()
+    const handleDataRejectedUsers = useCallback(() => {
+        getRejectedUsersIndicators()
             .then(
                 (res) => {
-                    setDataFamilyGroup([res])
+                    let value = res?.usuarios_rechazados ?? 0
+                    setDataRejected(value)
                 })
             .catch(
                 (err) => {
@@ -59,48 +57,45 @@ export const AltaUsers = () => {
             )
     }, [])
 
+
+    const handleDataPendingUsers = useCallback(() => {
+        getPendingUsersIndicators()
+            .then(
+                (res) => {
+                    let value = res?.usuarios_pendientes_autorizar ?? 0
+                    setDataPending(value)
+                })
+            .catch(
+                (err) => {
+                    console.error(err);
+                    Swal.fire(error('Error al cargar datos'))
+                }
+            )
+    }, [])
+    
 
     ChartJS.register(ArcElement, Tooltip, Legend);
 
-    const options = {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'top',
-            },
-            title: {
-                display: true,
-                text: 'Usuarios activos',
-            },
-        },
-    };
-
     const data = {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        labels: [`Pendientes: ${dataPending}`, `Rechazados: ${dataRejected}`, `Validados: ${dataValidated}` ],
         datasets: [
-          {
-            label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(153, 102, 255, 0.2)',
-              'rgba(255, 159, 64, 0.2)',
-            ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)',
-              'rgba(255, 159, 64, 1)',
-            ],
-            borderWidth: 1,
-          },
+            {
+                label: '',
+                data: [dataPending, dataRejected, dataValidated],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(75, 192, 192, 1)',
+                ],
+                borderWidth: 1,
+            },
         ],
-      };
+    };
 
     return (
         <Col lg={6} className='my-3'>
@@ -133,6 +128,10 @@ export const AltaUsers = () => {
             </div>
             <div className="p-3 border border-secundary rounded" style={{ maxHeight: '400px' }}>
                 <Pie data={data} />
+            </div>
+            <div className="d-flex border border-dark-subtle rounded justify-content-between p-4 mt-4">
+                <h5 className="mb-0">Total solicitudes de alta:</h5>
+                <h5 className="mb-0">{dataPending + dataRejected + dataValidated}</h5>
             </div>
         </Col>
     )
