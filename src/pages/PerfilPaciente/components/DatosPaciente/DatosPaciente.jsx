@@ -29,7 +29,6 @@ function DatosPaciente() {
                     return res
                 })
                 .then((res) => {
-                    console.log(res)
                     let find = res.find((i) => {
                         return i.id === p.patient.id_usual_institution && i.portal === p.patient.inst_from_portal
                     }) 

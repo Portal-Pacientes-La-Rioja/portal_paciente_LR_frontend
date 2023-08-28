@@ -32,19 +32,60 @@ export default function RegisterForm(formType) {
     const type = formType.formType //Tipe of form "user" or "patient"
     const f = LabelsFormData //Information to build form fields
     const [values, setValues] = useState(ValuesRegisterForm); //Get and set values form
-    const [newValue, setNewValue] = useState("") //Get and set values form to validate required fields
+     const [newValue, setNewValue] = useState("") //Get and set values form to validate required fields
     const [search, setSearch] = useState(false) //Get addres by search or not
     // newPerson
     const [newPersonId, setNewPersonId] = useState(null)
     // geogrphic data
-    const provinciaID = '46' //hardcode; 
+    const provinciaID = '46' //hardcode la rioja; 
     const [departments, setDepartments] = useState([]);
     const [departmentSelected, setDepartmentSelected] = useState('');
     const [localities, setLocalities] = useState([]);
     const [localitySelected, setLocalitySelected] = useState('');
     // SET INSTITUTION
     const [institutionsList, setInstitutionsList] = useState([]);
+    const [usualInstitution, setUsualInstitution] = useState('');
+    const [changeInstitution, setChangeInstitution] = useState(true);
+    const handleChangeInstitution = () => setChangeInstitution(!changeInstitution);
 
+
+    useEffect(() => {
+        if (step === 2 && type === 'user') getDepartments(provinciaID);
+        if ((step === 3 && type === 'user') || (step === 1 && type === 'patient')) getInstitutionsAll();
+    }, [step])
+
+    useEffect(() => {
+        if (departmentSelected !== '') getLocalities(departmentSelected)
+    }, [departmentSelected])
+
+    useEffect(() => {
+        if (type === 'patient') setChangeInstitution(false)
+    }, [])
+
+    useEffect(() => {
+        if (departments.length > 0 && values.department) {
+            setDepartamentoData(values.department)
+        }
+    }, [departments, values.department])
+
+    useEffect(() => {
+        if (localities.length > 0 && values.locality) {
+            setLocalidadData(values.locality)
+        }
+    }, [localities, values])
+
+    useEffect(() => {
+        setValue('birthdate', values.birthdate);
+        setValue('postal_address', values.address_street);
+    }, [values.birthdate, values.address_street])
+
+    useEffect(() => {
+        if (newValue === 'file1' || newValue === 'file2') {
+            setValue(`${newValue}`, values[newValue]);
+        } else {
+            setValue(`${newValue}`, values[newValue]);
+        }
+    }, [newValue, values[newValue]])
 
     // set values 
     const handleChange = (e) => {
@@ -108,11 +149,6 @@ export default function RegisterForm(formType) {
         }
     }
 
-    useEffect(() => {
-        if (step === 2 && type === 'user') getDepartments(provinciaID);
-        if ((step === 3 && type === 'user') || (step === 1 && type === 'patient')) getInstitutionsAll();
-    }, [step])
-
     const getDepartments = useCallback(
         (provinciaID) => {
             getAllDepartamentosFrom(provinciaID)
@@ -139,22 +175,6 @@ export default function RegisterForm(formType) {
                 .catch((err) => console.error(err))
         }, [])
 
-    useEffect(() => {
-        if (departmentSelected !== '') getLocalities(departmentSelected)
-    }, [departmentSelected])
-
-    useEffect(() => {
-        if (departments.length > 0 && values.department) {
-            setDepartamentoData(values.department)
-        }
-    }, [departments, values.department])
-
-    useEffect(() => {
-        if (localities.length > 0 && values.locality) {
-            setLocalidadData(values.locality)
-        }
-    }, [localities, values])
-
     const setDepartamentoData = (data) => {
         let selected = departments.find((item) => item.name.toLowerCase().trim() === data.toLowerCase().trim());
         if (selected) setDepartmentSelected(selected.id)
@@ -170,6 +190,7 @@ export default function RegisterForm(formType) {
             let selectedInst = institutionsList.find((item) => {
                 return item.name.toLowerCase().trim() === institution.name.toLowerCase()
             })
+            setUsualInstitution(selectedInst)
             values['id_usual_institution'] = selectedInst.id;
             values['inst_from_portal'] = selectedInst.portal;
             setNewValue('id_usual_institution');
@@ -185,22 +206,21 @@ export default function RegisterForm(formType) {
                     }
                     return res
                 })
+                .then((res) => {
+                // Si el formulario es para registrar miembro de grupo familiar, asigna por default establecimiento usual de usuario master
+                if (type === 'patient') {  
+                    let actuallyInst = res.find((item) => {
+                    return item.id === user.id_usual_institution && item.portal === user.inst_from_portal
+                    });
+                    if (actuallyInst) {
+                        values['id_usual_institution'] = actuallyInst.id;
+                        setUsualInstitution(actuallyInst);
+                    } 
+                }
+                })
                 .catch((err) => console.error(err));
         }, [])
 
-
-    useEffect(() => {
-        setValue('birthdate', values.birthdate);
-        setValue('postal_address', values.address_street);
-    }, [values.birthdate, values.address_street])
-
-    useEffect(() => {
-        if (newValue === 'file1' || newValue === 'file2') {
-            setValue(`${newValue}`, values[newValue]);
-        } else {
-            setValue(`${newValue}`, values[newValue]);
-        }
-    }, [newValue, values[newValue]])
 
     const buildBody = () => {
         setLoading(true)
@@ -208,12 +228,10 @@ export default function RegisterForm(formType) {
         delete body.confirmEmail
         delete body.confirmPassword
         delete body.postal_address
-        delete body.file1 //note - is necesary, but not now
-        delete body.file2 //note - is necesary, but not now
         body.birthdate = new Date(body.birthdate).toLocaleDateString();
         body.id_identification_type = parseInt(body.id_identification_type)
         body.id_gender = parseInt(body.id_gender)
-        body.id_usual_institution = parseInt(body.id_usual_institution)
+        body.id_usual_institution = usualInstitution.id
         body.is_diabetic = body.is_diabetic === 'true' ? true : false
         body.is_hypertensive = body.is_hypertensive === 'true' ? true : false
         body.is_chronic_kidney_disease = body.is_chronic_kidney_disease === 'true' ? true : false
@@ -222,7 +240,7 @@ export default function RegisterForm(formType) {
             body.identification_number_master = body.identification_number
             body.id_identification_type_master = body.id_identification_type
             body.username = body.email
-            sendRegisterNewUserForm(body);
+            sendRegisterNewUserForm(body, values);
         } else if (type === "patient") {
             delete body.username
             delete body.password
@@ -234,29 +252,27 @@ export default function RegisterForm(formType) {
             body.department = user.department
             body.phone_number = user.phone_number
             body.email = user.email
-            sendRegisterNewPatientForm(body);
+            sendRegisterNewPatientForm(body, values);
         }
     }
 
-    const onSubmitImages = () => {
+    const onSubmitImages = (personId, valuesForm) => {
         setLoading(true)
         let images = new FormData();
-        images.append('file1', values.file1, 'file1')
-        images.append('file2', values.file2, 'file2')
-        uploadIdentificationImages(newPersonId, images);
+        images.append('file1', valuesForm.file1, 'file1')
+        images.append('file2', valuesForm.file2, 'file2')
+        uploadIdentificationImages(personId, images);
     }
 
     const onSubmit = (length, i) => {
         if (length === i + 1) { //last step 
-            onSubmitImages()
-        } else if (length - 1 === i + 1) {  //penultimate step 
             buildBody()
         } else {
             next(i)
         }
     }
 
-    const sendRegisterNewUserForm = useCallback((body) => {
+    const sendRegisterNewUserForm = useCallback((body, values) => {
         registerPersonAndUserService(body)
             .then((res) => {
                 if (res.ok) {
@@ -265,8 +281,7 @@ export default function RegisterForm(formType) {
                         if (readeble.status) {
                             auth.newRegisterUser(body)
                             setNewPersonId(readeble.value)
-                            setStep(4)
-                            setLoading(false)
+                            onSubmitImages(readeble.value, values)
                         } else {
                             Swal.fire(error('Hubo un error al confirmar datos'))
                             throw new Error(text)
@@ -285,7 +300,7 @@ export default function RegisterForm(formType) {
     }, []);
 
 
-    const sendRegisterNewPatientForm = useCallback((body) => {
+    const sendRegisterNewPatientForm = useCallback((body, values) => {
         registerPersonService(body)
             .then((res) => {
                 if (res.ok) {
@@ -293,16 +308,15 @@ export default function RegisterForm(formType) {
                         let readeble = JSON.parse(text)
                         if (readeble.status) {
                             setNewPersonId(readeble.value)
-                            setStep(2)
-                            setLoading(false)
+                            onSubmitImages(readeble.value, values)
                         } else {
                             Swal.fire(error('Hubo un error al confirmar datos'))
                             throw new Error(text)
                         }
                     })
                 } else {
-                    console.log('error', res.body)
                     Swal.fire(error('Hubo un error al confirmar datos'))
+                    setLoading(false)
                 }
             })
             .catch((err) => {
@@ -534,14 +548,30 @@ export default function RegisterForm(formType) {
             {(step === 3 && type === 'user') || (step === 1 && type === 'patient') ?
                 <>
                     <Col className="mb-2" xs={12} >
-
+                        Establecimiento de atención usual
+                       {type === 'patient' && 
+                        <div className='d-flex align-items-center'>
+                                <span >{usualInstitution?.name}</span>
+                                {!changeInstitution && <button type="button" className='btn text-primary' onClick={() => handleChangeInstitution()}>Cambiar...</button>}
+                            </div>}
+                        {changeInstitution &&
+                            <AutocompleteComponent
+                                variants={institutionsList}
+                                handleChange={handleChangeSearch}
+                                {...register(`${f.id_usual_institution.form_name}`, f.id_usual_institution.register)}
+                            />
+                        }
+                        {errors[f.id_usual_institution.form_name] && <ErrorMessage><p>{errors[f.id_usual_institution.form_name].message}</p></ErrorMessage>}
+                    </Col>
+                    {/* <Col className="mb-2" xs={12} >
+                        <Form.Label className="mb-0">Establecimiento de atención usual</Form.Label>
                         {institutionsList.length > 0 && <AutocompleteComponent
                             variants={institutionsList}
                             handleChange={handleChangeSearch}
                             {...register(`${f.id_usual_institution.form_name}`, f.id_usual_institution.register)}
                         />}
                         {errors[f.id_usual_institution.form_name] && <ErrorMessage><p>{errors[f.id_usual_institution.form_name].message}</p></ErrorMessage>}
-                    </Col>
+                    </Col> */}
                     <Col xs={12} className="mt-3 mb-2">
                         <Form.Label className="mb-0">¿Padecés alguna de las siguientes afecciones crónicas? (Opcional)</Form.Label>
                         <FormGroup inputType={f.is_diabetic.inputType} label={f.is_diabetic.label} name={f.is_diabetic.form_name} value={values.is_diabetic} type={f.is_diabetic.type}
