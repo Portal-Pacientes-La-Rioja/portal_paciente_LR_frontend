@@ -53,6 +53,18 @@ export let UPDATE_HEADER = () => {
   return header;
 };
 
+export let UPDATE_HEADER_STUDIES = () => {
+  const jwt = localStorage.getItem("tokenUser")
+    ? JSON.parse(localStorage.getItem("tokenUser"))
+    : null;
+  let header = {
+    //"Content-type": "multipart/form-data",
+    "Authorization": `Bearer ${jwt}`,
+    //"accept": "application/json",
+  };
+  return header;
+};
+
 // login ---------------------------------------
 
 export const API_ENDPOINT_LOGINADMIN = `${baseUrl}/login-admin`;
@@ -312,3 +324,20 @@ export const API_ENDPOINT_ALL_LOCALIDADES_FROM = (query) => {
   return `${baseUrl}/get_all_localidades_from?${query}`;
 }
 
+// ESTUDIOS -------------------------------------------------
+export const API_ENDPOINT_POST_ESTUDIO= (query) => {
+  return `${baseUrl}/upload-study?${query}`;
+}
+
+export const API_ENDPOINT_GET_STUDY_TYPES = () => {
+  return `${baseUrl}/study-types`;
+}
+
+export const API_ENDPOINT_GET_PERSON_STUDIES = (query) => {
+  return `${baseUrl}/studies?${query}`;
+}
+
+export const API_ENDPOINT_DELETESTUDY = (query) => {
+  let url = `${baseUrl}/delete-study?${query}`;
+  return url;
+};
