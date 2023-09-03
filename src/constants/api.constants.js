@@ -346,3 +346,7 @@ export const INDICADOR_USUARIOS_PENDIENTES = () => {
   let url = `${environment.baseURL}/indicador_usuarios_pendientes`;
   return url;
 };
+export const INDICADOR_TURNOS = () => {
+  let url = `${environment.baseURL}/turnos/count`;
+  return url;
+};
