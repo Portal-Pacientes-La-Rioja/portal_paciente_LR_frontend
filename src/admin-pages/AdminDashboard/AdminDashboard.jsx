@@ -5,6 +5,7 @@ import {AltaUsers} from "./charts/AltaUsers/AltaUsers";
 // import { SumarChart } from "./charts/SumarChart/SumarChart";
 import { ActiveUsers } from "./charts/ActiveUsers/ActiveUsers";
 import * as MdIcon from "react-icons/md";
+import { Turnos } from "./charts/Turnos/Turnos";
 
 export default function AdminDashboard() {
 
@@ -19,6 +20,9 @@ export default function AdminDashboard() {
             </Row>
             <Row className="p-3">
                 <ActiveUsers/>
+            </Row>
+            <Row className="p-3">
+                <Turnos/>
             </Row>
         </Container>
     )
