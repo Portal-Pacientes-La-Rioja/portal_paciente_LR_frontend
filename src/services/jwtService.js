@@ -4,5 +4,10 @@ import JWT from 'jsonwebtoken';
 const key = environment.jwtKey;
 
 export function jwtVerify(jwt) {
-    return JWT.verify(jwt, key);
+    try {
+        return JWT.verify(jwt, key);
+    }
+    catch (err) {
+        return err
+    }
 }

@@ -27,13 +27,16 @@ function LoginPerson() {
     }, [auth, history, previousObjetURL])
 
     const onSubmit = () => {
-        setLoading(true)
-        auth.loginPerson(email, password);
+        auth.loginPerson(email, password)
         if (saveData) {
             localStorage.setItem("loginDataEmail", JSON.stringify(email));
             localStorage.setItem("loginDataPassword", JSON.stringify(password));
         }
     }
+
+    useEffect(() => {
+        setLoading(auth.loading)
+    }, [auth])
 
     const handlePassword = (value) => {
         setPassword(value)

@@ -11,10 +11,10 @@ import { ValuesRegisterAdminForm } from "../../../../components/RegisterForm/For
 import FormGroup from "../../../../components/RegisterForm/Forms/FormGroup";
 import { ErrorMessage } from "../../../../components/ErrorMessage/ErrorMessage";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { deleteUserAdmin, getUserAdminById, postCreateUserAdmin, putAssignInstitutionsAdmin, putOnOffAdmin, putUpdateUserAdmin, putUpdateUserAdminPassword } from "../../../../services/adminServices";
+import { getUserAdminById, postCreateUserAdmin, putAssignInstitutionsAdmin, putOnOffAdmin, putUpdateUserAdmin, putUpdateUserAdminPassword } from "../../../../services/adminServices";
 import * as FaIcon from 'react-icons/fa'
 import Selector from "../../../Establecimientos/components/Selector";
-import { getInstitutionsAll } from "../../../../services/institutionsServices";
+import { getInstitutionsAllWithNewData } from "../../../../services/institutionsServices";
 
 export default function RegisterAdmin() {
 
@@ -28,7 +28,7 @@ export default function RegisterAdmin() {
     });
     const editId = params.id;
     const [values, setValues] = useState(ValuesRegisterAdminForm); //Get and set values form
-    const [changePassword, setChangePassword] = useState(true);
+    const [changePassword, setChangePassword] = useState(false);
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
 
@@ -62,7 +62,9 @@ export default function RegisterAdmin() {
             setLoading(true)
             let data = { user_id: editId }
             getUserData(data);
-            setChangePassword(false);
+        }
+        if (action === 'registrar') {
+            setChangePassword(true);
         }
         getInstituciones()
     }, [])
@@ -74,12 +76,9 @@ export default function RegisterAdmin() {
                     // SETEA EN VALUES
                     let data = res[0]
                     setForm(data)
-                    setPassword("password")
-                    setConfirmPassword("confirmPassword")
 
                     // SETEA EN FORM
                     setValue('username', data.username)
-                    setValue('password', 'password')
                     setValue('confirmPassword', 'password')
                     return values
                 }
@@ -119,7 +118,7 @@ export default function RegisterAdmin() {
     const handleChangePassword = () => {
         if (!changePassword) {
             setChangePassword(true);
-            setPassword("");;
+            setPassword("");
             setConfirmPassword("");
             // SETVALUE DE REACT FORM SIRVE PARA QUE EL FORM DETECTE LOS CAMBIOS
             setValue('password', "");
@@ -137,7 +136,7 @@ export default function RegisterAdmin() {
 
     const getInstituciones = useCallback(
         () => {
-            getInstitutionsAll()
+            getInstitutionsAllWithNewData()
                 .then((res) => {
                     let ordenado = res.sort((a, b) => {
                         if (a.name === b.name) { return 0; }
@@ -218,7 +217,7 @@ export default function RegisterAdmin() {
                 let data = { user_id: editId }
                 getUserData(data)
             })
-    }, [])
+    }, [changePassword])
 
     const assignInstitutions = useCallback(
         (username, arrayIDsInst, psw) => {
@@ -234,7 +233,7 @@ export default function RegisterAdmin() {
                     }
                 })
                 .catch((err) => console.error(err));
-        }, [])
+        }, [changePassword])
 
     const submitOnOff = (idUser, estadoActual) => {
         let change = estadoActual === 1 ? 'desactivar' : 'activar'

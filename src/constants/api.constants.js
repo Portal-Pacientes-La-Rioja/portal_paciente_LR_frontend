@@ -323,6 +323,11 @@ export const API_ENDPOINT_ALL_DEPARTAMENTOS_FROM = (query) => {
 export const API_ENDPOINT_ALL_LOCALIDADES_FROM = (query) => {
   return `${baseUrl}/get_all_localidades_from?${query}`;
 }
+// // INDICADORES
+export const INDICADOR_USUARIOS_ACTIVOS = () => {
+  let url = `${environment.baseURL}/indicador_usuarios_activos`;
+  return url;
+};
 
 // ESTUDIOS -------------------------------------------------
 export const API_ENDPOINT_POST_ESTUDIO= (query) => {
@@ -339,5 +344,37 @@ export const API_ENDPOINT_GET_PERSON_STUDIES = (query) => {
 
 export const API_ENDPOINT_DELETESTUDY = (query) => {
   let url = `${baseUrl}/delete-study?${query}`;
+}
+export const INDICADOR_USUARIOS_MASTER = () => {
+  let url = `${environment.baseURL}/indicador_usuarios_master`;
+  return url;
+};
+
+export const INDICADOR_CANTIDAD_USUARIOS = () => {
+  let url = `${environment.baseURL}/indicador_cantidad_usuarios`;
+  return url;
+};
+
+export const INDICADOR_GRUPO_FAMILIAR = () => {
+  let url = `${environment.baseURL}/indicador_grupo_familiar`;
+  return url;
+};
+
+export const INDICADOR_USUARIOS_VALIDADOS = () => {
+  let url = `${environment.baseURL}/indicador_usuarios_validados`;
+  return url;
+};
+
+export const INDICADOR_USUARIOS_RECHAZADOS = () => {
+  let url = `${environment.baseURL}/indicador_usuarios_recazados`;
+  return url;
+};
+
+export const INDICADOR_USUARIOS_PENDIENTES = () => {
+  let url = `${environment.baseURL}/indicador_usuarios_pendientes`;
+  return url;
+};
+export const INDICADOR_TURNOS = () => {
+  let url = `${environment.baseURL}/turnos/count`;
   return url;
 };

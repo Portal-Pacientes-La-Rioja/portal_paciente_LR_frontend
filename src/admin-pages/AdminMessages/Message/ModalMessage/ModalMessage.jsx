@@ -26,6 +26,12 @@ export const ModalMessage = (props) => {
         },
         [],
     )
+
+    const setDate = (date) => {
+        const dateSent = date ? new Date(date).toLocaleDateString() : 'Mensaje no envíado';
+        return dateSent
+    }
+
     useEffect(() => {
         getMessageModal(idMessage)
     }, [])
@@ -49,9 +55,8 @@ export const ModalMessage = (props) => {
 
                 <Modal.Body>
                     <h6>Asunto: <strong>{message.header}</strong></h6>
-                    <p>Enviado: {message.sent_datetime ? message.sent_datetime : 'No ha sido enviado'}</p>
-                    <p>Mensaje: {message.body}
-                    </p>
+                    <p>Enviado: {setDate(message.sent_datetime)}</p>
+                    <p>Mensaje: {message.body}</p>
                 </Modal.Body>
             </>
         }
