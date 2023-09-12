@@ -338,6 +338,10 @@ export const API_ENDPOINT_GET_STUDY_TYPES = () => {
   return `${baseUrl}/study-types`;
 }
 
+export const API_ENDPOINT_GET_STUDY_BY_ID = (query) => {
+  return `${baseUrl}/study/${query}/file`;
+}
+
 export const API_ENDPOINT_GET_PERSON_STUDIES = (query) => {
   return `${baseUrl}/studies?${query}`;
 }

@@ -1,5 +1,5 @@
-import { API_ENDPOINT_CREATE_INSTITUTION, API_ENDPOINT_DELETESTUDY, API_ENDPOINT_ESPECIALIDADES_ALL, API_ENDPOINT_GET_PERSON_STUDIES, API_ENDPOINT_GET_STUDY_TYPES, API_ENDPOINT_INSTITUCIONES, API_ENDPOINT_INSTITUCIONESAallWithNewData, API_ENDPOINT_INSTITUTIONS_ALL, API_ENDPOINT_INSTITUTIONS_BY_ID, API_ENDPOINT_POST_ESTUDIO, API_ENDPOINT_SERVICIOS_ALL, API_ENDPOINT_SHORTEST_ROUTE, API_ENDPOINT_STATUS_INSTITUTION, API_ENDPOINT_UPDATE_INSTITUTION, API_HEADER, AUTH_HEADER, UPDATE_HEADER, UPDATE_HEADER_STUDIES } from "../constants/api.constants";
-import { get, post, put, deleteService } from "./httpServices";
+import {  API_ENDPOINT_DELETESTUDY, API_ENDPOINT_GET_PERSON_STUDIES, API_ENDPOINT_GET_STUDY_BY_ID, API_ENDPOINT_GET_STUDY_TYPES, API_ENDPOINT_POST_ESTUDIO, AUTH_HEADER, UPDATE_HEADER_STUDIES } from "../constants/api.constants";
+import { get, post, deleteService } from "./httpServices";
 
 // export async function uploadStudies(patientId, description, study_type_id) {
 //     try {
@@ -51,6 +51,20 @@ export async function getPersonStudies(person_id) {
         });
         let query = searchParams.toString();
       const promise = await get(`${API_ENDPOINT_GET_PERSON_STUDIES(query)}`, AUTH_HEADER())
+      return promise
+  }
+  catch (err) {
+      console.error('Error al cargar datos: ', err);
+  }
+}
+
+export async function getStudyById(study_id) {
+  try {
+      // const searchParams = new URLSearchParams({
+      //     person_id: person_id
+      //   });
+      //   let query = searchParams.toString();
+      const promise = await get(`${API_ENDPOINT_GET_STUDY_BY_ID(study_id)}`, AUTH_HEADER())
       return promise
   }
   catch (err) {
