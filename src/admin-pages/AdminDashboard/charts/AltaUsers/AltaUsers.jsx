@@ -131,7 +131,7 @@ export const AltaUsers = () => {
             </div>
             <div className="d-flex border border-dark-subtle rounded justify-content-between p-4 mt-4">
                 <h5 className="mb-0">Total solicitudes de alta:</h5>
-                <h5 className="mb-0">{dataPending + dataRejected + dataValidated}</h5>
+                <h5 className="mb-0 count-number text-success">{dataPending + dataRejected + dataValidated}</h5>
             </div>
         </Col>
     )
