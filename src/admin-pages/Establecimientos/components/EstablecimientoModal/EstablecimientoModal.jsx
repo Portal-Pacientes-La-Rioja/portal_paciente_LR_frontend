@@ -319,7 +319,7 @@ const EstablecimientoModal = (props) => {
                 {loading ? <Loader isActive={loading} />
                     : <Container fluid>
                         <Row className="d-flex flex-wrap-reverse">
-                            {actionModal === 'edit' && ubicacion.lat && ubicacion.long &&
+                            {actionModal === 'edit' && ubicacion.lat !== '' && ubicacion.long !== '' &&
                                 <Col xs={12} lg={6}>
                                     <Container>
                                         <Row className='in d-flex mb-3'>

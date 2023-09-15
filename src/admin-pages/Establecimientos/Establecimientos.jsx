@@ -153,7 +153,7 @@ const Establecimientos = () => {
             {loading
                 ? <Loader isActive={loading} />
                 : <Row className='p-3'>
-                    <div className='overflow-auto mb-3' style={{ maxHeight: '600px' }}>
+                    <div className='overflow-auto mb-3' style={{ maxHeight: '60vh' }}>
                         <Table bordered borderless striped hover>
                             <thead>
                                 <tr style={{ position: 'sticky', top: 0, backgroundColor: 'white', zIndex: 1 }}>
