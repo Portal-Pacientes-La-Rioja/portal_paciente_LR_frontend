@@ -348,6 +348,7 @@ export const API_ENDPOINT_GET_PERSON_STUDIES = (query) => {
 
 export const API_ENDPOINT_DELETESTUDY = (query) => {
   let url = `${baseUrl}/delete-study?${query}`;
+  return url
 }
 export const INDICADOR_USUARIOS_MASTER = () => {
   let url = `${environment.baseURL}/indicador_usuarios_master`;

@@ -4,9 +4,10 @@ import usePatient from '../../../hooks/usePatient';
 import Swal from "sweetalert2";
 import { error } from '../../../components/SwalAlertData';
 import Loader from '../../../components/Loader';
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Row } from "react-bootstrap";
 import * as MdIcon from "react-icons/md";
 import { Col } from "react-bootstrap";
+import useAuth from '../../../hooks/useAuth';
 
 
 export default function FilesDragAndDrop({ onUpload }) {
@@ -27,6 +28,7 @@ export default function FilesDragAndDrop({ onUpload }) {
   const [loading, setLoading] = useState(true);
 
   const p = usePatient()
+  const auth = useAuth()
 
   const handleTypeChange = (event) => {
     setSelectedType(event.target.value);
@@ -141,25 +143,39 @@ export default function FilesDragAndDrop({ onUpload }) {
 
   const handleDownload = useCallback((fileToDownload) => {
     const study_id = fileToDownload.study_id
-    getStudyById(study_id)
+    getStudyById(study_id, auth.tokenUser)
       .then((res) => {
-        console.log(res);
-        var base64String = res;
-
-        // Decodificar la cadena Base64 a texto
-        var jsonString = atob(base64String);
-
-        // Parsear la cadena de texto JSON en un objeto JavaScript
-        var jsonObj = JSON.parse(jsonString);
-
-        console.log(jsonObj);
-        // if (res.ok) {
-        //   getEstudiosDePersona(p.patient.id)
-        // }
+        if (res) {
+          downloadBlob(res, fileToDownload.study_name)
+        }
       })
       .catch((err) => console.error(err))
   }, [])
 
+
+  const downloadBlob = (blob, name) => {
+    // Convertir el blob en Blob URL (una URL especial que apunta a un objeto almacenado en la memoria del navegador)
+    // const blobUrl = URL.createObjectURL(blob);
+
+    // Crear link de descarga y apuntar al Blob URL
+    const link = document.createElement("a");
+    link.href = blob;
+    link.download = name;
+    document.body.appendChild(link);
+
+    // Ejecutar el evento click del enlace creado anteriormente
+    // Es necesario hacerlo de esta manera porque en Firefox link.click() no funciona
+    link.dispatchEvent(
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+      })
+    );
+
+    // Eliminar el link del DOM
+    document.body.removeChild(link);
+  }
 
   const handleDelete = useCallback((fileToRemove, index) => {
     const study_id = fileToRemove.study_id
@@ -177,7 +193,7 @@ export default function FilesDragAndDrop({ onUpload }) {
       ? <Loader isActive={loading} />
       : <div>
         <div>
-          <div>
+          <div className='pe-2'> 
             <h5>Cargá tus estudios</h5>
             <div className="input-group" style={{ display: 'flex', flexDirection: 'column' }}>
               <div style={{ marginLeft: '20px', marginBottom: '10px' }}>
@@ -220,34 +236,37 @@ export default function FilesDragAndDrop({ onUpload }) {
 
 
           <div className="lista">
-            <Col xs={12} sm={6} >
+            <Col xs={12} sm={6} className='mt-4'>
               <h5>Tus estudios</h5>
               {errorMessage && (
                 <p style={{ color: 'red', fontWeight: 'bold' }}>{errorMessage}</p>
               )}
               <ul>
                 {fileList.length > 0 && fileList.map((fileInfo, index) => (
-                  <div key={fileInfo.study_name} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                    <div className='text-responsive mb-0'>
-                      {fileInfo.study_name} - Tipo: {fileInfo.type} - Descripción: {fileInfo.description}
-                    </div>
-                    {/* <div className="my-tooltip">
-                      <button className='btn text-primary btn-icon ms-0' onClick={() => handleDownload(fileInfo)}>
-                        <MdIcon.MdDownload style={{ fontSize: '1.5rem' }} />
-                      </button>
-                      <span className="tiptext">
-                        Descargar
-                      </span>
-                    </div> */}
-                    <div className="my-tooltip">
-                      <button className='btn text-danger btn-icon ms-0' onClick={() => handleDelete(fileInfo, index)}>
-                        <MdIcon.MdDeleteForever style={{ fontSize: '1.5rem' }} />
-                      </button>
-                      <span className="tiptext">
-                        Eliminar
-                      </span>
-                    </div>
-                  </div>
+                  <Row key={fileInfo.study_name} 
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <Col xs={12} lg={10} className='text-responsive mb-0'>
+                      {fileInfo.description.toUpperCase()} ( {fileInfo.upload_date.split('T')[0]} ) {fileInfo.study_name}
+                    </Col>
+                    <Col  xs={12} lg={2} className='d-flex justify-content-end'>
+                      <div className="my-tooltip">
+                        <button className='btn text-primary btn-icon ms-0' onClick={() => handleDownload(fileInfo)}>
+                          <MdIcon.MdDownload style={{ fontSize: '1.5rem' }} />
+                        </button>
+                        <span className="tiptext">
+                          Descargar
+                        </span>
+                      </div>
+                      <div className="my-tooltip">
+                        <button className='btn text-danger btn-icon ms-0' onClick={() => handleDelete(fileInfo, index)}>
+                          <MdIcon.MdDeleteForever style={{ fontSize: '1.5rem' }} />
+                        </button>
+                        <span className="tiptext">
+                          Eliminar
+                        </span>
+                      </div>
+                    </Col>
+                  </Row>
                 ))}
               </ul>
             </Col>
