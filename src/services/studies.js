@@ -58,18 +58,39 @@ export async function getPersonStudies(person_id) {
   }
 }
 
-export async function getStudyById(study_id) {
+export async function getStudyById(study_id, token) {
   try {
-      // const searchParams = new URLSearchParams({
-      //     person_id: person_id
-      //   });
-      //   let query = searchParams.toString();
-      const promise = await get(`${API_ENDPOINT_GET_STUDY_BY_ID(study_id)}`, AUTH_HEADER())
-      return promise
-  }
-  catch (err) {
-      console.error('Error al cargar datos: ', err);
-  }
+    const promise = await getImageRequest(API_ENDPOINT_GET_STUDY_BY_ID(study_id), token);
+    return promise
+} catch(error) {
+    console.log("Error fetching remote HTML: ", error);
+}  
+}
+
+function getImageRequest (url, token) {
+  return new Promise(function (resolve, reject) {
+    let src
+        var xhr = new XMLHttpRequest();
+        xhr.responseType = "blob"; //so you can access the response like a normal URL
+        xhr.open(
+          "GET",
+          url,
+          true
+        );
+        xhr.setRequestHeader(
+          'Authorization',
+          `Bearer ${token}`
+        );
+        xhr.onload = function () {
+          if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+            src = URL.createObjectURL(xhr.response); 
+            resolve(src)
+          } else {
+            reject(xhr.status);
+          }
+        };
+        xhr.send();
+});
 }
 
 export async function deleteStudy(study_id) {
