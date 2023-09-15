@@ -9,7 +9,7 @@ import { getAdminStatus, getPersonById, setAdminStatusToPerson } from '../../../
 import { downloadIdentificationImagesService, getImageService } from '../../../services/registerServices';
 import { variantsGender } from '../../../components/ComponentsData';
 import useAuth from '../../../hooks/useAuth';
-import institutionsServices from '../../../services/institutionsServices';
+import institutionsServices, { getInstitutionsAllWithNewData } from '../../../services/institutionsServices';
 
 export default function EnablePatient({ show, handleClose, id, action }) {
 
@@ -135,7 +135,7 @@ export default function EnablePatient({ show, handleClose, id, action }) {
 
     const getInstitutions = useCallback(
         () => {
-            institutionsServices()
+            getInstitutionsAllWithNewData()
                 .then((res) => {
                     const allInstitutions = res
                     setInstitutions(allInstitutions);
