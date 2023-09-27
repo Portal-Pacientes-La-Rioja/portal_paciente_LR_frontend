@@ -4,7 +4,7 @@ import * as FaIcon from 'react-icons/fa';
 import AutocompleteComponent from '../../components/AutocompleteComponent';
 import { useCallback, useEffect, useState } from 'react';
 import EstablecimientoModal from './components/EstablecimientoModal';
-import { getInstitutionsAll, updateStatusInstitution } from '../../services/institutionsServices';
+import { getInstitutionsAll, getInstitutionsByID, updateStatusInstitution } from '../../services/institutionsServices';
 import Swal from 'sweetalert2';
 import { confirm, error } from '../../components/SwalAlertData';
 import Loader from '../../components/Loader';
@@ -64,12 +64,33 @@ const Establecimientos = () => {
             .then((res) => {
                 if (res[0].institutions) {
                     setEstablecimientos(res[0].institutions)
-                    setLoading(false)
+                }
+                return res
+            })
+            .then((res) => {
+                if (res[0].old_institutions.length > 0) {
+                    res[0].old_institutions.forEach((idInstitution) => {
+                        getInstitutionData(idInstitution)
+                    })
                 }
             })
+            .then(() => setLoading(false))
             .catch((err) => console.error(err))
         }, [])
 
+        const getInstitutionData = useCallback(
+            (idInstitution) => {
+                getInstitutionsByID(idInstitution)
+                    .then((res) => {
+                        if (res) {
+                            // console.log(res)
+                        }
+                    })
+                    .catch((err) => {
+                        Swal.fire(error('Error al obtener datos de establecimeinto.'))
+                        handleClose();
+                    })
+            }, [])
 
     const handlePagination = (elementosEnPaginaActual) => {
         setData(elementosEnPaginaActual);
@@ -140,9 +161,9 @@ const Establecimientos = () => {
                     <FaIcon.FaHospital className="menu-icon text-danger me-1" style={{ fontSize: 'x-large' }} />
                     <h5 className='section-title'>Establecimientos</h5>
                 </Col>
-                <Col xs={12} sm={6} lg={3} className='d-flex justify-content-end'>
+                {isSuperAdmin ? <Col xs={12} sm={6} lg={3} className='d-flex justify-content-end'>
                     <Button variant="danger" onClick={() => openModal('add')}>+ Agregar Establecimiento</Button>
-                </Col>
+                </Col> : ''}
                 <Col xs={12} sm={6} lg={3}>
                     <AutocompleteComponent
                         variants={establecimientos}
