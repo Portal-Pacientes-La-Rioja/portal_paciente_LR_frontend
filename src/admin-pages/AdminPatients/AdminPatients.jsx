@@ -2,6 +2,8 @@ import { Container, Row, Col } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { SidebarData } from "../../components/Sidebar/SidebarData";
 import AdminPatientsRouter from "./AdminPatientsRouter";
+import * as FaIcon from 'react-icons/fa';
+
 
 export default function AdminPatients() {
     const data = SidebarData.admin.find(d => d.id === 14);
@@ -9,7 +11,10 @@ export default function AdminPatients() {
 
     return (
         <Container className='p-3'>
-            <h5 className='section-title'>Alta de pacientes</h5>
+            <Col xs={12} lg={9} className="d-flex">
+                <FaIcon.FaUserCheck className="menu-icon text-danger me-1" style={{ fontSize: 'x-large' }} />
+                <h5 className='section-title'>Alta de pacientes</h5>
+            </Col>
             <Row>
                 <Col className='switch-container p-3'>
                     {routes.map((route) => {

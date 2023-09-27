@@ -2,6 +2,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { SidebarData } from "../../components/Sidebar/SidebarData";
 import AdminMessagesRouter from "./AdminMessagesRouter";
+import * as MdIcon from 'react-icons/md';
 
 export default function AdminMessages() {
     const data = SidebarData.admin.find(d => d.id === 15);
@@ -9,7 +10,10 @@ export default function AdminMessages() {
 
     return (
         <Container className='p-3'>
-            <h5 className='section-title'>Mensajería</h5>
+            <Col xs={12} lg={9} className="d-flex">
+                <MdIcon.MdOutlineMessage className="menu-icon text-danger me-1" style={{ fontSize: 'x-large' }} />
+                <h5 className='section-title'>Mensajería</h5>
+            </Col>
             <Row>
                 <Col className='switch-container p-3'>
                     {routes.map((route) => {

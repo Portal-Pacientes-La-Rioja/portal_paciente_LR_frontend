@@ -9,7 +9,7 @@ import { getAdminStatus, getPersonById, setAdminStatusToPerson } from '../../../
 import { downloadIdentificationImagesService, getImageService } from '../../../services/registerServices';
 import { variantsGender } from '../../../components/ComponentsData';
 import useAuth from '../../../hooks/useAuth';
-import institutionsServices from '../../../services/institutionsServices';
+import institutionsServices, { getInstitutionsAllWithNewData } from '../../../services/institutionsServices';
 
 export default function EnablePatient({ show, handleClose, id, action }) {
 
@@ -45,11 +45,8 @@ export default function EnablePatient({ show, handleClose, id, action }) {
         [id],
     )
     const getBirthdate = (birthdate) => {
-        let date = birthdate.split('-')
-        let y = date[0]
-        let m = date[1]
-        let d = date[2].split('T')[0]
-        setBirthdate(`${d} / ${m} / ${y}`)
+        let date = new Date(birthdate).toLocaleDateString();
+        setBirthdate(date)
     }
     const getDNIVariants = useCallback(
         (idType) => {
@@ -107,7 +104,7 @@ export default function EnablePatient({ show, handleClose, id, action }) {
         (imgName, is_front) => {
             getImageService(imgName, auth.tokenUser)
                 .then((res) => {
-                    if(res && is_front) {
+                    if (res && is_front) {
                         setImgFront(res)
                     } else if (res && !is_front) {
                         setImgBack(res)
@@ -138,7 +135,7 @@ export default function EnablePatient({ show, handleClose, id, action }) {
 
     const getInstitutions = useCallback(
         () => {
-            institutionsServices()
+            getInstitutionsAllWithNewData()
                 .then((res) => {
                     const allInstitutions = res
                     setInstitutions(allInstitutions);
@@ -218,6 +215,7 @@ export default function EnablePatient({ show, handleClose, id, action }) {
             backdrop="static"
             keyboard={false}
             size="lg"
+            fullscreen={true}
             className="admin-patient__modal"
         >
             < Modal.Header closeButton >
@@ -231,29 +229,43 @@ export default function EnablePatient({ show, handleClose, id, action }) {
                         <Container fluid>
                             <Row>
                                 <Col xs={12} lg={6}>
-                                    <h5>Datos de paciente </h5>
-                                    <ul className="ps-0 fw-lighter admin-patient__list">
-                                        <li>Nombre: <strong>{patient.name || ' - '}</strong></li>
-                                        <li>Apellido: <strong>{patient.surname || ' - '}</strong></li>
-                                        <li>Tipo de documento: <strong>{idnType?.description || ' - '}</strong></li>
-                                        <li>Número de documento: <strong>{patient.identification_number || ' - '}</strong></li>
-                                        <li>Fecha de nacimiento: <strong>{birthdate || ' - '}</strong></li>
-                                        <li>Sexo: <strong>{genderType?.name || ' - '}</strong></li>
-                                        <li>Domicilio: <strong>{patient.address_street || ' - '} {patient.address_number || ' - '} , {patient.department || ' - '} , {patient.locality || ' - '} </strong></li>
-                                        <li>Email: <strong>{patient.email || ' - '}</strong></li>
-                                        <li>Teléfono: <strong>{patient.phone_number || ' - '}</strong></li>
-                                    </ul>
-                                    <h5>Grupo familiar </h5>
-                                    <ul className="admin-patient__list">
-                                        <li>ID grupo familiar: <strong>{patient.identification_number_master || ' - '}</strong> </li>
-                                    </ul>
-                                    <h5>Establecimiento </h5>
-                                    <ul className="admin-patient__list">
-                                        <li>{institutions.find((item) => item.id === patient.id_usual_institution)?.name || ' - '}</li>
-                                    </ul>
+                                    <Row>
+                                        <Col xs={12} className='mb-3'>
+                                            <h5>Datos de paciente </h5>
+                                            <ul className="fw-lighter admin-patient__list">
+                                                <li>Nombre: <strong>{patient.name || ' - '}</strong></li>
+                                                <li>Apellido: <strong>{patient.surname || ' - '}</strong></li>
+                                                <li>Tipo de documento: <strong>{idnType?.description || ' - '}</strong></li>
+                                                <li>Número de documento: <strong>{patient.identification_number || ' - '}</strong></li>
+                                                <li>Fecha de nacimiento: <strong>{birthdate || ' - '}</strong></li>
+                                                <li>Sexo: <strong>{genderType?.name || ' - '}</strong></li>
+                                            </ul>
+                                        </Col>
+                                        <Col xs={12} className='mb-3'>
+                                            <h5>Datos de contacto </h5>
+                                            <ul className="admin-patient__list">
+                                                <li>Domicilio: <strong>{patient.address_street || ' - '} {patient.address_number || ' - '} , {patient.department || ' - '} , {patient.locality || ' - '} </strong></li>
+                                                <li>Email: <strong>{patient.email || ' - '}</strong></li>
+                                                <li>Teléfono: <strong>{patient.phone_number || ' - '}</strong></li>
+                                            </ul>
+                                        </Col>
+                                        <Col xs={12} className='mb-3'>
+                                            <h5>Grupo familiar </h5>
+                                            <ul className="admin-patient__list">
+                                                <li>ID grupo familiar: <strong>{patient.identification_number_master || ' - '}</strong> </li>
+                                            </ul>
+                                        </Col>
+                                        <Col xs={12} className='mb-3'>
+                                            <h5>Establecimiento de atencion usual</h5>
+                                            <ul className="admin-patient__list">
+                                                <li>{institutions.find((item) => item.id === patient.id_usual_institution)?.name || ' - '}</li>
+                                            </ul>
+                                        </Col>
+                                    </Row>
+
                                 </Col>
                                 <Col xs={12} lg={6}>
-                                    <h5>Imagen de documento </h5>
+                                    <h5>Imágenes de documento </h5>
                                     <ImgRotate img={imgFront}></ImgRotate>
                                     <ImgRotate img={imgBack}></ImgRotate>
                                 </Col>

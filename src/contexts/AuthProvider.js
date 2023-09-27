@@ -6,7 +6,7 @@ import {
   error
 } from "../components/SwalAlertData";
 import { loginPersonService } from "../services/loginPersonService";
-
+import { jwtVerify } from "../services/jwtService";
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
@@ -21,6 +21,7 @@ const AuthProvider = ({ children }) => {
   ); //note: 1 = admin / 2 = person
   const curtime = new Date().getTime();
   const [newUser, setNewUser] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     try {
@@ -44,6 +45,7 @@ const AuthProvider = ({ children }) => {
 
   const loginAdmin = useCallback(
     (u, p) => {
+      setLoading(true)
       loginService(u, p)
         .then((res) => {
           if (res.ok) {
@@ -61,25 +63,30 @@ const AuthProvider = ({ children }) => {
           setTokenUser(data.access_token);
           return tokenUser;
         })
+        .then(() => setLoading(false))
         .catch((err) => {
-          console.log("error: ", err);
-          switch (err.message) {
-            case 'Mail not validated.':
-              Swal.fire(error('Email no validado'));
-              break;
-              case 'Incorrect username or password...':
-              Swal.fire(error('Email o password incorrecto'));
-              break;
-            default:
-              Swal.fire(error('Ha ocurrido un error'));
-          }
+          console.error("error: ", err);
+          if (err.toString().includes('Incorrect username or password')) Swal.fire(error('Email o password incorrecto'))
+          else if (err.toString().includes('Mail not validated')) Swal.fire(error('Email no validado'))
+          else Swal.fire(error('Ha ocurrido un error'))
+          setLoading(false)
         });
     },
     [tokenUser]
   );
 
+  const getAdminData = () => {  
+    const verify  = jwtVerify(tokenUser);
+    if (verify?.id) {
+      return verify
+    } 
+    // logout(true)
+    return false
+  }
+
   const loginPerson = useCallback(
     (u, p) => {
+      setLoading(true)
       loginPersonService(u, p)
         .then((res) => {
           if (res.ok) {
@@ -97,6 +104,7 @@ const AuthProvider = ({ children }) => {
           setTypeUser(2); //hardcode //hardcode - 1 = user-admin. 2 = user-person
           return tokenUser;
         })
+        .then(() => setLoading(false))
         .catch((err) => {
           switch (err.message) {
             case 'Mail not email_validated.':
@@ -111,6 +119,7 @@ const AuthProvider = ({ children }) => {
             default:
               Swal.fire(error('Ha ocurrido un error'));
           }
+          setLoading(false)
         });
     },
     [tokenUser]
@@ -123,8 +132,7 @@ const AuthProvider = ({ children }) => {
       let data = JSON.parse(vals);
       let isTimed = new Date().getTime() - data > exp;
       if (isTimed) {
-        console.log("Error: El almacenamiento ha expirado");
-        setTokenUser(null);
+        console.error("Error: El almacenamiento ha expirado");
         logout(isTimed);
         return null;
       } else {
@@ -141,14 +149,11 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   const logout = (expired) => {
+    deleteDataSession();
     if (expired) {
       Swal.fire(expiredSession).then((result) => {
-        if (result.isConfirmed) {
-          deleteDataSession();
-        }
+        window.location.reload();
       });
-    } else {
-      deleteDataSession();
     }
   };
 
@@ -181,6 +186,7 @@ const AuthProvider = ({ children }) => {
     loginPerson,
     loginAdmin,
     logout,
+    getAdminData,
     isLogged() {
       getLocalStorage("curtime");
       if (tokenUser) {
@@ -189,6 +195,7 @@ const AuthProvider = ({ children }) => {
         return false;
       }
     },
+    loading,
     newUser,
     newRegisterUser,
   };

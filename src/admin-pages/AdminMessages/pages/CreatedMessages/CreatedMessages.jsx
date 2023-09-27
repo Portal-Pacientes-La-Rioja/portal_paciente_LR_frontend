@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import { Button, Container } from "react-bootstrap";
+import { Button, Col, Container } from "react-bootstrap";
 import Swal from "sweetalert2";
 import Loader from "../../../../components/Loader";
 import { error } from "../../../../components/SwalAlertData";
@@ -7,11 +7,14 @@ import { getAllMessages } from "../../../../services/messagesServices";
 import DataNotFound from '../../../../components/DataNotFound'
 import CreateMessage from "../../CreateMessage";
 import { Message } from "../../Message/Message";
+import Paginador from "../../../../components/Paginador";
+import AutocompleteComponent from "../../../../components/AutocompleteComponent";
 
 export default function CreatedMessages() {
 
     const [loading, setLoading] = useState(true);
     const [show, setShow] = useState(false);
+    const itemsPagina = 6
     const handleShow = () => setShow(true);
     const handleClose = () => {
         setShow(false)
@@ -19,12 +22,13 @@ export default function CreatedMessages() {
     };
     // messages
     const [messages, setMessages] = useState([])
+    const [data, setData] = useState([]);
+    const [resetPaginator, setResetPaginator] = useState(false);
     const allMessages = useCallback(
         () => {
             getAllMessages()
                 .then((res) => {
                     if (res.length > 0) {
-                        // console.log(res)
                         let notSent = res.filter(m => m.sent_datetime === null)
                         let order = notSent.reverse()
                         setMessages(order)
@@ -37,6 +41,12 @@ export default function CreatedMessages() {
         },
         [],
     )
+
+    const handlePagination = (elementosEnPaginaActual) => {
+        setData(elementosEnPaginaActual);
+        setResetPaginator(false);
+    }
+
     useEffect(() => {
         allMessages()
     }, [])
@@ -45,7 +55,7 @@ export default function CreatedMessages() {
         setLoading(true)
         allMessages()
     }
-    
+
     return (
         <Container className='p-3'>
             <div className="d-flex justify-content-end w-100">
@@ -54,7 +64,7 @@ export default function CreatedMessages() {
             {loading ? <Loader isActive={loading} />
                 : <Container>
                     <h5>Borradores <span className="fw-light text-danger">({messages.length})</span></h5>
-                    {messages.length > 0 ? messages.map((m, i) => {
+                    {data.length > 0 ? data.map((m, i) => {
                         return (
                             <Message key={m.id} header={m.header} body={m.body} idMessage={m.id} status={m.sent_datetime} initMessages={initMessages}></Message>
                         )
@@ -65,6 +75,7 @@ export default function CreatedMessages() {
                 </Container>
             }
             {show && <CreateMessage show={show} handleClose={handleClose} action={'create'} />}
+            {messages.length > 0 && <Paginador datos={messages} elementosPorPagina={itemsPagina} handlePagination={handlePagination} reset={resetPaginator} showItems={true}></Paginador>}
         </Container>
     )
 }

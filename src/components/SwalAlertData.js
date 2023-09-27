@@ -1,6 +1,6 @@
 export const successRegister = {
   title: "Registro realizado",
-  html: "Inicie sesión nuevamente para cargar nuevos datos. ",
+  html: "Los datos del nuevo Paciente serán validados por un administrador antes de ser agregado al Grupo Familiar.",
   icon: "success",
   showCancelButton: false,
   confirmButtonText: "Continuar",

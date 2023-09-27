@@ -9,7 +9,8 @@ import SelectType from '../../../components/SelectType';
 import { confirm, error, success } from '../../../components/SwalAlertData';
 import usePatient from '../../../hooks/usePatient'
 import { sendApplicationEmailService } from '../../../services/applicactionService';
-import institutionsServices from '../../../services/institutionsServices';
+import institutionsServices, { getInstitutionsAllWithNewData } from '../../../services/institutionsServices';
+import FormGroup from '../../../components/RegisterForm/Forms/FormGroup';
 
 function ApplicationModal({ show, handleClose, }) {
 
@@ -37,23 +38,24 @@ function ApplicationModal({ show, handleClose, }) {
         details: "",
         email: p.patient.email,
         phone_number: p.patient.phone_number,
-        establishment: p.patientInstitution
+        establishment: p.patient.id_usual_institution,
+        portal: p.patient.inst_from_portal
     })
 
     const [institutions, setInstitutions] = useState([]);
 
     const getInstitutions = useCallback(
         () => {
-            institutionsServices()
+            getInstitutionsAllWithNewData()
                 .then((res) => {
                     const allInstitutions = res
                     return allInstitutions;
                 })
                 .then((res) => {
-                    if(res.length > 0){
+                    if (res.length > 0) {
                         setInstitutions(res);
                         return institutions
-                    } 
+                    }
                 })
                 .catch((err) => { console.log(err) })
         },
@@ -93,7 +95,7 @@ function ApplicationModal({ show, handleClose, }) {
     const buildApplication = (days, specialty) => {
         setLoading(true)
         let body = values
-        let patientInstitution = institutions.find((item) => item.id === body.establishment)?.name ?? 'Sin datos'
+        let patientInstitution = institutions.find((item) => item.id === body.establishment && item.portal === body.portal)?.name ?? ''
         let subject = `Solicitud de turno: ${specialty || ''} - ${patientInstitution} - Paciente ${body.person}, DNI ${body.identification_number}`
         body.weekly_availability = days.toString()
         body.specialty = specialty
@@ -122,7 +124,7 @@ function ApplicationModal({ show, handleClose, }) {
         (id, subject, body) => {
             sendApplicationEmailService(id, subject, body)
                 .then((res) => {
-                    if(res.ok){
+                    if (res.ok) {
                         Swal.fire(success('La solicitud fue enviada con éxito'))
                         setLoading(false)
                         handleClose()
@@ -168,7 +170,7 @@ function ApplicationModal({ show, handleClose, }) {
             <Modal.Header closeButton>
                 <Modal.Title>Solicitar turno médico</Modal.Title>
             </Modal.Header>
-            <Modal.Body style={{ minHeight: '300px'}}>
+            <Modal.Body style={{ minHeight: '300px' }}>
                 {loading ? <Loader isActive={loading} />
                     : <Container fluid>
                         <Form className="form-group" onSubmit={handleSubmit(onSubmit)}>
@@ -215,17 +217,15 @@ function ApplicationModal({ show, handleClose, }) {
                                     </Form.Group>
                                 </Col>
                                 <Col xs={12} lg={6}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Disponibilidad horaria</Form.Label>
-                                        <Form.Control
-                                            name="time_availability"
-                                            type="text"
-                                            placeholder='Por ej.: de 8 a 13'
-                                            value={values.time_availability}
-                                            className="form-control"
-                                            onChange={e => handleChange(e)}
-                                        />
-                                    </Form.Group>
+                                    <FormGroup
+                                        inputType={'select'}
+                                        label={'Disponibilidad horaria'}
+                                        name={'time_availability'}
+                                        value={values.time_availability}
+                                        selectValue={values.time_availability}
+                                        variants={'time_availability'}
+                                        handleChange={handleChange}
+                                    />
                                     <Form.Group className="mb-3" controlId="formBasicEmail">
                                         <Form.Label>Email</Form.Label>
                                         <Form.Control

@@ -219,10 +219,38 @@ export const LabelsFormData = {
       },
     },
   },
+  // locality: {
+  //   form_name: "locality",
+  //   label: "Localidad",
+  //   inputType: "input",
+  //   type: "text",
+  //   variants: false,
+  //   sm: 8,
+  //   register: {
+  //     required: {
+  //       value: true,
+  //       message: "El campo es requerido.",
+  //     },
+  //   },
+  // },
+  // department: {
+  //   form_name: "department",
+  //   label: "Departamento",
+  //   inputType: "input",
+  //   type: "text",
+  //   variants: false,
+  //   sm: 8,
+  //   register: {
+  //     required: {
+  //       value: true,
+  //       message: "El campo es requerido.",
+  //     },
+  //   },
+  // },
   locality: {
     form_name: "locality",
     label: "Localidad",
-    inputType: "input",
+    inputType: "select",
     type: "text",
     variants: false,
     sm: 8,
@@ -236,7 +264,7 @@ export const LabelsFormData = {
   department: {
     form_name: "department",
     label: "Departamento",
-    inputType: "input",
+    inputType: "select",
     type: "text",
     variants: false,
     sm: 8,
@@ -263,7 +291,7 @@ export const LabelsFormData = {
   },
   id_usual_institution: {
     form_name: "id_usual_institution",
-    label: "Establecimiento de atención usual",
+    label: "Nuevo establecimiento de atención usual",
     inputType: "select",
     type: "number",
     variants: "variantsInstitutions",
@@ -379,6 +407,7 @@ export const ValuesRegisterForm = {
   postal_address: "",
   phone_number: "",
   id_usual_institution: "",
+  inst_from_portal: true,
   is_diabetic: false,
   is_hypertensive: false,
   is_chronic_respiratory_disease: false,
@@ -392,3 +421,10 @@ export const ValuesRegisterForm = {
   id_person_status: 1, //note - table db =>  1: pending , 2: validated , 3: refused
   is_deleted: false, //hardcode
 };
+
+export const ValuesRegisterAdminForm = {
+  username: "",
+  id: "",
+  institutions: []
+};
+

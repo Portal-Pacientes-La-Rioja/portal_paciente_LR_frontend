@@ -4,7 +4,7 @@ export async function get(url, header) {
   })
   .then((response) => response.json())
   .then((data) => data)
-  .catch((err) => console.log(err));
+  .catch((err) => console.error(err));
   return promise;
 }
 
@@ -15,7 +15,7 @@ export async function post(url, header, data) {
     body: data,
   })
   .then(res => res)
-  .catch(err => console.log('err', err));
+  .catch(err => console.error('err', err));
   return promise;
 }
 
@@ -26,6 +26,16 @@ export async function put(url, header, data) {
     body: data,
   })
   .then(res => res)
-  .catch(err => console.log('err', err));
+  .catch(err => console.error('err', err));
+  return promise;
+}
+
+export async function deleteService(url, header, data) {
+  const promise = await fetch(url, {
+    method: "DELETE",
+    headers: header
+  })
+  .then(res => res)
+  .catch(err => console.error('err', err));
   return promise;
 }

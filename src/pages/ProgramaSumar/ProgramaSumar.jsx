@@ -1,50 +1,36 @@
-import { useCallback, useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
-import usePatient from '../../hooks/usePatient';
-import DataNotFound from "../../components/DataNotFound";
-import Loader from "../../components/Loader";
-import sumarServices from "../../services/sumarServices";
-import InformationCard from "./InformationCard";
-import Swal from "sweetalert2";
-import { error } from "../../components/SwalAlertData";
+import { Col, Container, Row } from "react-bootstrap";
+import * as MdIcon from 'react-icons/md';
+import { SidebarData } from '../../components/Sidebar/SidebarData'
+import ProgramaSumarRouter from "./ProgramaSumarRouter";
+import { NavLink } from "react-router-dom";
 
 export default function ProgramaSumar() {
-
-    const [loading, setLoading] = useState(true);
-    const [data, setData] = useState([])
-    const p = usePatient()
-    const idnPatient = p.patient.identification_number 
-
-    const getData = useCallback(
-        (idn) => {
-            sumarServices(idn)
-                .then((res) => {
-                    if (res.sumar_rows) {
-                        let info = res.sumar_rows
-                        setData(info)
-                        setLoading(false)
-                    } else {
-                        setLoading(false)
-                        throw new Error('Error al solicitar datos de programa SUMAR')
-                    }
-                })
-                .catch((err) => {
-                    console.log('err', err)
-                    setLoading(false)
-                    Swal.fire(error('Error al solicitar datos de programa SUMAR'))
-                })
-        },
-        [],
-    )
-
-    useEffect(() => {
-        getData(idnPatient) 
-    }, [])
-
+    const datahc = SidebarData.perfilDelPaciente.find(d => d.id === 8)
+    const routes = datahc.options;
+    
     return (
         <Container className='programa-sumar p-3'>
-            <h5 className='section-title'>Programa Sumar</h5>
-            {loading
+            <Row>
+                <Col xs={12} lg={9} className="d-flex">
+                    <MdIcon.MdAddCircleOutline className="menu-icon text-danger me-1" style={{ fontSize: 'x-large' }} />
+                    <h5 className='section-title'>Programa SUMAR</h5>
+                </Col>
+            </Row>
+            <Row>
+                <Col className='switch-container p-3'>
+                    {routes.map((route) => {
+                        return (
+                            <NavLink key={route.path} className='me-2' activeClassName='active-switch' to={route.path}>{route.title}</NavLink>
+                        )
+                    })}
+                </Col>
+            </Row>
+            <Row>
+                <Col className='switch-container__hc'>
+                    <ProgramaSumarRouter></ProgramaSumarRouter>
+                </Col>
+            </Row>
+            {/* {loading
                 ? <Loader isActive={loading} />
                 : <div className="mt-5">
                     {data.length > 0 ? data.map((d, i) => {
@@ -63,7 +49,7 @@ export default function ProgramaSumar() {
                         : <DataNotFound text="información en Programa Sumar" />
                     }
                 </div>
-            }
+            } */}
         </Container>
     )
 }

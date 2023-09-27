@@ -52,24 +52,24 @@ export const SidebarData = {
         {
           title: "Mis turnos",
           path: "/usuario/turnos/mis-turnos"
-        }, 
+        },
         {
           title: "Solicitar turnos",
           path: "/usuario/turnos/solicitar-turnos"
         }
       ]
     },
-    // {
-    //   id: 5,
-    //   title: "Estudios",
-    //   path: "/usuario/estudios",
-    //   icon: <MdIcon.MdTextSnippet className="menu-icon" />,
-    //   acordeon: false,
-    //   a: false,
-    //   cName: "sidebar-text acordeon",
-    //   aIcon: <MdIcon.MdKeyboardArrowDown className="menu-icon" />,
-    //   options: false,
-    // },
+    {
+       id: 5,
+       title: "Estudios",
+       path: "/usuario/estudios",
+       icon: <MdIcon.MdTextSnippet className="menu-icon" />,
+       acordeon: false,
+       a: false,
+       cName: "sidebar-text acordeon",
+       aIcon: <MdIcon.MdKeyboardArrowDown className="menu-icon" />,
+       options: false,
+    },
     {
       id: 6,
       title: "Historia Clínica",
@@ -127,7 +127,7 @@ export const SidebarData = {
         {
           title: "Signos vitales",
           path: "/usuario/historia-clinica/signos-vitales"
-        }, 
+        },
       ],
     },
     // {
@@ -155,11 +155,20 @@ export const SidebarData = {
       title: "Programa Sumar",
       path: "/usuario/programa-sumar",
       icon: <MdIcon.MdAddCircleOutline className="menu-icon" />,
-      acordeon: false,
+      acordeon: true,
       a: false,
       cName: "sidebar-text",
       aIcon: <MdIcon.MdKeyboardArrowDown className="menu-icon" />,
-      options: false,
+      options: [
+        {
+          title: "Historia Clínica",
+          path: "/usuario/programa-sumar/hc"
+        },
+        {
+          title: "Cobertura  Efectiva Básica",
+          path: "/usuario/programa-sumar/ceb"
+        }
+      ],
     },
   ],
   grupoFamiliar: [
@@ -189,9 +198,9 @@ export const SidebarData = {
   instituciones: [
     {
       id: 11,
-      title: "Centros de salud",
+      title: "Establecimientos",
       path: "/usuario/instituciones/centros-medicos",
-      icon: <FaIcon.FaRegBuilding className="menu-icon" />,
+      icon: <FaIcon.FaHospital className="menu-icon" />,
       acordeon: false,
       a: false,
       cName: "sidebar-text",
@@ -237,9 +246,9 @@ export const SidebarData = {
           path: "/admin/alta-de-pacientes/pacientes-pendientes"
         },
         {
-          title:  "Pacientes rechazados",
+          title: "Pacientes rechazados",
           path: "/admin/alta-de-pacientes/pacientes-rechazados"
-        } 
+        }
       ],
     },
     {
@@ -259,8 +268,48 @@ export const SidebarData = {
         {
           title: "Borradores",
           path: "/admin/mensajeria/borradores"
-        } 
+        }
       ],
+    },
+    {
+      id: 17,
+      title: "Establecimientos",
+      path: "/admin/establecimientos",
+      icon: <FaIcon.FaHospital className="menu-icon" />,
+      acordeon: false,
+      a: false,
+      cName: "sidebar-text",
+      aIcon: <MdIcon.MdKeyboardArrowDown className="menu-icon" />,
+      options: [],
     }
   ],
+  superadmin: [
+    {
+      id: 16,
+      title: "Panel de administradores",
+      path: "/admin/panel/listado",
+      icon: <FaIcon.FaUsersCog className="menu-icon" />,
+      acordeon: false,
+      a: false,
+      cName: "sidebar-text",
+      aIcon: <MdIcon.MdKeyboardArrowDown className="menu-icon" />,
+      options: [
+        {
+          title: "Listado",
+          path: "/admin/panel/listado"
+        }
+      ],
+    },
+    {
+      id: 17,
+      title: "Indicadores",
+      path: "/admin/indicadores",
+      icon: <MdIcon.MdOutlineDashboard className="menu-icon" />,
+      acordeon: false,
+      a: false,
+      cName: "sidebar-text",
+      aIcon: <MdIcon.MdKeyboardArrowDown className="menu-icon" />,
+      options: [],
+    }
+  ]
 };

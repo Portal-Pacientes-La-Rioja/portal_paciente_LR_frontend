@@ -1,7 +1,7 @@
 export const ErrorMessage = ({ children }) => {
 
     return (
-        <div className={`error-form show `}>
+        <div className={`error-form show in-error`}>
             {children}
         </div>
     )

@@ -2,15 +2,13 @@ import { useCallback, useEffect, useState } from 'react';
 import usePatient from '../../../../hooks/usePatient';
 import { Col, Row } from "react-bootstrap";
 import { variantsGender } from '../../../../components/ComponentsData';
-import institutionsServices from '../../../../services/institutionsServices';
+import { getInstitutionsAllWithNewData } from '../../../../services/institutionsServices';
 
 function DatosPaciente() {
 
     const p = usePatient();
-    const birthdateY = p.patient.birthdate.split('-')[0]
-    const birthdateM = p.patient.birthdate.split('-')[1]
-    const birthdateD = p.patient.birthdate.split('-')[2].split('T')[0]
-    const birthdate = birthdateD + '/' + birthdateM + '/' + birthdateY
+    const birthdate = new Date(p.patient.birthdate).toLocaleDateString()
+
     function calculateAge(birthdate) {
         let today = new Date();
         let b = new Date(birthdate);
@@ -26,16 +24,17 @@ function DatosPaciente() {
     const [institution, setInstitution] = useState([]);
     const getInstitutions = useCallback(
         () => {
-            institutionsServices()
+            getInstitutionsAllWithNewData()
                 .then((res) => {
                     return res
                 })
                 .then((res) => {
-                    let find = res.find(i => i.id === p.patient.id_usual_institution) || 1
-                    // console.log(find.name)
+                    let find = res.find((i) => {
+                        return i.id === p.patient.id_usual_institution && i.portal === p.patient.inst_from_portal
+                    }) 
                     setInstitution(find.name)
                 })
-                .catch((err) => { console.log(err) })
+                .catch((err) => { console.error(err) })
         },
         [institution],
     )

@@ -1,44 +1,31 @@
-import { Container } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
+import * as MdIcon from "react-icons/md";
+import * as FaIcon from "react-icons/fa";
+import { institutionData } from "../../../../components/ComponentsData";
+import MapView from "../../../../components/MapsView/MapsView";
 
 export default function Telefonos() {
+    const data = institutionData
+
     return (
         <Container>
-            <div className='main-telefonos mt-3'>
-                <div className="container">
-                    <div className="row">
-                        {/*colum1*/}
-                        <div className="encabezado">
-                            <h4 className='mb-0 py-1 text-uppercase'>Contacto</h4>
-                        </div>
-                        <div className="col-12 col-md-6">
-                            <h5 className="mt-3">Ministerio de Salud</h5>
-                            <h6>Gobierno de La Rioja</h6>
-
-                            <ul className="list-unstyled">
-                                <li>Dirección: Av. Ortiz de Ocampo 1700 -</li>
-                                <li>Ciudad de La Rioja, Argentina</li>
-                                <li>Código postal: 5300</li>
-                                <li>Teléfono: (0380) 4453700</li>
-                                <li>Horarios: Lunes a Viernes de 8.00 a 16.00 HS</li>
-                                <li><a href="https://salud.larioja.gob.ar/">salud.larioja.gob.ar</a> </li>
-                            </ul>
-                            <br />
-                            <br />
-                            <br /><br /><br />
-                        </div>
-                        {/*colum2*/}
-                        {/* <div className="col">
-                        <br />
-                        
-                    </div> */}
-
-                        {/*colum3*/}
-
-                    </div>
-
-                </div>
-
-            </div>
-        </Container>
+            <Row className="card-institution">
+                <Col xs={12} md={6}>
+                    <h5 className="mt-3">{data.name}</h5>
+                    <h6 className="mb-3">{data.gob}</h6>
+                    <p><MdIcon.MdLocationOn className="menu-icon me-1" /> Dirección:  <a href={data.addressLink} rel="noreferrer" target="_blank">{data.address}</a></p>
+                    <p><MdIcon.MdPhone className="menu-icon me-1" /> Teléfono: {data.phone}</p>
+                    <p><MdIcon.MdLanguage className="menu-icon me-1" /> Visitar <a href={data.webLink} rel="noreferrer" target="_blank"> sitio web</a> </p>
+                    <p className="d-flex">
+                        <a href={data.facebook} rel="noreferrer" target="_blank" className="text-dark me-3"><FaIcon.FaFacebookF className="menu-icon me-1" /></a>
+                        <a href={data.instagram} rel="noreferrer" target="_blank" className="text-dark me-3"><FaIcon.FaInstagram className="menu-icon me-1" /></a>
+                        <a href={data.twitter} rel="noreferrer" target="_blank" className="text-dark me-3"><FaIcon.FaTwitter className="menu-icon me-1" /></a>
+                    </p>
+                </Col>
+                <Col xs={12} md={6} style={{ maxHeight: '300px' }}>
+                    <MapView latitud={data.lat} longitud={data.long} descripcion={data.address} />
+                </Col>
+            </Row>
+        </Container >
     )
 }

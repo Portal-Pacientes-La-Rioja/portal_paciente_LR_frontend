@@ -11,7 +11,7 @@ export async function recoverPasswordServices(email) {
    return promise
   }
   catch (err) {
-    console.log('Error al cargar las instituciones: ', err);
+    console.error('Error: ', err);
   }
 }
 
@@ -26,6 +26,6 @@ export async function changePassword(token, password) {
    return promise
   }
   catch (err) {
-    console.log('Error al cargar las instituciones: ', err);
+    console.error('Error: ', err);
   }
 }

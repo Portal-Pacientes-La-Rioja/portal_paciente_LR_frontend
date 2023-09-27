@@ -1,0 +1,60 @@
+.FilesDragAndDrop {
+    .FilesDragAndDrop__area {
+      width: 300px;
+      height: 200px;
+      padding: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-flow: column nowrap;
+      font-size: 24px;
+      color: #555555;
+      border: 2px #c3c3c3 dashed;
+      border-radius: 12px;
+  
+      .area__icon {
+        font-size: 64px;
+        margin-top: 20px;
+      }
+    }
+  }
+
+  .dragging {
+    border: 2px dashed #000;
+    background-color: #f0f0f0;
+  }
+.lista{
+  margin-top: 10px;
+}
+  
+.list-item {
+  display: flex;
+  align-items: center;
+}
+
+.list-item-name {
+  flex-grow: 1;
+}
+
+.list-item-button {
+  margin-left: 10px;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+}
+
+.red-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-bottom: 10px; /* Añade margen inferior */
+  margin-left: 25px; /* Añade margen derecho */
+}
+
+.red-button + .red-button {
+  margin-left: 5px;
+}

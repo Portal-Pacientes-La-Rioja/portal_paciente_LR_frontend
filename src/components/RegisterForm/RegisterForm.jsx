@@ -13,6 +13,9 @@ import { useHistory } from "react-router-dom";
 import { error, successRegister } from "../SwalAlertData";
 import { registerPersonAndUserService, registerPersonService, uploadIdentificationImagesService } from "../../services/registerServices";
 import * as MdIcon from "react-icons/md";
+import { getAllDepartamentosFrom, getAllLocalidadesFrom } from "../../services/searchAddressService";
+import { getInstitutionsAllWithNewData } from "../../services/institutionsServices";
+import AutocompleteComponent from "../AutocompleteComponent";
 
 export default function RegisterForm(formType) {
 
@@ -29,10 +32,60 @@ export default function RegisterForm(formType) {
     const type = formType.formType //Tipe of form "user" or "patient"
     const f = LabelsFormData //Information to build form fields
     const [values, setValues] = useState(ValuesRegisterForm); //Get and set values form
-    const [newValue, setNewValue] = useState("") //Get and set values form to validate required fields
-    const [search, setSearch] = useState(true) //Get addres by search or not
+     const [newValue, setNewValue] = useState("") //Get and set values form to validate required fields
+    const [search, setSearch] = useState(false) //Get addres by search or not
     // newPerson
     const [newPersonId, setNewPersonId] = useState(null)
+    // geogrphic data
+    const provinciaID = '46' //hardcode la rioja; 
+    const [departments, setDepartments] = useState([]);
+    const [departmentSelected, setDepartmentSelected] = useState('');
+    const [localities, setLocalities] = useState([]);
+    const [localitySelected, setLocalitySelected] = useState('');
+    // SET INSTITUTION
+    const [institutionsList, setInstitutionsList] = useState([]);
+    const [usualInstitution, setUsualInstitution] = useState('');
+    const [changeInstitution, setChangeInstitution] = useState(true);
+    const handleChangeInstitution = () => setChangeInstitution(!changeInstitution);
+
+
+    useEffect(() => {
+        if (step === 2 && type === 'user') getDepartments(provinciaID);
+        if ((step === 3 && type === 'user') || (step === 1 && type === 'patient')) getInstitutionsAll();
+    }, [step])
+
+    useEffect(() => {
+        if (departmentSelected !== '') getLocalities(departmentSelected)
+    }, [departmentSelected])
+
+    useEffect(() => {
+        if (type === 'patient') setChangeInstitution(false)
+    }, [])
+
+    useEffect(() => {
+        if (departments.length > 0 && values.department) {
+            setDepartamentoData(values.department)
+        }
+    }, [departments, values.department])
+
+    useEffect(() => {
+        if (localities.length > 0 && values.locality) {
+            setLocalidadData(values.locality)
+        }
+    }, [localities, values])
+
+    useEffect(() => {
+        setValue('birthdate', values.birthdate);
+        setValue('postal_address', values.address_street);
+    }, [values.birthdate, values.address_street])
+
+    useEffect(() => {
+        if (newValue === 'file1' || newValue === 'file2') {
+            setValue(`${newValue}`, values[newValue]);
+        } else {
+            setValue(`${newValue}`, values[newValue]);
+        }
+    }, [newValue, values[newValue]])
 
     // set values 
     const handleChange = (e) => {
@@ -83,18 +136,91 @@ export default function RegisterForm(formType) {
         }
     }
 
-    useEffect(() => {
-        setValue('birthdate', values.birthdate);
-        setValue('postal_address', values.address_street);
-    }, [values.birthdate, values.address_street])
+    const handleChangeUbicacion = (e) => {
+        let targetName = e.target.name;
+        let targetValue = e.target.value;
+        let variants = targetName === 'department' ? departments : localities
+        let stringValue = variants.find((item) => item.id === targetValue)?.name
+        values[`${targetName}`] = stringValue;
+        setNewValue(targetName);
 
-    useEffect(() => {
-        if (newValue === 'file1' || newValue === 'file2') {
-            setValue(`${newValue}`, values[newValue]);
-        } else {
-            setValue(`${newValue}`, values[newValue]);
+        if (targetName === 'department') {
+            getLocalities(targetValue)
         }
-    }, [newValue, values[newValue]])
+    }
+
+    const getDepartments = useCallback(
+        (provinciaID) => {
+            getAllDepartamentosFrom(provinciaID)
+                .then((res) => {
+                    return res.map((item) => {
+                        item.name = item.nombre
+                        return item
+                    })
+                })
+                .then((res) => setDepartments(res))
+                .catch((err) => console.error(err))
+        }, [])
+
+    const getLocalities = useCallback(
+        (departamentoID) => {
+            getAllLocalidadesFrom(departamentoID)
+                .then((res) => {
+                    return res.map((item) => {
+                        item.name = item.nombre
+                        return item
+                    })
+                })
+                .then((res) => setLocalities(res))
+                .catch((err) => console.error(err))
+        }, [])
+
+    const setDepartamentoData = (data) => {
+        let selected = departments.find((item) => item.name.toLowerCase().trim() === data.toLowerCase().trim());
+        if (selected) setDepartmentSelected(selected.id)
+    }
+
+    const setLocalidadData = (data) => {
+        let selected = localities.find((item) => item.name.toLowerCase().trim() === data.toLowerCase().trim());
+        if (selected) setLocalitySelected(selected.id)
+    }
+
+    const handleChangeSearch = (institution) => {
+        if (typeof institution !== 'string' && institution.id) {
+            let selectedInst = institutionsList.find((item) => {
+                return item.name.toLowerCase().trim() === institution.name.toLowerCase()
+            })
+            setUsualInstitution(selectedInst)
+            values['id_usual_institution'] = selectedInst.id;
+            values['inst_from_portal'] = selectedInst.portal;
+            setNewValue('id_usual_institution');
+        }
+    }
+
+    const getInstitutionsAll = useCallback(
+        () => {
+            getInstitutionsAllWithNewData()
+                .then((res) => {
+                    if (res.length > 0) {
+                        setInstitutionsList(res);
+                    }
+                    return res
+                })
+                .then((res) => {
+                // Si el formulario es para registrar miembro de grupo familiar, asigna por default establecimiento usual de usuario master
+                if (type === 'patient') {  
+                    let actuallyInst = res.find((item) => {
+                    return item.id === user.id_usual_institution && item.portal === user.inst_from_portal
+                    });
+                    if (actuallyInst) {
+                        values['id_usual_institution'] = actuallyInst.id;
+                        setUsualInstitution(actuallyInst);
+                    } 
+                }
+                })
+                .catch((err) => console.error(err));
+        }, [])
+
 
     const buildBody = () => {
         setLoading(true)
@@ -102,14 +228,10 @@ export default function RegisterForm(formType) {
         delete body.confirmEmail
         delete body.confirmPassword
         delete body.postal_address
-        delete body.file1 //note - is necesary, but not now
-        delete body.file2 //note - is necesary, but not now
-        const [month, day, year] = [body.birthdate.getMonth() + 1, body.birthdate.getDate(), body.birthdate.getFullYear()];
-        let date = `${day}/${month}/${year}`
-        body.birthdate = date
+        body.birthdate = new Date(body.birthdate).toLocaleDateString();
         body.id_identification_type = parseInt(body.id_identification_type)
         body.id_gender = parseInt(body.id_gender)
-        body.id_usual_institution = parseInt(body.id_usual_institution)
+        body.id_usual_institution = usualInstitution.id
         body.is_diabetic = body.is_diabetic === 'true' ? true : false
         body.is_hypertensive = body.is_hypertensive === 'true' ? true : false
         body.is_chronic_kidney_disease = body.is_chronic_kidney_disease === 'true' ? true : false
@@ -118,7 +240,7 @@ export default function RegisterForm(formType) {
             body.identification_number_master = body.identification_number
             body.id_identification_type_master = body.id_identification_type
             body.username = body.email
-            sendRegisterNewUserForm(body);
+            sendRegisterNewUserForm(body, values);
         } else if (type === "patient") {
             delete body.username
             delete body.password
@@ -130,29 +252,27 @@ export default function RegisterForm(formType) {
             body.department = user.department
             body.phone_number = user.phone_number
             body.email = user.email
-            sendRegisterNewPatientForm(body);
+            sendRegisterNewPatientForm(body, values);
         }
     }
 
-    const onSubmitImages = () => {
+    const onSubmitImages = (personId, valuesForm) => {
         setLoading(true)
         let images = new FormData();
-        images.append('file1', values.file1, 'file1')
-        images.append('file2', values.file2, 'file2')
-        uploadIdentificationImages(newPersonId, images);
+        images.append('file1', valuesForm.file1, 'file1')
+        images.append('file2', valuesForm.file2, 'file2')
+        uploadIdentificationImages(personId, images);
     }
 
     const onSubmit = (length, i) => {
         if (length === i + 1) { //last step 
-            onSubmitImages()
-        } else if (length - 1 === i + 1) {  //penultimate step 
             buildBody()
         } else {
             next(i)
         }
     }
 
-    const sendRegisterNewUserForm = useCallback((body) => {
+    const sendRegisterNewUserForm = useCallback((body, values) => {
         registerPersonAndUserService(body)
             .then((res) => {
                 if (res.ok) {
@@ -161,8 +281,7 @@ export default function RegisterForm(formType) {
                         if (readeble.status) {
                             auth.newRegisterUser(body)
                             setNewPersonId(readeble.value)
-                            setStep(4)
-                            setLoading(false)
+                            onSubmitImages(readeble.value, values)
                         } else {
                             Swal.fire(error('Hubo un error al confirmar datos'))
                             throw new Error(text)
@@ -181,7 +300,7 @@ export default function RegisterForm(formType) {
     }, []);
 
 
-    const sendRegisterNewPatientForm = useCallback((body) => {
+    const sendRegisterNewPatientForm = useCallback((body, values) => {
         registerPersonService(body)
             .then((res) => {
                 if (res.ok) {
@@ -189,16 +308,15 @@ export default function RegisterForm(formType) {
                         let readeble = JSON.parse(text)
                         if (readeble.status) {
                             setNewPersonId(readeble.value)
-                            setStep(2)
-                            setLoading(false)
+                            onSubmitImages(readeble.value, values)
                         } else {
                             Swal.fire(error('Hubo un error al confirmar datos'))
                             throw new Error(text)
                         }
                     })
                 } else {
-                    console.log('error', res.body)
                     Swal.fire(error('Hubo un error al confirmar datos'))
+                    setLoading(false)
                 }
             })
             .catch((err) => {
@@ -243,14 +361,14 @@ export default function RegisterForm(formType) {
     const loginDataForm =
         <Row className={step === 0 ? "in" : "out"}>
             {step === 0 && type === 'user' &&
-                <> <Col xs={12} >
+                <> <Col className="mb-2" xs={12} >
                     <FormGroup inputType={f.email.inputType} label={f.email.label} name={f.email.form_name} value={values.email}
                         {...register(`${f.email.form_name}`, f.email.register)}
                         onChange={handleChange}
                     />
                     {errors[f.email.form_name] && <ErrorMessage><p>{errors[f.email.form_name].message}</p></ErrorMessage>}
                 </Col>
-                    <Col xs={12} >
+                    <Col className="mb-2" xs={12} >
                         <FormGroup inputType={f.confirmEmail.inputType} label={f.confirmEmail.label} name={f.confirmEmail.form_name} value={values.confirmEmail}
                             {...register(`${f.confirmEmail.form_name}`, {
                                 required: f.confirmEmail.register.required,
@@ -261,7 +379,7 @@ export default function RegisterForm(formType) {
                         />
                         {errors[f.confirmEmail.form_name] && <ErrorMessage><p>{errors[f.confirmEmail.form_name].message}</p></ErrorMessage>}
                     </Col>
-                    <Col xs={12} sm={7} >
+                    <Col className="mb-2" xs={12} sm={7} >
                         <div className="my-tooltip">
                             <FormGroup inputType={f.password.inputType} label={f.password.label} name={f.password.form_name} value={values.password} type={f.password.type}
                                 {...register(`${f.password.form_name}`, f.password.register)}
@@ -273,7 +391,7 @@ export default function RegisterForm(formType) {
                         </div>
                         {errors[f.password.form_name] && <ErrorMessage><p>{errors[f.password.form_name].message}</p></ErrorMessage>}
                     </Col>
-                    <Col xs={12} sm={7} >
+                    <Col className="mb-2" xs={12} sm={7} >
                         <FormGroup inputType={f.confirmPassword.inputType} label={f.confirmPassword.label} name={f.confirmPassword.form_name} value={values.confirmPassword} type={f.confirmPassword.type}
                             {...register(`${f.confirmPassword.form_name}`, {
                                 validate: (value) => value === getValues("password") || 'Las direcciones de correo no coinciden'
@@ -290,21 +408,21 @@ export default function RegisterForm(formType) {
         <Row className={step === 1 || step === 0 ? "in" : "out"}>
             {(step === 1 && type === 'user') || (step === 0 && type === 'patient') ?
                 <>
-                    <Col xs={12}>
+                    <Col className="mb-2" xs={12}>
                         <FormGroup inputType={f.name.inputType} label={f.name.label} name={f.name.form_name} value={values.name}
                             {...register(`${f.name.form_name}`, f.name.register)}
                             onChange={handleChange}
                         />
                         {errors[f.name.form_name] && <ErrorMessage><p>{errors[f.name.form_name].message}</p></ErrorMessage>}
                     </Col>
-                    <Col xs={12}>
+                    <Col className="mb-2" xs={12}>
                         <FormGroup inputType={f.surname.inputType} label={f.surname.label} name={f.surname.form_name} value={values.surname}
                             {...register(`${f.surname.form_name}`, f.surname.register)}
                             onChange={handleChange}
                         />
                         {errors[f.surname.form_name] && <ErrorMessage><p>{errors[f.surname.form_name].message}</p></ErrorMessage>}
                     </Col>
-                    <Col xs={12} sm={7}>
+                    <Col className="mb-2" xs={12} sm={7}>
                         <FormGroup inputType={f.id_identification_type.inputType} label={f.id_identification_type.label} name={f.id_identification_type.form_name} selectValue={values.id_identification_type}
                             variants={f.id_identification_type.variants}
                             handleChange={(e) => handleChange(e)}
@@ -312,14 +430,14 @@ export default function RegisterForm(formType) {
                         />
                         {errors[f.id_identification_type.form_name] && <ErrorMessage><p>{errors[f.id_identification_type.form_name].message}</p></ErrorMessage>}
                     </Col>
-                    <Col xs={12} sm={7}>
+                    <Col className="mb-2" xs={12} sm={7}>
                         <FormGroup inputType={f.identification_number.inputType} label={f.identification_number.label} name={f.identification_number.form_name} value={values.identification_number}
                             {...register(`${f.identification_number.form_name}`, f.identification_number.register)}
                             onChange={handleChange}
                         />
                         {errors[f.identification_number.form_name] && <ErrorMessage><p>{errors[f.identification_number.form_name].message}</p></ErrorMessage>}
                     </Col>
-                    <Col xs={12} sm={7}>
+                    <Col className="mb-2" xs={12} sm={7}>
                         <FormGroup inputType={f.birthdate.inputType} label={f.birthdate.label} name={f.birthdate.form_name}
                             maxDate={type === "user" ? f.birthdate.maxDate : new Date()}
                             {...register(`${f.birthdate.form_name}`, f.birthdate.register)}
@@ -327,7 +445,7 @@ export default function RegisterForm(formType) {
                         />
                         {errors[f.birthdate.form_name] && <ErrorMessage><p>{errors[f.birthdate.form_name].message}</p></ErrorMessage>}
                     </Col>
-                    <Col xs={12} sm={7}>
+                    <Col className="mb-2" xs={12} sm={7}>
                         <FormGroup inputType={f.id_gender.inputType} label={f.id_gender.label} name={f.id_gender.form_name} selectValue={values.id_gender}
                             variants={f.id_gender.variants}
                             handleChange={(e) => handleChange(e)}
@@ -343,10 +461,10 @@ export default function RegisterForm(formType) {
         <Row className={step === 2 ? "in" : "out"}>
             {step === 2 && type === 'user' &&
                 <>
-                    <Col xs={12} sm={7}>
+                    <Col className="mb-2" xs={12} sm={7}>
                         <Form.Group>
                             <Form.Label className="mb-0">Domicilio</Form.Label>
-                            <div>
+                            {/* <div>
                                 <input type="radio" id="searchCheck" name="search" className="form-check-input ms-3" value={true}
                                     checked={search ? true : false}
                                     onChange={() => setSearch(true)}
@@ -360,11 +478,11 @@ export default function RegisterForm(formType) {
                                 /> <label className="form-label" htmlFor="searchNoCheck">
                                     Ingresar manualmente
                                 </label>
-                            </div>
+                            </div> */}
                         </Form.Group>
                     </Col>
                     {search ?
-                        <Col xs={12} sm={7} className='w-100'>
+                        <Col xs={12} sm={7} className='w-100 mb-2'>
                             <Form.Group className="mb-3" >
                                 <SearchAddress
                                     nameForm="postal_address"
@@ -384,37 +502,37 @@ export default function RegisterForm(formType) {
                         </Col>
                         :
                         <>
-                            <Col xs={12} sm={8}>
+                            <Col className="mb-2" xs={12} sm={6}>
+                                <FormGroup inputType={f.department.inputType} label={f.department.label} name={f.department.form_name} value={values.department}
+                                    variants={{ data: departments }} handleChange={handleChangeUbicacion}
+                                    {...register(`${f.department.form_name}`, f.department.register)}
+                                />
+                                {errors[f.department.form_name] && <ErrorMessage><p>{errors[f.department.form_name].message}</p></ErrorMessage>}
+                            </Col>
+                            <Col className="mb-2" xs={12} sm={6}>
+                                <FormGroup inputType={f.locality.inputType} label={f.locality.label} name={f.locality.form_name} value={values.locality}
+                                    variants={{ data: localities }} handleChange={handleChangeUbicacion}
+                                    {...register(`${f.locality.form_name}`, f.locality.register)}
+                                />
+                                {errors[f.locality.form_name] && <ErrorMessage><p>{errors[f.locality.form_name].message}</p></ErrorMessage>}
+                            </Col>
+                            <Col className="mb-2" xs={12} sm={8}>
                                 <FormGroup inputType={f.address_street.inputType} label={f.address_street.label} name={f.address_street.form_name} value={values.address_street}
                                     {...register(`${f.address_street.form_name}`, f.address_street.register)}
                                     onChange={handleChange}
                                 />
                                 {errors[f.address_street.form_name] && <ErrorMessage><p>{errors[f.address_street.form_name].message}</p></ErrorMessage>}
                             </Col>
-                            <Col xs={12} sm={4}>
+                            <Col className="mb-2" xs={12} sm={4}>
                                 <FormGroup inputType={f.address_number.inputType} label={f.address_number.label} name={f.address_number.form_name} value={values.address_number}
                                     {...register(`${f.address_number.form_name}`, f.address_number.register)}
                                     onChange={handleChange}
                                 />
                                 {errors[f.address_number.form_name] && <ErrorMessage><p>{errors[f.address_number.form_name].message}</p></ErrorMessage>}
                             </Col>
-                            <Col xs={12} sm={7}>
-                                <FormGroup inputType={f.locality.inputType} label={f.locality.label} name={f.locality.form_name} value={values.locality}
-                                    {...register(`${f.locality.form_name}`, f.locality.register)}
-                                    onChange={handleChange}
-                                />
-                                {errors[f.locality.form_name] && <ErrorMessage><p>{errors[f.locality.form_name].message}</p></ErrorMessage>}
-                            </Col>
-                            <Col xs={12} sm={7}>
-                                <FormGroup inputType={f.department.inputType} label={f.department.label} name={f.department.form_name} value={values.department}
-                                    {...register(`${f.department.form_name}`, f.department.register)}
-                                    onChange={handleChange}
-                                />
-                                {errors[f.department.form_name] && <ErrorMessage><p>{errors[f.department.form_name].message}</p></ErrorMessage>}
-                            </Col>
                         </>
                     }
-                    <Col xs={12} >
+                    <Col xs={12} className="mb-2">
                         <FormGroup inputType={f.phone_number.inputType} label={f.phone_number.label} name={f.phone_number.form_name} value={values.phone_number}
                             {...register(`${f.phone_number.form_name}`, f.phone_number.register)}
                             onChange={handleChange}
@@ -429,15 +547,32 @@ export default function RegisterForm(formType) {
         <Row className={step === 3 || step === 1 ? "in" : "out"}>
             {(step === 3 && type === 'user') || (step === 1 && type === 'patient') ?
                 <>
-                    <Col xs={12} >
-                        <FormGroup inputType={f.id_usual_institution.inputType} label={f.id_usual_institution.label} name={f.id_usual_institution.form_name} selectValue={values.id_usual_institution}
-                            variants={f.id_usual_institution.variants}
-                            handleChange={(e) => handleChange(e)}
-                            {...register(`${f.id_usual_institution.form_name}`, f.id_usual_institution.register)}
-                        />
+                    <Col className="mb-2" xs={12} >
+                        Establecimiento de atención usual
+                       {type === 'patient' && 
+                        <div className='d-flex align-items-center'>
+                                <span >{usualInstitution?.name}</span>
+                                {!changeInstitution && <button type="button" className='btn text-primary' onClick={() => handleChangeInstitution()}>Cambiar...</button>}
+                            </div>}
+                        {changeInstitution &&
+                            <AutocompleteComponent
+                                variants={institutionsList}
+                                handleChange={handleChangeSearch}
+                                {...register(`${f.id_usual_institution.form_name}`, f.id_usual_institution.register)}
+                            />
+                        }
                         {errors[f.id_usual_institution.form_name] && <ErrorMessage><p>{errors[f.id_usual_institution.form_name].message}</p></ErrorMessage>}
                     </Col>
-                    <Col xs={12} className="mt-3">
+                    {/* <Col className="mb-2" xs={12} >
+                        <Form.Label className="mb-0">Establecimiento de atención usual</Form.Label>
+                        {institutionsList.length > 0 && <AutocompleteComponent
+                            variants={institutionsList}
+                            handleChange={handleChangeSearch}
+                            {...register(`${f.id_usual_institution.form_name}`, f.id_usual_institution.register)}
+                        />}
+                        {errors[f.id_usual_institution.form_name] && <ErrorMessage><p>{errors[f.id_usual_institution.form_name].message}</p></ErrorMessage>}
+                    </Col> */}
+                    <Col xs={12} className="mt-3 mb-2">
                         <Form.Label className="mb-0">¿Padecés alguna de las siguientes afecciones crónicas? (Opcional)</Form.Label>
                         <FormGroup inputType={f.is_diabetic.inputType} label={f.is_diabetic.label} name={f.is_diabetic.form_name} value={values.is_diabetic} type={f.is_diabetic.type}
                             onChange={handleChange}
@@ -502,7 +637,7 @@ export default function RegisterForm(formType) {
                                     <Form className="form-group form_register" onSubmit={handleSubmit(() => onSubmit(stepsForm.length, i))}>
                                         {s.component}
                                         <div className="d-flex w-100 justify-content-end align-items-center">
-                                            <Button variant="danger" type="submit">{stepsForm.length + 1 > i ? 'Siguiente' : 'Registrar'}</Button>
+                                            <Button variant="danger" type="submit">{stepsForm.length > i+1 ? 'Siguiente' : 'Registrar'}</Button>
                                         </div>
                                     </Form>
                                 }
