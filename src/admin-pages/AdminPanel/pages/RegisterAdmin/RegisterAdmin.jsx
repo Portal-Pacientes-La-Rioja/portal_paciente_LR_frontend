@@ -158,8 +158,10 @@ export default function RegisterAdmin() {
                     return res
                 })
                 .then((res) => {
-                    let data = { user_id: editId }
-                    getUserData(data, res);  
+                    if (action === 'editar') {
+                        let data = { user_id: editId }
+                        getUserData(data, res);  
+                    }
                 })
                 .catch((err) => { console.error(err) })
         },

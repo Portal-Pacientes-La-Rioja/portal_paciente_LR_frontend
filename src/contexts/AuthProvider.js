@@ -77,8 +77,11 @@ const AuthProvider = ({ children }) => {
 
   const getAdminData = () => {  
     const verify  = jwtVerify(tokenUser);
-    return verify?.id ? verify : getLocalStorage("curtime");
-    // return data
+    if (verify?.id) {
+      return verify
+    } 
+    // logout(true)
+    return false
   }
 
   const loginPerson = useCallback(
