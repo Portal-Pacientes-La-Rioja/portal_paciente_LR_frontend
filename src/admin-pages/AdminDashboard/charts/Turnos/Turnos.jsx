@@ -18,7 +18,7 @@ import { error } from "../../../../components/SwalAlertData";
 
 export const Turnos = () => {
 
-    const fromDate = new Date('01/01/2023').toISOString().split('T')[0]
+    const fromDate = new Date('01/09/2023').toISOString().split('T')[0]
     const toDate = new Date().toISOString().split('T')[0];
     const [labels, setLabels] = useState(['Turnos Solicitados']);
     const [dataTurnos, setDataTurnos] = useState([]);
@@ -43,43 +43,43 @@ export const Turnos = () => {
     }, [])
 
 
-    ChartJS.register(
-        CategoryScale,
-        LinearScale,
-        BarElement,
-        Title,
-        Tooltip,
-        Legend,
+    // ChartJS.register(
+    //     CategoryScale,
+    //     LinearScale,
+    //     BarElement,
+    //     Title,
+    //     Tooltip,
+    //     Legend,
         
-    );
+    // );
 
-    const options = {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'top',
-            },
-            title: {
-                display: true,
-                text: 'Usuarios activos',
-            },
-        },
-    };
+    // const options = {
+    //     responsive: true,
+    //     plugins: {
+    //         legend: {
+    //             position: 'top',
+    //         },
+    //         title: {
+    //             display: true,
+    //             text: 'Turnos',
+    //         },
+    //     },
+    // };
 
-    const data = {
-        labels,
-        datasets: [
-            {
-                label: `Usuarios Principales: ${dataTurnos}`,
-                data: dataTurnos,
-                backgroundColor: 'rgba(0, 87, 128, 0.7)',
-            }
-        ],
-    };
+    // const data = {
+    //     labels,
+    //     datasets: [
+    //         {
+    //             label: `Turnos solicitados: ${dataTurnos}`,
+    //             data: dataTurnos,
+    //             backgroundColor: '#95c2c2',
+    //         }
+    //     ],
+    // };
 
     return (
         <Col lg={6} className='my-3'>
-            <h5>Usuarios Activos</h5>
+            <h5>Turnos solicitados</h5>
             <div className="mb-3 d-flex">
                 <div>
                     <label htmlFor="desde">Desde:</label>
@@ -106,14 +106,18 @@ export const Turnos = () => {
                     <Button><MdIcon.MdSearch /></Button>
                 </div> */}
             </div>
-            <div className="p-3 border border-secundary rounded" style={{ maxHeight: '400px' }}>
+            <div className="d-flex border border-dark-subtle rounded justify-content-between p-4 mt-4">
+                <h5 className="mb-0">Total Turnos Solicitados:</h5>
+                <h5 className="mb-0 count-number text-success">{dataTurnos}</h5>
+            </div>
+            {/* <div className="p-3 border border-secundary rounded" style={{ maxHeight: '400px' }}>
                 <Bar
                     data={data}
                     height={70}
                     width={100}
                     options={options}
                 />
-            </div>
+            </div> */}
         </Col>
     )
 }

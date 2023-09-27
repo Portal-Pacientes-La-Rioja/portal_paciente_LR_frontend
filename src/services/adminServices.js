@@ -1,4 +1,4 @@
-import { API_ENDPOINT_ASSIGN_INSTITUTIONS, API_ENDPOINT_CREATEUSERADMIN, API_ENDPOINT_DELETEUSERADMIN, API_ENDPOINT_GETPERSONS, API_ENDPOINT_GETPERSONSACCEPTED, API_ENDPOINT_GET_USERS_ADMIN_LIST, API_ENDPOINT_GET_USER_ADMIN_BY_ID, API_ENDPOINT_ONOFFADMIN, API_ENDPOINT_PERSONACCEPTED, API_ENDPOINT_PERSONNOTACCEPT, API_ENDPOINT_UPDTAEUSERADMIN, API_ENDPOINT_UPDTAEUSERADMINPASSWORD, AUTH_HEADER, UPDATE_HEADER } from "../constants/api.constants";
+import { API_ENDPOINT_ASSIGN_INSTITUTIONS, API_ENDPOINT_CREATEUSERADMIN, API_ENDPOINT_DELETEUSERADMIN, API_ENDPOINT_GETPERSONS, API_ENDPOINT_GETPERSONSACCEPTED, API_ENDPOINT_GET_USERS_ADMIN_LIST, API_ENDPOINT_GET_USER_ADMIN_BY_ID, API_ENDPOINT_ONOFFADMIN, API_ENDPOINT_PERSONACCEPTED, API_ENDPOINT_PERSONNOTACCEPT, API_ENDPOINT_PERSONS_TO_BE_ACCEPTED, API_ENDPOINT_UPDTAEUSERADMIN, API_ENDPOINT_UPDTAEUSERADMINPASSWORD, AUTH_HEADER, UPDATE_HEADER } from "../constants/api.constants";
 import { get, post, put } from "./httpServices";
 
 export async function getPersons() {
@@ -7,7 +7,17 @@ export async function getPersons() {
    return promise
   }
   catch (err) {
-    console.log('Error al cargar datos: ', err);
+    console.error('Error al cargar datos: ', err);
+  }
+}
+
+export async function getPersonsToBeAccepted() {
+  try {
+    const promise = await get(API_ENDPOINT_PERSONS_TO_BE_ACCEPTED, AUTH_HEADER())
+   return promise
+  }
+  catch (err) {
+    console.error('Error al cargar datos: ', err);
   }
 }
 
@@ -17,7 +27,7 @@ export async function getPersonsAccepted() {
      return promise
     }
     catch (err) {
-      console.log('Error al cargar datos: ', err);
+      console.error('Error al cargar datos: ', err);
     }
   }
 
@@ -27,7 +37,7 @@ export async function getPersonsAccepted() {
       const promise = await put(API_ENDPOINT_PERSONACCEPTED, AUTH_HEADER(), data);
       return promise;
     } catch (err) {
-      console.log("Error al editar persona: ", err);
+      console.error("Error al editar persona: ", err);
     }
   }
 

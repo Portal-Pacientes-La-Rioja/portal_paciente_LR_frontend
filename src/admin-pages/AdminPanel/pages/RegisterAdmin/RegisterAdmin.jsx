@@ -11,7 +11,7 @@ import { ValuesRegisterAdminForm } from "../../../../components/RegisterForm/For
 import FormGroup from "../../../../components/RegisterForm/Forms/FormGroup";
 import { ErrorMessage } from "../../../../components/ErrorMessage/ErrorMessage";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { getUserAdminById, postCreateUserAdmin, putAssignInstitutionsAdmin, putOnOffAdmin, putUpdateUserAdmin, putUpdateUserAdminPassword } from "../../../../services/adminServices";
+import { getUserAdminById, postCreateUserAdmin, putAssignInstitutionsAdmin, putOnOffAdmin, putUpdateUserAdminPassword } from "../../../../services/adminServices";
 import * as FaIcon from 'react-icons/fa'
 import Selector from "../../../Establecimientos/components/Selector";
 import { getInstitutionsAllWithNewData } from "../../../../services/institutionsServices";
@@ -60,8 +60,6 @@ export default function RegisterAdmin() {
     useEffect(() => {
         if (action === 'editar' && editId) {
             setLoading(true)
-            let data = { user_id: editId }
-            getUserData(data);
         }
         if (action === 'registrar') {
             setChangePassword(true);
@@ -69,7 +67,7 @@ export default function RegisterAdmin() {
         getInstituciones()
     }, [])
 
-    const getUserData = useCallback((id) => {
+    const getUserData = useCallback((id, institutions) => {
         getUserAdminById(id)
             .then(
                 (res) => {
@@ -83,7 +81,17 @@ export default function RegisterAdmin() {
                     return values
                 }
             )
-            .then((res) => setInstitucionesEnForm('institutions', res.institutions))
+            .then((res) => {
+                let institutionsAssigned = res.institutions
+                if (res.old_institutions.length > 0) {
+                    res.old_institutions.forEach((instId) => {
+                        let find = institutions.find((inst) => inst.id === instId )
+                        if (find)institutionsAssigned.push(find)
+                    })
+                }
+                return institutionsAssigned
+            })
+            .then((res) => setInstitucionesEnForm('institutions', res))
             .then(() => setLoading(false))
             .catch(
                 (err) => {
@@ -147,6 +155,13 @@ export default function RegisterAdmin() {
                 })
                 .then((res) => {
                     if (res?.length > 0) setInstituciones(res);
+                    return res
+                })
+                .then((res) => {
+                    if (action === 'editar') {
+                        let data = { user_id: editId }
+                        getUserData(data, res);  
+                    }
                 })
                 .catch((err) => { console.error(err) })
         },

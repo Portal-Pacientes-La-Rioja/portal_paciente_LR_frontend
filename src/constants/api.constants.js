@@ -116,6 +116,8 @@ export const API_ENDPOINT_GETADMINSTATUS = `${baseUrl}/getadminstatus`;
 
 export const API_ENDPOINT_GETPERSONS = `${baseUrl}/persons`;
 
+export const API_ENDPOINT_PERSONS_TO_BE_ACCEPTED = `${baseUrl}/persons_to_be_accepted`;
+
 export const API_ENDPOINT_GETPERSONSACCEPTED = `${baseUrl}/persons_accepted`;
 
 export const API_ENDPOINT_PERSONACCEPTED = `${baseUrl}/accepted`;
