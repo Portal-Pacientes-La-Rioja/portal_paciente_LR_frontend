@@ -49,7 +49,7 @@ export default function PendingPatients() {
 
     const getData = useCallback(
         () => {
-            setLoading(true)
+            setLoading(true);
             getPersonsToBeAccepted()
                 .then((res) => {
                     if (res) {
