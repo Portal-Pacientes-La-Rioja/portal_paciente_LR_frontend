@@ -44,14 +44,19 @@ function GrupoFamiliar() {
                 : <Container>
                     {p.allPatients.map((patient, i) => {
                         return (
-                            <Paciente
-                                key={patient.identification_number + i}
-                                patientIdn={patient.identification_number}
-                                patientNombre={patient.name}
-                                patientApellido={patient.surname}
-                                verHistoriaClinica={verHistoriaClinica}
-                                handlePatient={handlePatient}
-                            />
+                            <>
+                            {   patient.id_admin_status === 2 ?
+                                    <Paciente
+                                        key={patient.identification_number + i}
+                                        patientIdn={patient.identification_number}
+                                        patientNombre={patient.name}
+                                        patientApellido={patient.surname}
+                                        verHistoriaClinica={verHistoriaClinica}
+                                        handlePatient={handlePatient}
+                                    /> 
+                                    : ''
+                                    }
+                            </>
                         )
                     })}
                 </Container>

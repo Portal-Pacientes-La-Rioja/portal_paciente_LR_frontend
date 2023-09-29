@@ -3,7 +3,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import PendingPatient from "../../PendingPatient";
 import DataNotFound from "../../../../components/DataNotFound";
 import Loader from "../../../../components/Loader";
-import { getPersons, getPersonsToBeAccepted } from "../../../../services/adminServices";
+import { getPersons, getPersonsRelativesToAccept, getPersonsToBeAccepted } from "../../../../services/adminServices";
 import { getInstitutionsAllWithNewData } from '../../../../services/institutionsServices'
 import { getAdminStatus } from "../../../../services/personServices";
 import Swal from "sweetalert2";
@@ -50,7 +50,7 @@ export default function PendingPatients() {
     const getData = useCallback(
         () => {
             setLoading(true);
-            getPersonsToBeAccepted()
+            getPersonsRelativesToAccept()
                 .then((res) => {
                     if (res) {
                         let patients = res.filter(p => p.id_admin_status === 1)//note - table db =>  1: pending , 2: validated , 3: refused
