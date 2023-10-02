@@ -118,6 +118,8 @@ export const API_ENDPOINT_GETPERSONS = `${baseUrl}/persons`;
 
 export const API_ENDPOINT_PERSONS_TO_BE_ACCEPTED = `${baseUrl}/persons_to_be_accepted`;
 
+export const API_ENDPOINT_PERSONS_RELATIVES_TO_ACCEPT = `${baseUrl}/relatives_to_accept`;
+
 export const API_ENDPOINT_GETPERSONSACCEPTED = `${baseUrl}/persons_accepted`;
 
 export const API_ENDPOINT_PERSONACCEPTED = `${baseUrl}/accepted`;
