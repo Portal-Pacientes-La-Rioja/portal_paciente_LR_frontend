@@ -78,7 +78,6 @@ const AuthProvider = ({ children }) => {
   const getAdminData = () => {  
     const verify  = jwtVerify(tokenUser);
     if (verify?.id) {
-      console.log(verify)
       return verify
     } 
     // logout(true)
