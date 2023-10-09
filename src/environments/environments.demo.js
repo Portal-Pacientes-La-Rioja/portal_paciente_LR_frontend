@@ -4,4 +4,5 @@ export const environment = {
     production: false,
     baseURL: `${process.env.REACT_APP_API_URL_DEV}`,
     jwtKey: `${process.env.REACT_APP_JWT_KEY}`,
+    jwtKeyTest: `${process.env.REACT_APP_JWT_KEY_TEST}`,
 }
