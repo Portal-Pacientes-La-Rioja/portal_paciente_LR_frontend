@@ -62,6 +62,11 @@ export default function RegisterAdmin() {
             setLoading(true)
         }
         if (action === 'registrar') {
+            setForm({
+                username: "",
+                id: "",
+                institutions: []
+            })
             setChangePassword(true);
         }
         getInstituciones()
@@ -168,9 +173,9 @@ export default function RegisterAdmin() {
         [],
     )
 
-    const buildBody = (psw) => {
+    const buildBody = (psw, name) => {
         return {
-            username: values.username,
+            username: name,
             password: psw
         }
     }
@@ -181,7 +186,7 @@ export default function RegisterAdmin() {
                 setLoading(true)
 
                 if (action === 'registrar') {
-                    registerNewUserAdmin(password);
+                    registerNewUserAdmin(password, values.username, institucionesSelected);
                 }
                 else if (action === 'editar') {
                     const arrayInstitutions = institucionesSelected.map(item => item.id);
@@ -191,16 +196,16 @@ export default function RegisterAdmin() {
         })
     }
 
-    const registerNewUserAdmin = useCallback((psw) => {
-        const body = buildBody(psw)
+    const registerNewUserAdmin = useCallback((psw, name, instituciones) => {
+        const body = buildBody(psw, name)
         postCreateUserAdmin(body)
             .then((res) => {
                 if (res.ok) {
                     return res.text().then(text => {
                         let readeble = JSON.parse(text)
                         if (readeble.status) {
-                            Swal.fire(success('Usuario administrador creado'))
-                            history.push('/admin/panel/listado')
+                            const arrayInstitutions = instituciones.map(item => item.id);
+                            assignInstitutions({username: name}, arrayInstitutions, password)
                         } else {
                             Swal.fire(error('Hubo un error al crear usuario'))
                             throw new Error(text)
@@ -216,8 +221,8 @@ export default function RegisterAdmin() {
     }, []);
 
 
-    const editUserAdminPassword = useCallback((psw) => {
-        const body = buildBody(psw)
+    const editUserAdminPassword = useCallback((psw, username) => {
+        const body = buildBody(psw, username.username)
         putUpdateUserAdminPassword(body)
             .then((res) => {
                 if (res.ok) {
@@ -239,11 +244,16 @@ export default function RegisterAdmin() {
             putAssignInstitutionsAdmin(username, arrayIDsInst)
                 .then((res) => {
                     if (res.ok) {
-                        if (changePassword) {
-                            editUserAdminPassword(psw)
-                        } else {
-                            Swal.fire(success('Usuario actualizado'))
+                        if (action === 'registrar') {
+                            Swal.fire(success('Usuario administrador creado'))
                             history.push('/admin/panel/listado')
+                        } else {
+                            if (changePassword) {
+                                editUserAdminPassword(psw,username)
+                            } else {
+                                Swal.fire(success('Usuario actualizado'))
+                                history.push('/admin/panel/listado')
+                            }
                         }
                     }
                 })
