@@ -10,7 +10,7 @@ const MapView = (props) => {
 
     // Obtengo el primer elemento del arreglo coordinates
     let firstCoordinate = null;
-    if (coordinates && coordinates.polygon.length > 0) {
+    if (coordinates && coordinates.polygon && coordinates.polygon.length > 0) {
       firstCoordinate = coordinates.polygon[0];
     }
 
@@ -20,7 +20,7 @@ const MapView = (props) => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {coordinates ? (
+        {coordinates && coordinates.polygon ? (
           <>
             <Marker position={position} icon={iconLocation}>
               <Popup>{descripcion}</Popup>
