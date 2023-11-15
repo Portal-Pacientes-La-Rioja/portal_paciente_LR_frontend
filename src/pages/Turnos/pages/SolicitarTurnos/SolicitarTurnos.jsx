@@ -15,7 +15,7 @@ function SolicitarTurnos() {
             <p>Para solicitar un turno, completá el formulario y enviá la
                 solicitud. A la brevedad, una persona del área de Salud se
                 contactará para ofrecerte turnos disponibles. </p>
-            <Button variant="danger" onClick={() => handleShow()}>Completar formulario</Button>
+            <Button variant="danger" onClick={() => handleShow()}>Completar solicitud</Button>
             {show && <ApplicationModal type={'patient'} show={show} handleClose={handleClose} />}
         </div>
     )

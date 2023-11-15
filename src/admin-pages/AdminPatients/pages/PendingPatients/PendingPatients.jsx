@@ -54,7 +54,7 @@ export default function PendingPatients() {
                 .then((res) => {
                     if (res) {
                         let patients = res.filter(p => p.id_admin_status === 1)//note - table db =>  1: pending , 2: validated , 3: refused
-                        setPendingPatients(patients)
+                        setPendingPatients(patients.reverse())
                     } else {
                         throw new Error(res)
                     }
@@ -128,7 +128,7 @@ export default function PendingPatients() {
                         return (
                             <PendingPatient key={i} name={p.name + " " + p.surname} status_id={p.id_admin_status}
                                 status_name={statusName} id={p.id} 
-                                est={institutions.find((item) => item.id === p.id_usual_institution && item.portal === p.inst_from_portal)?.name || null} 
+                                est={institutions.find((item) => item.id === p.id_usual_institution)?.name || null} 
                                 action={getData}></PendingPatient>
                         )
                     })

@@ -96,7 +96,6 @@ function Profile({ show, handleClose, type }) {
             })
             setUsualInstitution(selectedInst)
             values['id_usual_institution'] = selectedInst.id;
-            values['inst_from_portal'] = selectedInst.portal;
             setNewValue('id_usual_institution');
         }
     }
@@ -112,7 +111,7 @@ function Profile({ show, handleClose, type }) {
                 })
                 .then((res) => {
                     let actuallyInst = res.find((item) => {
-                        return item.id === patient.id_usual_institution && item.portal === patient.inst_from_portal
+                        return item.id === patient.id_usual_institution
                     });
                     setUsualInstitution(actuallyInst);
                 })

@@ -38,8 +38,7 @@ function ApplicationModal({ show, handleClose, }) {
         details: "",
         email: p.patient.email,
         phone_number: p.patient.phone_number,
-        establishment: p.patient.id_usual_institution,
-        portal: p.patient.inst_from_portal
+        establishment: p.patient.id_usual_institution
     })
 
     const [institutions, setInstitutions] = useState([]);
@@ -95,9 +94,9 @@ function ApplicationModal({ show, handleClose, }) {
     const buildApplication = (days, specialty) => {
         setLoading(true)
         let body = values
-        let patientInstitution = institutions.find((item) => item.id === body.establishment && item.portal === body.portal)?.name ?? ''
+        let patientInstitution = institutions.find((item) => item.id === body.establishment)?.name ?? ''
         let subject = `Solicitud de turno: ${specialty || ''} - ${patientInstitution} - Paciente ${body.person}, DNI ${body.identification_number}`
-        body.weekly_availability = days.toString()
+        body.weekly_availability = days.toString().replaceAll(',', ', ');
         body.specialty = specialty
         let application =
             `\r 
@@ -106,7 +105,7 @@ function ApplicationModal({ show, handleClose, }) {
         Número de documento: ${body.identification_number} \r
         Email: ${body.email} \r
         Teléfono: ${body.phone_number} \r\n
-        Estableciemitno de atención usual: ${patientInstitution} \r\n
+        Establecimiento de atención usual: ${patientInstitution} \r\n
         TURNO SOLICITADO \r
         Especialidad médica: ${body.specialty ? body.specialty : '-'} \r
         Disponibilidad semanal: ${body.weekly_availability} \r
@@ -128,11 +127,16 @@ function ApplicationModal({ show, handleClose, }) {
                         Swal.fire(success('La solicitud fue enviada con éxito'))
                         setLoading(false)
                         handleClose()
+                    } else {
+                        Swal.fire(error('Hubo un error al enviar la solicitud'))
+                        setLoading(false)
+                        handleClose() 
                     }
                 })
                 .catch((err) => {
                     console.log('error', err)
                     Swal.fire(error('Hubo un error al enviar la solicitud'))
+                    setLoading(false)
                     handleClose()
                 })
         },

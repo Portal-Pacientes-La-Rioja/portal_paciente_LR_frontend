@@ -192,7 +192,6 @@ export default function RegisterForm(formType) {
             })
             setUsualInstitution(selectedInst)
             values['id_usual_institution'] = selectedInst.id;
-            values['inst_from_portal'] = selectedInst.portal;
             setNewValue('id_usual_institution');
         }
     }
@@ -210,7 +209,7 @@ export default function RegisterForm(formType) {
                 // Si el formulario es para registrar miembro de grupo familiar, asigna por default establecimiento usual de usuario master
                 if (type === 'patient') {  
                     let actuallyInst = res.find((item) => {
-                    return item.id === user.id_usual_institution && item.portal === user.inst_from_portal
+                    return item.id === user.id_usual_institution
                     });
                     if (actuallyInst) {
                         values['id_usual_institution'] = actuallyInst.id;
