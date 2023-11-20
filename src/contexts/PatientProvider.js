@@ -3,13 +3,15 @@ import { createContext } from "react";
 import useAuth from "../hooks/useAuth";
 import Swal from "sweetalert2";
 import patientBasicDataServices from "../services/patientService";
-import { errorActivePatient, toastPatient } from "../components/SwalAlertData";
+import { completeProfile, errorActivePatient, toastPatient } from "../components/SwalAlertData";
 import { getPersonByIdentificationNumber } from "../services/personServices";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 export const PatientContext = createContext();
 
 const PatientProvider = ({ children }) => {
   const auth = useAuth();
+  const history = useHistory();
   const [allPatients, setAllPatients] = useState([auth.user]);
   const [patient, setPatient] = useState(
     JSON.parse(localStorage.getItem("patient")) || allPatients[0]
@@ -59,8 +61,12 @@ const PatientProvider = ({ children }) => {
               identification_number: p.identification_number,
               type_id: p.id_identification_type,
             };
-            getPatientBasicData(p, body);
-            Toast.fire(toastPatient(`${p.name} ${p.surname}`));
+            if (p.id_usual_institution >= 10001) {
+              getPatientBasicData(p, body);
+              Toast.fire(toastPatient(`${p.name} ${p.surname}`));
+            } else {
+              openAlertUpdateInstitution();
+            }
             return patient;
           }
         } else {
@@ -106,6 +112,14 @@ const PatientProvider = ({ children }) => {
     let id_institution = parseInt(e.target.value);
     setPatientInstitution(id_institution);
   };
+
+  const openAlertUpdateInstitution  = () => {
+    Swal.fire(completeProfile()).then((result) => {
+      if (result.isConfirmed) {
+        history.push('/usuario/perfil-paciente?complete=false')
+      }
+    });
+  } 
 
   const contextValue = {
     patient,

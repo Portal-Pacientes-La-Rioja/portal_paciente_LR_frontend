@@ -30,9 +30,9 @@ function DatosPaciente() {
                 })
                 .then((res) => {
                     let find = res.find((i) => {
-                        return i.id === p.patient.id_usual_institution && i.portal === p.patient.inst_from_portal
+                        return i.id === p.patient.id_usual_institution
                     }) 
-                    setInstitution(find.name)
+                    if (find) setInstitution(find.name)
                 })
                 .catch((err) => { console.error(err) })
         },

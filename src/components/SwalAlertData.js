@@ -1,3 +1,5 @@
+import logoFondoBlanco from '../assets/statics/logo-fondo-blanco.jpg'
+
 export const successRegister = {
   title: "Registro realizado",
   html: "Los datos del nuevo Paciente serán validados por un administrador antes de ser agregado al Grupo Familiar.",
@@ -83,6 +85,22 @@ export const toastPatient = (text) => {
     position: "bottom-end",
     icon: "success",
     title: `Perfil de paciente ${text}`,
+  };
+  return content;
+};
+
+
+export const completeProfile = () => {
+  let content = {
+    title: '',
+    html: `<image src="${logoFondoBlanco}" alt="Portal-del-paciente-la-rioja" width="400" /> 
+      <h2>¡Te damos la Bienvenida!</h2>
+    <p>Antes de continuar, por favor seleccioná un establecimiento de atención usual.</p>`,
+    confirmButtonText: "Completar datos",
+    confirmButtonColor: "#007bff",
+    reverseButtons: true,
+    allowOutsideClick: false,
+    allowEscapeKey: false
   };
   return content;
 };

@@ -1,21 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Col, Container } from "react-bootstrap"
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useHistory, useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import Profile from "../../components/Profile/Profile";
 import DatosPaciente from "./components/DatosPaciente";
 import * as FaIcon from 'react-icons/fa';
 import * as MdIcon from 'react-icons/md';
+import Usualinstitution from "../../components/UsualInstitution/UsualInstitution";
 
 export default function PerfilPaciente() {
 
     const history = useHistory()
+    const location = useLocation();
     const [show, setShow] = useState(false);
+    const [showSelectorInst, setShowSelectorInst] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const handleShowSelectorInst = () => setShowSelectorInst(true);
+    const handleCloseSelectorInst = () => {
+        setShowSelectorInst(false);
+        history.push('/usuario')
+    }
 
     const verHistoriaClinica = () => {
         history.push('/usuario/historia-clinica/alergias')
     }
+
+    useEffect(() => {
+        if (location.search.includes('complete=false')) {
+            setShowSelectorInst(true);
+        }
+    }, [location])
 
     return (
         <Container className='perfil-paciente p-3'>
@@ -41,6 +55,7 @@ export default function PerfilPaciente() {
             </div>
             <DatosPaciente></DatosPaciente>
             {show && <Profile type={'patient'} show={show} handleClose={handleClose} />}
+            {showSelectorInst && <Usualinstitution type={'patient'} show={showSelectorInst} handleClose={handleCloseSelectorInst}/>}
         </Container>
     )
 }
