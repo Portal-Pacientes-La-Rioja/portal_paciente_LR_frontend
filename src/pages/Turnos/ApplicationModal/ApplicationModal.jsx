@@ -115,6 +115,8 @@ function ApplicationModal({ show, handleClose, }) {
         Swal.fire(confirm(`¿Enviar solicitud de turno?`)).then((result) => {
             if (result.isConfirmed) {
                 send(p.patient.id, subject, application)
+            } else {
+                setLoading(false)
             }
         })
     }

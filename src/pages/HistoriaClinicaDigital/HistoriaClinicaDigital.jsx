@@ -19,6 +19,7 @@ const HistoriaClinicaDigital = () => {
             institutionsServices()
                 .then((res) => {
                     setInstitutions(res);
+                    p.changeInstitution(res[0].id)
                     return institutions
                 })
                 .catch((err) => { console.log(err) })
