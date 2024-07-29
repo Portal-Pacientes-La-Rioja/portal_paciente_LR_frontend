@@ -3,7 +3,7 @@ import usePatient from "../../../../hooks/usePatient"
 import * as MdIcons from 'react-icons/md'
 import DataNotFound from "../../../../components/DataNotFound";
 import logoSumar from '../../../../assets/statics/sumar-lr.png'
-import jsPDF from 'jspdf';
+// import jsPDF from 'jspdf';
 import { Button } from "react-bootstrap";
 import '../../../../styles/CredentialCEB.scss'
 import { cebService } from "../../../../services/sumarServices";
@@ -36,12 +36,12 @@ const CredencialSumar = () => {
     // si tiene o no CEB, posibilidad de bajar esa credencial el PDF.
 
     const generatePDFCredential = () => {
-        let doc = new jsPDF("p", "pt", "a4")
-        doc.html(document.querySelector('#credential'), {
-            callback: function (pdf) {
-                pdf.save(`CEB-${patientName}-${patientSurname}.pdf`)
-            }
-        })
+        // let doc = new jsPDF("p", "pt", "a4")
+        // doc.html(document.querySelector('#credential'), {
+        //     callback: function (pdf) {
+        //         pdf.save(`CEB-${patientName}-${patientSurname}.pdf`)
+        //     }
+        // })
     }
 
     useEffect(() => {
