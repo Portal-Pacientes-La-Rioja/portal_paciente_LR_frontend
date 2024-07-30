@@ -34,6 +34,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^5.0.1",
     "react-search-autocomplete": "^8.3.1",
+    "readable-stream": "^4.5.2",
     "sass": "^1.45.0",
     "stream-browserify": "^3.0.0",
     "sweetalert2": "^11.3.6",
