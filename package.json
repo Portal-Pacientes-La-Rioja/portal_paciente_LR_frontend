@@ -70,6 +70,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "axios": "^0.24.0",
     "json-server": "^0.17.0",
     "react-app-rewired": "^2.2.1"
