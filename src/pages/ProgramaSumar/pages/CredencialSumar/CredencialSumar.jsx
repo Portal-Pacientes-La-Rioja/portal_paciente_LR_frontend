@@ -3,11 +3,12 @@ import usePatient from "../../../../hooks/usePatient"
 import * as MdIcons from 'react-icons/md'
 import DataNotFound from "../../../../components/DataNotFound";
 import logoSumar from '../../../../assets/statics/sumar-lr.png'
-// import jsPDF from 'jspdf';
 import { Button } from "react-bootstrap";
 import '../../../../styles/CredentialCEB.scss'
 import { cebService } from "../../../../services/sumarServices";
 import { useEffect } from "react";
+import html2canvas from 'html2canvas';
+import { PDFDocument, rgb } from 'pdf-lib';
 
 const CredencialSumar = () => {
 
@@ -17,7 +18,6 @@ const CredencialSumar = () => {
     const patientDNI = p.patient.identification_number
 
     const patientBirthdate = new Date(p.patient.birthdate).toLocaleDateString();
-
     const [credential, setCredential] = useState(false)
     const [credentialError, setCredentialError] = useState(false)
 
@@ -35,13 +35,39 @@ const CredencialSumar = () => {
     // credencial para ciudadanos que estén inscriptos al programa SUMAR, es decir que tienen cobertura publica exclusiva,
     // si tiene o no CEB, posibilidad de bajar esa credencial el PDF.
 
-    const generatePDFCredential = () => {
-        // let doc = new jsPDF("p", "pt", "a4")
-        // doc.html(document.querySelector('#credential'), {
-        //     callback: function (pdf) {
-        //         pdf.save(`CEB-${patientName}-${patientSurname}.pdf`)
-        //     }
-        // })
+    const generatePDFCredential = async () => {
+        const element = document.getElementById('pdf-content');
+
+        // Usa html2canvas para capturar el contenido del elemento
+        const canvas = await html2canvas(element);
+        const imgData = canvas.toDataURL('image/png');
+
+        // Crea un nuevo documento PDF con pdf-lib
+        const pdfDoc = await PDFDocument.create();
+        const page = pdfDoc.addPage([595.276, 841.890]); // Tamaño A4 en puntos (210mm x 297mm)
+
+        // Agrega la imagen al PDF
+        const pngImage = await pdfDoc.embedPng(imgData);
+        const { width, height } = pngImage.scale(1);
+
+        // Calcula las coordenadas para centrar la imagen en la página A4
+        const x = (page.getWidth() - width) / 2;
+        const y = (page.getHeight() - height) / 2;
+
+        page.drawImage(pngImage, {
+            x,
+            y,
+            width,
+            height,
+        });
+
+        // Genera el PDF y descárgalo
+        const pdfBytes = await pdfDoc.save();
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `CEB-${patientName}-${patientSurname}.pdf`;
+        link.click();
     }
 
     useEffect(() => {
@@ -60,7 +86,7 @@ const CredencialSumar = () => {
             {credential &&
                 <>
                     <div id="credential" className="credential-container">
-                        <div className="credential">
+                        <div id="pdf-content" className="credential">
                             <div className="credential-title">
                                 <h5 className="title1">CREDENCIAL</h5>
                                 <h5 className="title2">COBERTURA&ensp;&ensp;EFECTIVA&ensp;&ensp;BÁSICA</h5>
