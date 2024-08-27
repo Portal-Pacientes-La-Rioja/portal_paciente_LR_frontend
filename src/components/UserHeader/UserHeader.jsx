@@ -73,9 +73,9 @@ function UserHeader() {
                             <NavDropdown title="Cambiar paciente" id="basic-nav-dropdown">
                                 {p.allPatients.map((patient) => {
                                     return (
-                                        <>
-                                            {patient.id_admin_status === 2 ? <NavDropdown.Item className='p-2' key={patient.identification_number} onClick={() => { setDniPatient(patient.identification_number) }} >{patient.name} {patient.surname}</NavDropdown.Item> : ''}
-                                        </>
+                                        <div key={patient.identification_number}>
+                                            {patient.id_admin_status === 2 ? <NavDropdown.Item className='p-2' onClick={() => { setDniPatient(patient.identification_number) }} >{patient.name} {patient.surname}</NavDropdown.Item> : ''}
+                                        </div>
                                     )
                                 })}
                             </NavDropdown>}
