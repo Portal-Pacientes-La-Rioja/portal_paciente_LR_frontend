@@ -31,7 +31,7 @@ const AdminMain = () => {
             <Row className="d-flex justify-content-center p-3 in">
                 {links.map((link) =>
                     <Col key={link.id} xs={12} md={5} className='main__card'>
-                        <Link className="btn-outline-danger" to={link.path}>
+                        <Link className="btn btn-outline-danger" to={link.path}>
                             {link.icon}
                             <h5>{link.namePath}</h5>
                         </Link>
