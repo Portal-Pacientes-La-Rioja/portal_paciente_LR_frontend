@@ -13,11 +13,12 @@ const InstitutionMap = ({ institution, show, handleClose }) => {
     const p = usePatient()
 
     const [ruta, setRuta] = useState(null);
-    useEffect(async () => {
+
+    useEffect(() => {
         setTimeout(() => {
             setLoading(false)
         }, 500);
-    }, [loading])
+    }, [])
 
     const rutaMasCorta = async () =>{
         let patientId = p.patient.id;
