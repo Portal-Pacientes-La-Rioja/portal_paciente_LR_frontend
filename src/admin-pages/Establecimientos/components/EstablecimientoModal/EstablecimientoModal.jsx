@@ -267,7 +267,6 @@ const EstablecimientoModal = (props) => {
                         return res.text()
                             .then(text => {
                                 let readeble = JSON.parse(text)
-                                console.log(text)
                                 const newInstitution = readeble.value
                                 setActionModal('edit')
                                 getInstitutionData(newInstitution)
