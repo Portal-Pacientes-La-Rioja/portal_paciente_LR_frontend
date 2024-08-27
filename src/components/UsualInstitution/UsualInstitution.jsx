@@ -21,7 +21,6 @@ function Usualinstitution({ show, type, handleClose }) {
     const [usualInstitution, setUsualInstitution] = useState('');
     const [institutionsList, setInstitutionsList] = useState([]);
     const [changeInstitution, setChangeInstitution] = useState(false);
-    const handleChangeInstitution = () => setChangeInstitution(!changeInstitution);
 
     const getInstitutionsAll = useCallback(
         (patient) => {

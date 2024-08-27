@@ -10,7 +10,7 @@ import * as FaIcon from 'react-icons/fa';
 import Selector from "../Selector";
 import { createInstitution, getEspecialidadesAll, getInstitutionsByID, getServiciosAll, updateInstitution } from "../../../../services/institutionsServices";
 import MapView from "../../../../components/MapsView/MapsView";
-import { getAllDepartamentosFrom, getAllLocalidadesFrom, getAllProvincias } from "../../../../services/searchAddressService";
+import { getAllDepartamentosFrom, getAllLocalidadesFrom } from "../../../../services/searchAddressService";
 import { ErrorMessage } from "../../../../components/ErrorMessage/ErrorMessage";
 
 const EstablecimientoModal = (props) => {

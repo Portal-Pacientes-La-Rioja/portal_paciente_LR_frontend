@@ -40,7 +40,7 @@ function SignosVitales() {
     const iterateObject = (info) => {
         let patientData = []
         info.map((inf, index) => {
-            var content = new Object
+            var content = new Object()
             content.data = []
             Object.entries(inf).forEach(([key, value], i, obj) => {
                 if (key !== 'id' && value !== 'NULL' && value !== null) {

@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Col, Container } from "react-bootstrap";
 import Swal from "sweetalert2";
-import * as MdIcon from 'react-icons/md';
 import usePatient from "../../../../hooks/usePatient";
 import sumarServices from "../../../../services/sumarServices";
 import Loader from "../../../../components/Loader";

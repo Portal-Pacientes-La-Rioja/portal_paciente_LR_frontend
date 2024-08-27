@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Row, Col, Form, Button, Container } from 'react-bootstrap';
+import { Row, Col, Form, Button } from 'react-bootstrap';
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import Loader from '../Loader/Loader';
@@ -26,7 +26,7 @@ export default function RegisterForm(formType) {
     // steps
     const [step, setStep] = useState(0)
     const next = (i) => { setStep(i + 1) }
-    const back = (i) => { setStep(i - 1) }
+    // const back = (i) => { setStep(i - 1) }
     // useForm
     const { register, handleSubmit, getValues, setValue, formState: { errors } } = useForm();
     const type = formType.formType //Tipe of form "user" or "patient"

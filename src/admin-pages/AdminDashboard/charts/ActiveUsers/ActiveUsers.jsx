@@ -1,4 +1,4 @@
-import { Row, Col, Button } from "react-bootstrap";
+import { Col } from "react-bootstrap";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -9,8 +9,7 @@ import {
     Legend,
 } from 'chart.js';
 import { useEffect, useState } from "react";
-import * as MdIcon from "react-icons/md";
-import { Bar, Pie } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import { useCallback } from "react";
 import { getFamilyGroupIndicators, getUsersIndicators } from "../../../../services/dashboardService";
 import Swal from 'sweetalert2';
@@ -20,7 +19,7 @@ export const ActiveUsers = () => {
 
     const fromDate = new Date('01/01/2023').toISOString().split('T')[0]
     const toDate = new Date().toISOString().split('T')[0];
-    const [labels, setLabels] = useState(['Usuarios']);
+    const labels =['Usuarios']
     const [dataUsers, setDataUsers] = useState([]);
     const [dataFamilyGroup, setDataFamilyGroup] = useState([]);
 

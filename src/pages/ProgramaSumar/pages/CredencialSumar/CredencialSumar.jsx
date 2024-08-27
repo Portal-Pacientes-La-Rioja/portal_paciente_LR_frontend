@@ -8,7 +8,7 @@ import '../../../../styles/CredentialCEB.scss'
 import { cebService } from "../../../../services/sumarServices";
 import { useEffect } from "react";
 import html2canvas from 'html2canvas';
-import { PDFDocument, rgb } from 'pdf-lib';
+import { PDFDocument } from 'pdf-lib';
 
 const CredencialSumar = () => {
 

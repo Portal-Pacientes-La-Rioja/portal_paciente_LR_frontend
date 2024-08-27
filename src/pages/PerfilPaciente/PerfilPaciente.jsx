@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Col, Container } from "react-bootstrap"
+import { Container } from "react-bootstrap"
 import { useHistory, useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import Profile from "../../components/Profile/Profile";
 import DatosPaciente from "./components/DatosPaciente";
@@ -15,7 +15,6 @@ export default function PerfilPaciente() {
     const [showSelectorInst, setShowSelectorInst] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const handleShowSelectorInst = () => setShowSelectorInst(true);
     const handleCloseSelectorInst = () => {
         setShowSelectorInst(false);
         history.push('/usuario')
