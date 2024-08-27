@@ -121,15 +121,18 @@ export const CreateMessage = (props) => {
 
     const send = useCallback(
         (message_id, category_id, is_for_all_categories) => {
+            setLoading(true)
             sendMessage(message_id, category_id, is_for_all_categories)
                 .then((res) => {
                     if (res.ok) {
                         Swal.fire(success('El mensaje ha sido enviado con éxito'))
-                        handleClose();
                     } else {
                         Swal.fire(error('Ocurrió un error al enviar mensaje'))
-                        handleClose();
                     }
+                })
+                .finally(() => {
+                    setLoading(false)
+                    handleClose();
                 })
 
         },
