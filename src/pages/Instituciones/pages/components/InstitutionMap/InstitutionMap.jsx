@@ -58,8 +58,8 @@ const InstitutionMap = ({ institution, show, handleClose }) => {
             {loading
                 ? <Loader isActive={true}/>
                 : <Modal.Body>
+                    <button onClick={rutaMasCorta}>¿Cómo llego?</button>
                     <Col xs={12} style={{height: '500px'}}>
-                        <button onClick={rutaMasCorta}>¿Cómo llego?</button>
                         <MapView
                             latitud={institution.lat ?? 0}
                             longitud={institution.long ?? 0}
