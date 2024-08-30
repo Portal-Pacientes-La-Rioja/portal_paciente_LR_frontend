@@ -156,7 +156,7 @@ export const institutionData = {
   gob: 'Gobierno de La Rioja',
   address:  'Av. Ortiz de Ocampo 1700 - Ciudad de La Rioja Argentina',
   phone: '  (0380) 4453700',
-  webLink: "https://salud.larioja.gob.ar/",
+  webLink: "https://www.instagram.com/saludlarioja/",
   instagram: 'https://www.instagram.com/saludlarioja/',
   facebook: 'https://www.facebook.com/minsaludlrj',
   twitter: 'https://twitter.com/Minsaludlrj',
