@@ -8,11 +8,11 @@ import Loader from '../../../components/Loader';
 import SelectType from '../../../components/SelectType';
 import { confirm, error, success } from '../../../components/SwalAlertData';
 import usePatient from '../../../hooks/usePatient'
-import { sendApplicationEmailService } from '../../../services/applicactionService';
+import { sendAppointmentEmailService } from '../../../services/applicactionService';
 import { getInstitutionsAllWithNewData } from '../../../services/institutionsServices';
 import FormGroup from '../../../components/RegisterForm/Forms/FormGroup';
 
-function ApplicationModal({ show, handleClose, }) {
+function AppointmentModal({ show, handleClose, }) {
 
 
     const [loading, setLoading] = useState(false)
@@ -91,7 +91,7 @@ function ApplicationModal({ show, handleClose, }) {
         }
     }
 
-    const buildApplication = (days, specialty) => {
+    const buildAppointment = (days, specialty) => {
         setLoading(true)
         let body = values
         let patientInstitution = institutions.find((item) => item.id === body.establishment)?.name ?? ''
@@ -123,7 +123,7 @@ function ApplicationModal({ show, handleClose, }) {
 
     const send = useCallback(
         (id, subject, body) => {
-            sendApplicationEmailService(id, subject, body)
+            sendAppointmentEmailService(id, subject, body)
                 .then((res) => {
                     if (res.ok) {
                         Swal.fire(success('La solicitud fue enviada con éxito'))
@@ -154,11 +154,11 @@ function ApplicationModal({ show, handleClose, }) {
                 let k = key.toString()
                 daysSelected.push(k)
                 if (Object.is(obj.length - 1, i)) {
-                    buildApplication(daysSelected, specialtySelected?.name)
+                    buildAppointment(daysSelected, specialtySelected?.name)
                 }
             } else {
                 if (Object.is(obj.length - 1, i)) {
-                    buildApplication(daysSelected, specialtySelected?.name)
+                    buildAppointment(daysSelected, specialtySelected?.name)
                 }
             }
         })
@@ -299,4 +299,4 @@ function ApplicationModal({ show, handleClose, }) {
     )
 }
 
-export default ApplicationModal;
+export default AppointmentModal;

@@ -1,7 +1,7 @@
 import { API_ENDPOINT_SEND_TURNO_MAIL, AUTH_HEADER } from "../constants/api.constants";
 import { post } from "./httpServices";
 
-export async function sendApplicationEmailService(person_id, subject, body) {
+export async function sendAppointmentEmailService(person_id, subject, body) {
     try {
       const searchParams = new URLSearchParams({
         person_id: person_id,

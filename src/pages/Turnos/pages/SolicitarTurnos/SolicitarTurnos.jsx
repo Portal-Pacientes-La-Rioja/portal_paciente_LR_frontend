@@ -1,6 +1,6 @@
 import { useState} from "react";
 import { Button } from "react-bootstrap";
-import ApplicationModal from '../../ApplicationModal';
+import AppointmentModal from '../../AppointmentModal';
 
 function SolicitarTurnos() {
 
@@ -14,7 +14,7 @@ function SolicitarTurnos() {
                 solicitud. A la brevedad, una persona del área de Salud se
                 contactará para ofrecerte turnos disponibles. </p>
             <Button variant="danger" onClick={() => handleShow()}>Completar solicitud</Button>
-            {show && <ApplicationModal type={'patient'} show={show} handleClose={handleClose} />}
+            {show && <AppointmentModal type={'patient'} show={show} handleClose={handleClose} />}
         </div>
     )
 }
