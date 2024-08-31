@@ -5,4 +5,8 @@ export const environment = {
     baseURL: `${process.env.REACT_APP_API_URL_DEV}`,
     jwtKey: `${process.env.REACT_APP_JWT_KEY}`,
     jwtKeyTest: `${process.env.REACT_APP_JWT_KEY_TEST}`,
+    hsi:{
+        apiUrl: `${process.env.REACT_APP_HSI_API_URL}`,
+        apiKey: `${process.env.REACT_APP_HSI_API_KEY}`
+    }
 }
