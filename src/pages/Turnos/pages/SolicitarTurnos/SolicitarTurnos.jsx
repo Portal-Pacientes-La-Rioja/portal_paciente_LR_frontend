@@ -1,6 +1,5 @@
 import { useState} from "react";
-import { Button } from "react-bootstrap";
-import AppointmentModal from '../../AppointmentModal';
+import AppointmentForm from "../../AppointmentForm";
 
 function SolicitarTurnos() {
 
@@ -10,11 +9,7 @@ function SolicitarTurnos() {
 
     return (
         <div className='in'>
-            <p>Para solicitar un turno, completá el formulario y enviá la
-                solicitud. A la brevedad, una persona del área de Salud se
-                contactará para ofrecerte turnos disponibles. </p>
-            <Button variant="danger" onClick={() => handleShow()}>Completar solicitud</Button>
-            {show && <AppointmentModal type={'patient'} show={show} handleClose={handleClose} />}
+            <AppointmentForm></AppointmentForm>
         </div>
     )
 }

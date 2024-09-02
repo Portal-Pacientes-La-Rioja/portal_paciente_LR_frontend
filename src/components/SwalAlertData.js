@@ -104,3 +104,32 @@ export const completeProfile = () => {
   };
   return content;
 };
+
+export const confirmAppointment = (appointmentData) => {
+  let content = {
+    title: '',
+    html: ` 
+      <h2>¿Querés reservar este turno?</h2>
+
+        <div class="confirmAppointment">
+          <p> <b>Nombre y Apellido:</b> ${appointmentData.nameAndSurname} </p>
+          <p> <b>Email:</b> ${appointmentData.email}</p>
+          <p> <b>Teléfono:</b> ${appointmentData.phoneNumber}</p>
+          <p> <b>Día:</b> ${appointmentData.date}</p>
+          <p> <b>Hora:</b> ${appointmentData.hour}</p>
+          <p> <b>Profesional:</b> ${appointmentData.professional}</p>
+          <p> <b>Institución:</b> ${appointmentData.institution} </p>
+          <p> <b>Especialidad:</b> ${appointmentData.specialty}</p>
+          <p> <b>Cobertura:</b> ${appointmentData.coverage}</p>
+        </div>
+        `,
+    showCancelButton: true,
+    cancelButtonText: "Cancelar",
+    confirmButtonText: "Sí, reservar",
+    confirmButtonColor: "#007bff",
+    reverseButtons: true,
+    allowOutsideClick: false,
+    allowEscapeKey: false
+  };
+  return content;
+};  
