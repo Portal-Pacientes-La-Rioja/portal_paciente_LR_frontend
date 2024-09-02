@@ -56,6 +56,10 @@ export const SidebarData = {
         {
           title: "Solicitar turnos",
           path: "/usuario/turnos/solicitar-turnos"
+        },
+        {
+          title: "Solicitar por correo",
+          path: "/usuario/turnos/solicitar-turnos-email"
         }
       ]
     },
