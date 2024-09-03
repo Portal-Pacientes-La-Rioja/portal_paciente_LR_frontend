@@ -862,3 +862,15 @@
   margin-top: 30px;
   text-align: start;
 }
+
+/** Appointment */
+
+.appointment-card {
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 5px;
+  min-height: 120px;
+  background-color: $third;
+  box-shadow: $shadow-four;
+  transition: 0.2s;
+}

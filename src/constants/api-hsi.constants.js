@@ -22,7 +22,6 @@ export const HSI_GET_SPECIALTY = `${baseUrlHSI}/appointment/booking/specialties`
 export const HSI_GET_MEDICAL_COVERAGE = `${baseUrlHSI}/appointment/booking/medicalCoverages`;
 
 export const HSI_GET_AVAILABLE_APPOINTMENTS = (institution_id, specialty_id, coverage_id) => {
-    // return `${baseUrlHSI}/institution/98/appointment/booking/specialty/128/practice/2/medicalCoverages/83/availability`;
     return `${baseUrlHSI}/institution/${institution_id}/appointment/booking/specialty/${specialty_id}/practice/2/medicalCoverages/${coverage_id}/availability`;
 };
 
