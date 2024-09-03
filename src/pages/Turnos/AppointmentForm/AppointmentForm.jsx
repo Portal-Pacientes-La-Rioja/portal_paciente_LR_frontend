@@ -1,22 +1,19 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Modal, Button, Form, Container, Row, Col } from 'react-bootstrap';
+import { Button, Form, Container, Row, Col } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
-import { variantsSpecialties } from '../../../components/ComponentsData';
 import { ErrorMessage } from '../../../components/ErrorMessage/ErrorMessage';
 import Loader from '../../../components/Loader';
 import SelectType from '../../../components/SelectType';
-import { confirm, error, success } from '../../../components/SwalAlertData';
+import { error } from '../../../components/SwalAlertData';
 import usePatient from '../../../hooks/usePatient'
-import { getAvailableAppointmentsService, getCoverageHSI, getInstitutionsHSI, getSpecialtiesHSI, mockDataAppointments, sendAppointmentEmailService } from '../../../services/applicactionService';
-import FormGroup from '../../../components/RegisterForm/Forms/FormGroup';
+import { getAvailableAppointmentsService, getCoverageHSI, getInstitutionsHSI, getSpecialtiesHSI, mockDataAppointments } from '../../../services/applicactionService';
 import AppointmentTable from '../AppointmentTable';
 
 function AppointmentForm() {
 
 
   const [loading, setLoading] = useState(false)
-  const [loadingData, setLoadingData] = useState(false)
   // //patient
   const p = usePatient()
   // //form
