@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
-import { confirmAppointment, error, success } from '../../../components/SwalAlertData';
+import { confirmAppointment, error, success, warning } from '../../../components/SwalAlertData';
 import usePatient from '../../../hooks/usePatient'
 import DataNotFound from '../../../components/DataNotFound';
 import { Table } from 'react-bootstrap';
@@ -19,26 +19,31 @@ function AppointmentTable({ dataTable, valuesForm, institutions, specialties, co
   const myDivRef = useRef(null);
   const [selectedAppointment, setSelectedAppointment] = useState('');
 
-  const [values, setValues] = useState({
-    appointmentDataEmail: "",
-    bookingAppointmentDto: {
-      coverageId: valuesForm.coverage,
-      day: "",
-      diaryId: 0,
-      phoneNumber: valuesForm.phoneNumber,
-      hour: "",
-      openingHoursId: 0,
-      specialtyId: valuesForm.specialty,
-    },
-    bookingPersonDto: {
-      idNumber: p.patient.identification_number,
-      birthDate: p.patient.birthdate.split('T')[0],
-      genderId: p.patient.id_gender,
-      firstName: p.patient.name,
-      lastName: p.patient.surname,
-      email: valuesForm.email
+  const [values, setValues] = useState({})
+
+  useEffect(() => {
+    const newValues = {
+      appointmentDataEmail: valuesForm.email,
+      bookingAppointmentDto: {
+        coverageId: valuesForm.coverage,
+        day: "",
+        diaryId: 0,
+        phoneNumber: valuesForm.phoneNumber,
+        hour: "",
+        openingHoursId: 0,
+        specialtyId: valuesForm.specialty,
+      },
+      bookingPersonDto: {
+        idNumber: p.patient.identification_number,
+        birthDate: p.patient.birthdate.split('T')[0],
+        genderId: p.patient.id_gender,
+        firstName: p.patient.name,
+        lastName: p.patient.surname,
+        email: valuesForm.email
+      }
     }
-  })
+    setValues(newValues)
+  }, [valuesForm])
 
   useEffect(() => {
     if (myDivRef.current) {
@@ -48,10 +53,17 @@ function AppointmentTable({ dataTable, valuesForm, institutions, specialties, co
     }
   }, [dataTable])
 
-
   const handleSelected = (appointment) => {
-    setSelectedAppointment(appointment);
-    handleRequest(appointment)
+    if (valuesForm.email 
+      && valuesForm.phoneNumber
+      && valuesForm.institution
+      && valuesForm.specialty
+      && valuesForm.coverage) {
+      setSelectedAppointment(appointment);
+      handleRequest(appointment)
+    } else {
+      Swal.fire(warning('Faltan datos en formulario'))
+    }
   }
 
 
@@ -63,7 +75,6 @@ function AppointmentTable({ dataTable, valuesForm, institutions, specialties, co
       year: 'numeric'    
   };
 
-    // setLoading(true)
     const confirmData = {
       nameAndSurname: values.bookingPersonDto.firstName+' '+values.bookingPersonDto.lastName,
       email: values.bookingPersonDto.email,
@@ -71,9 +82,9 @@ function AppointmentTable({ dataTable, valuesForm, institutions, specialties, co
       date: new Date(appointment.diary.startDate).toLocaleDateString('es-ES', options),
       hour: appointment.diary.from.hour,
       professional: appointment.diary.doctorsOfficeDescription,
-      institution: institutions.find((i) => i.id.toString() === valuesForm.institution).description,
-      specialty: specialties.find((s) => s.id.toString() === valuesForm.specialty).description,
-      coverage: coverage.find((c) => c.id.toString() === valuesForm.coverage).description
+      institution: institutions.find((i) => i.id === valuesForm.institution).description,
+      specialty: specialties.find((s) => s.id === valuesForm.specialty).description,
+      coverage: coverage.find((c) => c.id === valuesForm.coverage).description
     }
     Swal.fire(confirmAppointment(confirmData)).then((result) => {
       if (result.isConfirmed) {
@@ -92,7 +103,6 @@ function AppointmentTable({ dataTable, valuesForm, institutions, specialties, co
     }
     const body = {
       ...values,
-      appointmentDataEmail: valuesForm.email,
       bookingAppointmentDto: bookingAppointmentDto
     }
     return body
@@ -130,7 +140,7 @@ function AppointmentTable({ dataTable, valuesForm, institutions, specialties, co
     <>
       {loading ?
         <Loader isActive={loading}></Loader>
-        : <div ref={myDivRef} style={{ minHeight: '75vh' }}>
+        : <div ref={myDivRef} style={{ minHeight: '75vh' }} className='in'>
           {dataTable && dataTable.length > 0 ?
             <div>
               <h5>Seleccionar turno</h5>
@@ -141,7 +151,6 @@ function AppointmentTable({ dataTable, valuesForm, institutions, specialties, co
                     <th>Fecha</th>
                     <th>Hora</th>
                     <th>Profesional</th>
-                    {/* <th style={{width: '20px'}}></th> */}
                   </tr>
                 </thead>
                 <tbody>

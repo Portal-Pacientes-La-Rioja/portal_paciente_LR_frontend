@@ -14,7 +14,7 @@ const AutocompleteComponent = React.forwardRef((props, ref) => {
   useEffect(() => {
     if (variants) {
       let items = variants.map((item) => {
-        return { id: item.id, name: item.nombre || item.name }
+        return { id: item.id, name: item.nombre || item.name || item.description }
       });
       setItems(items);
     }
@@ -43,16 +43,16 @@ const AutocompleteComponent = React.forwardRef((props, ref) => {
       onSearch={handleOnSearch}
       styling={{
         height: "34px",
-        border: "1px solid gray",
+        border: "1px solid #dee2e6",
         borderRadius: "4px",
         backgroundColor: "white",
         boxShadow: "none",
         fontSize: "12px",
         fontFamily: "Courier",
         clearIconMargin: "3px 8px 0 0",
-        zIndex: 2,
+        zIndex: 10,
       }}
-      showItemsOnFocus={true}
+      showNoResultsText={'No hay resultados'}
       placeholder='Buscar...'
       inputSearchString={searchString}
     />
