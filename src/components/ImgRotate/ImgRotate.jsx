@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
 import notImg from '../../assets/statics/no-image-found.png';
 import * as MdIcon from 'react-icons/md';
-import { environment } from "../../environments/environments.demo";
 import { Col, Container, Row } from "react-bootstrap";
 import { useRef } from "react";
 
 const ImgRotate = ({ img }) => {
 
-    const baseUrl = environment.baseURL
     const nImg = notImg
     //rotate img
-    const [rotate, setRotate] = useState(false);
     const [deg, setDeg] = useState(0);
     const [zoom, setZoom] = useState(1);
     const draggableRef = useRef()
@@ -20,11 +17,9 @@ const ImgRotate = ({ img }) => {
     const [clientPosition, setClientPosition] = useState({x: '0', y: '0'});
 
     const rotateRight = () => {
-        setRotate(true)
         setDeg(deg + 90)
     }
     const rotateLeft = () => {
-        setRotate(true)
         setDeg(deg - 90)
     }
 

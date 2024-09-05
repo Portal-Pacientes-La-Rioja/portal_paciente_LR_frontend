@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Row, Col, Form, Button, Container } from 'react-bootstrap';
+import { Row, Col, Form, Button } from 'react-bootstrap';
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import Loader from '../Loader/Loader';
@@ -26,7 +26,7 @@ export default function RegisterForm(formType) {
     // steps
     const [step, setStep] = useState(0)
     const next = (i) => { setStep(i + 1) }
-    const back = (i) => { setStep(i - 1) }
+    // const back = (i) => { setStep(i - 1) }
     // useForm
     const { register, handleSubmit, getValues, setValue, formState: { errors } } = useForm();
     const type = formType.formType //Tipe of form "user" or "patient"
@@ -89,6 +89,7 @@ export default function RegisterForm(formType) {
 
     // set values 
     const handleChange = (e) => {
+        console.log(errors)
         if (e.target?.name) {
             let targetName = e.target.name
             setValues({
@@ -360,14 +361,14 @@ export default function RegisterForm(formType) {
     const loginDataForm =
         <Row className={step === 0 ? "in" : "out"}>
             {step === 0 && type === 'user' &&
-                <> <Col className="mb-2" xs={12} >
+                <> <Col className="mb-4" xs={12} >
                     <FormGroup inputType={f.email.inputType} label={f.email.label} name={f.email.form_name} value={values.email}
                         {...register(`${f.email.form_name}`, f.email.register)}
                         onChange={handleChange}
                     />
                     {errors[f.email.form_name] && <ErrorMessage><p>{errors[f.email.form_name].message}</p></ErrorMessage>}
                 </Col>
-                    <Col className="mb-2" xs={12} >
+                    <Col className="mb-4" xs={12} >
                         <FormGroup inputType={f.confirmEmail.inputType} label={f.confirmEmail.label} name={f.confirmEmail.form_name} value={values.confirmEmail}
                             {...register(`${f.confirmEmail.form_name}`, {
                                 required: f.confirmEmail.register.required,
@@ -393,7 +394,7 @@ export default function RegisterForm(formType) {
                     <Col className="mb-2" xs={12} sm={7} >
                         <FormGroup inputType={f.confirmPassword.inputType} label={f.confirmPassword.label} name={f.confirmPassword.form_name} value={values.confirmPassword} type={f.confirmPassword.type}
                             {...register(`${f.confirmPassword.form_name}`, {
-                                validate: (value) => value === getValues("password") || 'Las direcciones de correo no coinciden'
+                                validate: (value) => value === getValues("password") || 'Las contraseñas no coinciden'
                             })}
                             onChange={handleChange}
                         />

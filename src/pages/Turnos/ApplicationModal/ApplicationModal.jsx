@@ -9,7 +9,7 @@ import SelectType from '../../../components/SelectType';
 import { confirm, error, success } from '../../../components/SwalAlertData';
 import usePatient from '../../../hooks/usePatient'
 import { sendApplicationEmailService } from '../../../services/applicactionService';
-import institutionsServices, { getInstitutionsAllWithNewData } from '../../../services/institutionsServices';
+import { getInstitutionsAllWithNewData } from '../../../services/institutionsServices';
 import FormGroup from '../../../components/RegisterForm/Forms/FormGroup';
 
 function ApplicationModal({ show, handleClose, }) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Container, NavDropdown } from 'react-bootstrap';
+import { NavDropdown } from 'react-bootstrap';
 import usePatient from '../../hooks/usePatient'
 import * as FaIcon from 'react-icons/fa'
 import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
@@ -73,9 +73,9 @@ function UserHeader() {
                             <NavDropdown title="Cambiar paciente" id="basic-nav-dropdown">
                                 {p.allPatients.map((patient) => {
                                     return (
-                                        <>
-                                            {patient.id_admin_status === 2 ? <NavDropdown.Item className='p-2' key={patient.identification_number} onClick={() => { setDniPatient(patient.identification_number) }} >{patient.name} {patient.surname}</NavDropdown.Item> : ''}
-                                        </>
+                                        <div key={patient.identification_number}>
+                                            {patient.id_admin_status === 2 ? <NavDropdown.Item className='p-2' onClick={() => { setDniPatient(patient.identification_number) }} >{patient.name} {patient.surname}</NavDropdown.Item> : ''}
+                                        </div>
                                     )
                                 })}
                             </NavDropdown>}

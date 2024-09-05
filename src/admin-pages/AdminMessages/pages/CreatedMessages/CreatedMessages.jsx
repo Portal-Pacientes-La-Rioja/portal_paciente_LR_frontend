@@ -8,7 +8,6 @@ import DataNotFound from '../../../../components/DataNotFound'
 import CreateMessage from "../../CreateMessage";
 import { Message } from "../../Message/Message";
 import Paginador from "../../../../components/Paginador";
-import AutocompleteComponent from "../../../../components/AutocompleteComponent";
 
 export default function CreatedMessages() {
 

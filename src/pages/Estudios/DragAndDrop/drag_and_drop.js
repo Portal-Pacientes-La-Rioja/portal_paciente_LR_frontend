@@ -10,7 +10,7 @@ import { Col } from "react-bootstrap";
 import useAuth from '../../../hooks/useAuth';
 
 
-export default function FilesDragAndDrop({ onUpload }) {
+export default function FilesDragAndDrop() {
   const [fileList, setFileList] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedType, setSelectedType] = useState('');
@@ -106,7 +106,6 @@ export default function FilesDragAndDrop({ onUpload }) {
         .then((res) => {
           if (res.ok) {
             getEstudiosDePersona(p.patient.id)
-            console.log(res)
           } else {
             throw new Error('Error')
           }

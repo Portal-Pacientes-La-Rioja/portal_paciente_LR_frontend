@@ -8,7 +8,7 @@ import {
 import { useEffect, useState } from "react";
 import { Pie } from 'react-chartjs-2';
 import { useCallback } from "react";
-import { getMasterUsersIndicators, getPendingUsersIndicators, getRejectedUsersIndicators, getValidatedUsersIndicators } from "../../../../services/dashboardService";
+import { getPendingUsersIndicators, getRejectedUsersIndicators, getValidatedUsersIndicators } from "../../../../services/dashboardService";
 import Swal from 'sweetalert2';
 import { error } from "../../../../components/SwalAlertData";
 

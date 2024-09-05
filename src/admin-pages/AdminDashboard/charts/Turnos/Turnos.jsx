@@ -1,16 +1,5 @@
-import { Row, Col, Button } from "react-bootstrap";
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-} from 'chart.js';
+import { Col } from "react-bootstrap";
 import { useEffect, useState } from "react";
-import * as MdIcon from "react-icons/md";
-import { Bar, Pie } from 'react-chartjs-2';
 import { useCallback } from "react";
 import { getTurnosIndicators } from "../../../../services/dashboardService";
 import Swal from 'sweetalert2';
@@ -20,7 +9,6 @@ export const Turnos = () => {
 
     const fromDate = new Date('01/09/2023').toISOString().split('T')[0]
     const toDate = new Date().toISOString().split('T')[0];
-    const [labels, setLabels] = useState(['Turnos Solicitados']);
     const [dataTurnos, setDataTurnos] = useState([]);
 
 

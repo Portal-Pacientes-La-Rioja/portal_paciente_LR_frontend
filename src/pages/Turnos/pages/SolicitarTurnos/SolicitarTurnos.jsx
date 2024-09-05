@@ -1,7 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import { Form, Button } from "react-bootstrap";
-import { useForm } from "react-hook-form";
-import SelectType from "../../../../components/SelectType";
+import { useState} from "react";
+import { Button } from "react-bootstrap";
 import ApplicationModal from '../../ApplicationModal';
 
 function SolicitarTurnos() {

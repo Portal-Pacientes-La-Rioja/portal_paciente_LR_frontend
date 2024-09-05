@@ -41,7 +41,7 @@ function DatosAntropometricos() {
     const iterateObject = (info) => {
         let patientData = []
         info.map((inf, index) => {
-            var content = new Object
+            var content = new Object()
             Object.entries(inf).forEach(([key, values], i, obj) => {
                 content.name = key
                 content.data = []

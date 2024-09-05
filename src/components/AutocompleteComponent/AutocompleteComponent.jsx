@@ -1,16 +1,14 @@
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { Form } from 'react-bootstrap';
 import { ReactSearchAutocomplete } from 'react-search-autocomplete';
 
 const AutocompleteComponent = React.forwardRef((props, ref) => {
 
-  const { variants, name, handleChange, onBlur, selectValue, disabled, clearInput } = props;
+  const { variants, handleChange, selectValue, clearInput } = props;
   const [idValue, setIdValue] = useState(selectValue ? selectValue : false);
   const [searchString, setSearchString] = useState('');
   const [items, setItems] = useState([]);
-  const [value, setValue] = useState('');
 
 
   useEffect(() => {
@@ -28,9 +26,6 @@ const AutocompleteComponent = React.forwardRef((props, ref) => {
     setSearchString(string);
   }
 
-  const handleOnHover = (result) => {
-  }
-
   const handleOnSelect = (item) => {
     if (item && item.id) {
       handleChange(item)
@@ -40,14 +35,6 @@ const AutocompleteComponent = React.forwardRef((props, ref) => {
       }
     }
   }
-
-  const handleOnFocus = () => {
-    // setItems(items);
-  }
-
-  const formatResult = (item) => {
-  }
-
 
   return (
     <ReactSearchAutocomplete
