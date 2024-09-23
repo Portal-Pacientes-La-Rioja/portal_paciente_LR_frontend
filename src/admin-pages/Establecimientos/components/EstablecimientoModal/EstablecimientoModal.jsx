@@ -92,7 +92,7 @@ const EstablecimientoModal = (props) => {
                 })
                 .then(() => setLoading(false))
                 .catch((err) => {
-                    Swal.fire(error('Error al obtener datos de establecimeinto.'))
+                    Swal.fire(error('Error al obtener datos de establecimiento.'))
                     handleClose();
                 })
         }, [])
