@@ -1,5 +1,5 @@
-import { HSI_GET_AVAILABLE_APPOINTMENTS, HSI_GET_INSTITUTIONS, HSI_GET_MEDICAL_COVERAGE, HSI_GET_SPECIALTY, HSI_GET_USER_APPOINTMENTS, HSI_HEADER, HSI_HEADER_API_KEY, HSI_POST_APPOINTMENT } from "../constants/api-hsi.constants";
-import { API_ENDPOINT_SEND_TURNO_MAIL, AUTH_HEADER } from "../constants/api.constants";
+import { HSI_GET_AVAILABLE_APPOINTMENTS, HSI_GET_INSTITUTIONS, HSI_GET_MEDICAL_COVERAGE, HSI_GET_SPECIALTY, HSI_HEADER, HSI_HEADER_API_KEY, HSI_POST_APPOINTMENT } from "../constants/api-hsi.constants";
+import { API_ENDPOINT_GET_USER_APPOINTMENTS, API_ENDPOINT_SEND_TURNO_MAIL, AUTH_HEADER } from "../constants/api.constants";
 import { get, post } from "./httpServices";
 
 export async function sendAppointmentEmailService(person_id, subject, body) {
@@ -72,7 +72,9 @@ export async function postAppointment(body, institution_id) {
 
 export async function getUserAppointmentsService(userData) {
   try {
-    const promise = await get(HSI_GET_USER_APPOINTMENTS(userData), HSI_HEADER());
+    const searchParams = new URLSearchParams(userData);
+    let query = searchParams.toString();
+    const promise = await get(API_ENDPOINT_GET_USER_APPOINTMENTS(query), AUTH_HEADER());
     return promise;
   } catch (err) {
     console.error(err);
@@ -170,63 +172,3 @@ export const mockDataAppointments = {
     }
   ]
 }
-
-export const mockDataUserAppointments = [
-  {
-    "diary": {
-      "id": 19216,
-      "doctorsOfficeId": 0,
-      "doctorsOfficeDescription": "Alvarez Vanina",
-      "startDate": "2024-09-02",
-      "endDate": "2024-09-02",
-      "appointmentDuration": 15,
-      "from": {
-        "hour": "07:45",
-        "minute": 0,
-        "second": 0,
-        "nano": 0
-      },
-      "to": {
-        "hour": "08:00",
-        "minute": 0,
-        "second": 0,
-        "nano": 0
-      },
-      "openingHoursId": 6509
-    },
-    "slots": {
-      "date": "2024-09-02",
-      "slots": [
-        "string"
-      ]
-    }
-  }, {
-    "diary": {
-      "id": 19216,
-      "doctorsOfficeId": 0,
-      "doctorsOfficeDescription": "Alvarez Vanina",
-      "startDate": "2024-09-02",
-      "endDate": "2024-09-02",
-      "appointmentDuration": 15,
-      "from": {
-        "hour": "07:45",
-        "minute": 0,
-        "second": 0,
-        "nano": 0
-      },
-      "to": {
-        "hour": "08:00",
-        "minute": 0,
-        "second": 0,
-        "nano": 0
-      },
-      "openingHoursId": 6509
-    },
-    "slots": {
-      "date": "2024-09-02",
-      "slots": [
-        "string"
-      ]
-    }
-  }
-]

@@ -181,6 +181,14 @@ export const API_ENDPOINT_SEND_TURNO_MAIL = (query) => {
   return url;
 };
 
+// turnos ---------------------------------------
+
+//Se solicitó endpoint para obtener turnos de un paciente debido a que no es posible resolver error de CORSS apuntando directo a HSI
+export const API_ENDPOINT_GET_USER_APPOINTMENTS = (query) => {
+  let url = `${baseUrl}/patient/appointments?${query}`;
+  return url;
+};
+
 // formData---------------------------------------
 export const API_ENDPOINT_INSTITUCIONES = `${baseUrl}/institutions/all`;
 export const API_ENDPOINT_INSTITUCIONESAallWithNewData = `${baseUrl}/allWithNewData`;
@@ -387,3 +395,4 @@ export const INDICADOR_TURNOS = () => {
   let url = `${environment.baseURL}/turnos/count`;
   return url;
 };
+
